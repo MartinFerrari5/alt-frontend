@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
+    fontFamily: {
+      sans: ["Poppins", "sans-serif"],
+    },
     extend: {
-      fontFamily: {
-        sans: ["Poppins", "sans-serif"],
-      },
       colors: {
         brand: {
           "dark-blue": "#35383E",
@@ -23,4 +23,4 @@ export default {
     },
   },
   plugins: [],
-};
+}
