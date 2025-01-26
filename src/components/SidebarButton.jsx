@@ -7,7 +7,7 @@ const SidebarButton = ({ children, to }) => {
     base: "flex items-center gap-2 rounded-lg px-6 py-3",
     variants: {
       color: {
-        selected: "bg-brand-primary bg-opacity-15 text-brand-primary",
+        selected: "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
         unselected: "text-brand-dark-blue",
       },
     },

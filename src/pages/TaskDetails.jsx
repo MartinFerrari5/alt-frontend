@@ -67,7 +67,7 @@ const TaskDetailsPage = () => {
           <div>
             <button
               onClick={handleBackClick}
-              className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-brand-primary"
+              className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-brand-custom-green"
             >
               <ArrowLeftIcon />
             </button>
@@ -76,7 +76,7 @@ const TaskDetailsPage = () => {
                 Mis tareas
               </Link>
               <ChevronRightIcon className="text-brand-text-gray" />
-              <span className="font-semibold text-brand-primary">
+              <span className="font-semibold text-brand-custom-green">
                 {task?.title}
               </span>
             </div>

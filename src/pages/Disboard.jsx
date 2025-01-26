@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar"
 import TaskItem from "../components/TaskItem"
 import { useGetTasks } from "../hooks/data/use-get-tasks"
 
-const HomePage = () => {
+const DisboardPage = () => {
   const { data: tasks } = useGetTasks()
   return (
     <div className="flex">
@@ -39,4 +39,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default DisboardPage

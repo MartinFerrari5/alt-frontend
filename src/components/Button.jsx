@@ -12,7 +12,7 @@ const Button = ({
     base: `flex items-center justify-center gap-2 rounded-md px-3 font-semibold transition hover:opacity-75`,
     variants: {
       color: {
-        primary: "bg-brand-primary text-white",
+        primary: "bg-brand-custom-green text-white",
         ghost: "bg-transparent text-brand-dark-gray",
         secondary: "bg-brand-light-gray text-brand-dark-blue",
         danger: "bg-brand-danger text-brand-white",

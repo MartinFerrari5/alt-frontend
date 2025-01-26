@@ -15,7 +15,7 @@ const TaskItem = ({ task }) => {
 
   const getStatusClasses = () => {
     if (task.status === "done") {
-      return "bg-brand-primary text-brand-primary"
+      return "bg-brand-custom-green text-brand-custom-green"
     }
 
     if (task.status === "in_progress") {

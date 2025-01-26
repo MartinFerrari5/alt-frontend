@@ -18,6 +18,7 @@ export default {
           border: "#F4F4F5",
           process: "#FFAA04",
           danger: "#EF4444",
+          "custom-green": "#418D35",
         },
       },
     },

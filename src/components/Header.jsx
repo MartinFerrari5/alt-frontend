@@ -10,7 +10,7 @@ function Header({ subtitle, title }) {
   return (
     <div className="flex w-full justify-between">
       <div>
-        <span className="text-xs font-semibold text-brand-primary">
+        <span className="text-xs font-semibold text-brand-custom-green">
           {subtitle}
         </span>
         <h2 className="text-xl font-semibold">{title}</h2>
