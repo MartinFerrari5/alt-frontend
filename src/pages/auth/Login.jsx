@@ -6,14 +6,17 @@ import { z } from "zod"
 
 // Esquema de validación usando zod
 const schema = z.object({
-  email: z.string().email("Invalid email format").nonempty("Email is required"),
+  email: z
+    .string()
+    .email("Formato de correo electrónico inválido")
+    .nonempty("El correo electrónico es obligatorio"),
   password: z
     .string()
-    .min(6, "Password must be at least 6 characters long")
-    .nonempty("Password is required"),
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .nonempty("La contraseña es obligatoria"),
 })
 
-const Login = () => {
+const SignIn = () => {
   const {
     register,
     handleSubmit,
@@ -22,8 +25,8 @@ const Login = () => {
     resolver: zodResolver(schema),
   })
 
-  const navigate = useNavigate() // Sustituye a useRouter
-  const [message, setMessage] = useState(null) // Manejar el mensaje de éxito o error
+  const navigate = useNavigate()
+  const [message, setMessage] = useState(null)
 
   const onSubmit = async (data) => {
     try {
@@ -39,158 +42,145 @@ const Login = () => {
         const errorData = await response.json()
         setMessage({
           type: "error",
-          text: `Login failed: ${errorData.message}`,
+          text: `Error al iniciar sesión: ${errorData.message}`,
         })
         return
       }
 
-      // const result = await response.json()
-      setMessage({ type: "success", text: "Login successful!" })
+      setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
 
-      // Redirigir después de un breve retraso
       setTimeout(() => {
-        navigate("/") // Redirige a la página principal
+        navigate("/")
       }, 2000)
     } catch (error) {
       console.error("Error:", error)
       setMessage({
         type: "error",
-        text: "An error occurred while logging in. Please try again.",
+        text: "Ocurrió un error al iniciar sesión. Intenta nuevamente.",
       })
     }
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-br from-green-100 to-white antialiased">
-      <div className="container mx-auto px-6">
-        <div className="flex h-full flex-col items-center justify-evenly text-center md:flex-row md:text-left">
-          {/* Sección izquierda */}
-          <div className="flex w-full flex-col md:w-1/2">
-            <div>
-              <svg
-                className="fill-stroke mx-auto h-20 w-20 text-gray-800 md:float-left"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                ></path>
-              </svg>
-            </div>
-            <h1 className="text-5xl font-bold text-gray-800">Client Area</h1>
-            <p className="mx-auto w-5/12 text-gray-500 md:mx-0">
-              Control and monitorize your website data from dashboard.
-            </p>
-          </div>
-
-          {/* Sección derecha */}
-          <div className="mx-auto w-full md:mx-0 md:w-1/2 lg:w-9/12">
-            <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
-              <h2 className="mb-5 text-left text-2xl font-bold text-gray-800">
-                Signin
-              </h2>
-              <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-                {/* Input de Email */}
-                <div className="my-5 flex w-full flex-col">
-                  <label htmlFor="email" className="mb-2 text-gray-500">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    {...register("email")}
-                    placeholder="Please insert your email"
-                    className={`appearance-none rounded-lg border-2 px-4 py-3 placeholder-gray-300 focus:shadow-lg focus:outline-none focus:ring-2 ${
-                      errors.email
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-100 focus:ring-green-600"
-                    }`}
-                  />
-                  {errors.email && (
-                    <span className="text-sm text-red-500">
-                      {errors.email.message}
-                    </span>
-                  )}
-                </div>
-
-                {/* Input de Password */}
-                <div className="my-5 flex w-full flex-col">
-                  <label htmlFor="password" className="mb-2 text-gray-500">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    {...register("password")}
-                    placeholder="Please insert your password"
-                    className={`appearance-none rounded-lg border-2 px-4 py-3 placeholder-gray-300 focus:shadow-lg focus:outline-none focus:ring-2 ${
-                      errors.password
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-100 focus:ring-green-600"
-                    }`}
-                  />
-                  {errors.password && (
-                    <span className="text-sm text-red-500">
-                      {errors.password.message}
-                    </span>
-                  )}
-                </div>
-
-                {/* Botón de envío */}
-                <div className="my-5 flex w-full flex-col">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`w-full rounded-lg py-4 text-green-100 ${
-                      isSubmitting
-                        ? "cursor-not-allowed bg-green-400"
-                        : "bg-green-600 hover:bg-green-700"
-                    }`}
-                  >
-                    <div className="flex flex-row items-center justify-center">
-                      <span className="font-bold">
-                        {isSubmitting ? "Signing in..." : "Signin"}
-                      </span>
-                    </div>
-                  </button>
-                  {message && (
-                    <div
-                      className={`mt-3 rounded-lg p-3 text-center text-sm ${
-                        message.type === "success"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {message.text}
-                    </div>
-                  )}
-                  <div className="mt-5 flex justify-evenly">
-                    <a
-                      href="#"
-                      className="w-full text-center font-medium text-gray-500"
-                    >
-                      Recover password!
-                    </a>
-                    <a
-                      href="#"
-                      className="w-full text-center font-medium text-gray-500"
-                    >
-                      Signup!
-                    </a>
+    // <section className="bg-gray-50 dark:bg-gray-900">
+    <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white antialiased">
+      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+        <a
+          href="#"
+          className="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-gray-600"
+        >
+          <img
+            className="w-18 mr-2 h-8"
+            src="/src/assets/icons/Alt_Logo.png"
+            alt="logo"
+          />
+          Tarea
+        </a>
+        <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
+          <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-800 md:text-2xl">
+              Inicia sesión en tu cuenta
+            </h1>
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium text-gray-500"
+                >
+                  Tu correo electrónico
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  {...register("email")}
+                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${errors.email ? "border-red-500" : ""}`}
+                  placeholder="nombre@empresa.com"
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-medium text-gray-500"
+                >
+                  Contraseña
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  {...register("password")}
+                  placeholder="••••••••"
+                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${errors.password ? "border-red-500" : ""}`}
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-start">
+                  <div className="flex h-5 items-center">
+                    <input
+                      id="remember"
+                      aria-describedby="remember"
+                      type="checkbox"
+                      className="focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 h-4 w-4 rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="remember" className="text-gray-500">
+                      Recuérdame
+                    </label>
                   </div>
                 </div>
-              </form>
-            </div>
+                <a
+                  href="#"
+                  className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline"
+                >
+                  ¿Olvidaste la contraseña?
+                </a>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full rounded-lg py-4 text-green-100 ${
+                  isSubmitting
+                    ? "cursor-not-allowed bg-green-400"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
+              >
+                {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+              </button>
+              {message && (
+                <p
+                  className={`mt-2 text-sm ${message.type === "error" ? "text-red-500" : "text-green-500"}`}
+                >
+                  {message.text}
+                </p>
+              )}
+              <p className="text-gray-00 text-sm font-light">
+                ¿No tienes cuenta?{" "}
+                <a
+                  href="#"
+                  className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+                >
+                  Regístrate
+                </a>
+              </p>
+            </form>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
-export default Login
+export default SignIn
