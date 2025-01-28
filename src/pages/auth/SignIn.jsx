@@ -1,8 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom" // Usamos react-router-dom para Vite
+import { useNavigate } from "react-router-dom"
 import { z } from "zod"
+
+import { AuthContext } from "../../components/auth/AuthContext"
 
 // Esquema de validación usando zod
 const schema = z.object({
@@ -25,12 +27,14 @@ const SignIn = () => {
     resolver: zodResolver(schema),
   })
 
+  // Use the AuthContext here
+  const { login } = useContext(AuthContext) // Call it directly here
   const navigate = useNavigate()
   const [message, setMessage] = useState(null)
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,11 +51,13 @@ const SignIn = () => {
         return
       }
 
+      const { token, refreshToken } = await response.json() // Obtenemos los tokens desde el backend
+      login({ token, refreshToken }) // Guardamos los tokens en el contexto para autenticar al usuario
       setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
 
       setTimeout(() => {
-        navigate("/")
-      }, 2000)
+        navigate("/") // Redirigimos al usuario a la página principal
+      }, 1000)
     } catch (error) {
       console.error("Error:", error)
       setMessage({
@@ -62,7 +68,6 @@ const SignIn = () => {
   }
 
   return (
-    // <section className="bg-gray-50 dark:bg-gray-900">
     <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white antialiased">
       <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
         <a
@@ -94,10 +99,11 @@ const SignIn = () => {
                 </label>
                 <input
                   type="email"
-                  name="email"
                   id="email"
                   {...register("email")}
-                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${errors.email ? "border-red-500" : ""}`}
+                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
+                    errors.email ? "border-red-500" : ""
+                  }`}
                   placeholder="nombre@empresa.com"
                 />
                 {errors.email && (
@@ -113,11 +119,12 @@ const SignIn = () => {
                 </label>
                 <input
                   type="password"
-                  name="password"
                   id="password"
                   {...register("password")}
                   placeholder="••••••••"
-                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 ${errors.password ? "border-red-500" : ""}`}
+                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
+                    errors.password ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.password && (
                   <p className="text-sm text-red-500">
@@ -130,9 +137,8 @@ const SignIn = () => {
                   <div className="flex h-5 items-center">
                     <input
                       id="remember"
-                      aria-describedby="remember"
                       type="checkbox"
-                      className="focus:ring-3 focus:ring-primary-300 dark:focus:ring-primary-600 h-4 w-4 rounded border border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800"
+                      className="focus:ring-3 focus:ring-primary-300 h-4 w-4 rounded border border-gray-300 bg-gray-50"
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -143,7 +149,7 @@ const SignIn = () => {
                 </div>
                 <a
                   href="#"
-                  className="text-primary-600 dark:text-primary-500 text-sm font-medium hover:underline"
+                  className="text-primary-600 text-sm font-medium hover:underline"
                 >
                   ¿Olvidaste la contraseña?
                 </a>
@@ -161,16 +167,18 @@ const SignIn = () => {
               </button>
               {message && (
                 <p
-                  className={`mt-2 text-sm ${message.type === "error" ? "text-red-500" : "text-green-500"}`}
+                  className={`mt-2 text-sm ${
+                    message.type === "error" ? "text-red-500" : "text-green-500"
+                  }`}
                 >
                   {message.text}
                 </p>
               )}
-              <p className="text-gray-00 text-sm font-light">
+              <p className="text-sm font-light text-gray-500">
                 ¿No tienes cuenta?{" "}
                 <a
                   href="#"
-                  className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+                  className="text-primary-600 font-medium hover:underline"
                 >
                   Regístrate
                 </a>

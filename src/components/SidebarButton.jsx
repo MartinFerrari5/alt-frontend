@@ -1,4 +1,3 @@
-import PropTypes from "prop-types"
 import { NavLink } from "react-router-dom"
 import { tv } from "tailwind-variants"
 
@@ -23,11 +22,6 @@ const SidebarButton = ({ children, to }) => {
       {children}
     </NavLink>
   )
-}
-
-SidebarButton.propTypes = {
-  children: PropTypes.node.isRequired,
-  color: PropTypes.oneOf(["selected", "unselected"]),
 }
 
 export default SidebarButton
