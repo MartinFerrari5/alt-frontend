@@ -1,9 +1,10 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
 
-import { AddIcon, TrashIcon } from "../assets/icons"
-import AddTaskDialog from "./AddTaskDialog"
 import Button from "./Button"
+import AddTaskDialog from "./Tasks/AddTaskDialog"
+
+import { AddIcon, TrashIcon } from "../assets/icons"
 
 function Header({ subtitle, title }) {
   const [addTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)

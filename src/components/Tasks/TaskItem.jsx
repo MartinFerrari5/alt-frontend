@@ -2,10 +2,15 @@ import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
 
-import { CheckIcon, DetailsIcon, LoaderIcon, TrashIcon } from "../assets/icons"
-import Button from "../components/Button"
-import { useDeleteTask } from "../hooks/data/use-delete-task"
-import { useUpdateTask } from "../hooks/data/use-update-task"
+import {
+  CheckIcon,
+  DetailsIcon,
+  LoaderIcon,
+  TrashIcon,
+} from "../../assets/icons"
+import { useDeleteTask } from "../../hooks/data/use-delete-task"
+import { useUpdateTask } from "../../hooks/data/use-update-task"
+import Button from "../Button"
 
 const TaskItem = ({ task }) => {
   const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useDeleteTask(

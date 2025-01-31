@@ -8,6 +8,7 @@ import { Toaster } from "sonner"
 
 import { AuthProvider } from "./components/auth/AuthContext.jsx"
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx"
+import PageRegister from "./pages/auth/Register.jsx"
 import Login from "./pages/auth/SignIn.jsx"
 import DisboardPage from "./pages/Disboard.jsx"
 import TaskDetailsPage from "./pages/TaskDetails.jsx"
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <PageRegister />,
   },
   {
     path: "/",

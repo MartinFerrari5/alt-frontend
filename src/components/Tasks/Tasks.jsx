@@ -1,6 +1,8 @@
-import { CloudSunIcon, MoonIcon, SunIcon } from "../assets/icons"
-import { useGetTasks } from "../hooks/data/use-get-tasks"
-import Header from "./Header"
+// // src/components/Tasks.jsx
+
+import { CloudSunIcon, MoonIcon, SunIcon } from "../../assets/icons"
+import { useGetTasks } from "../../hooks/data/use-get-tasks"
+import Header from "../Header"
 import TaskItem from "./TaskItem"
 import TasksSeparator from "./TasksSeparator"
 
