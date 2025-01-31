@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { z } from "zod"
@@ -12,11 +13,6 @@ const schema = z
       .string()
       .min(6, "La contraseña debe tener al menos 6 caracteres"),
     confirmPassword: z.string(),
-    phone: z
-      .string()
-      .regex(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/, "Formato: 123-456-7890"),
-    company: z.string().min(2, "El nombre de la empresa es obligatorio"),
-    role: z.enum(["admin", "user", "program"], "Selecciona un perfil"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
@@ -33,24 +29,32 @@ const PageRegister = () => {
   })
 
   const navigate = useNavigate()
+  const [message, setMessage] = useState(null)
 
   const onSubmit = async (data) => {
+    const formattedData = {
+      full_name: `${data.firstName} ${data.lastName}`,
+      email: data.email,
+      password: data.password,
+    }
+
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
+      const response = await fetch("http://localhost:3000/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formattedData),
       })
 
       if (!response.ok) {
         throw new Error("Error al registrar usuario")
       }
 
-      navigate("/dashboard")
+      setMessage({ type: "success", text: "¡Registro exitoso!" })
+      setTimeout(() => navigate("/login"), 2000)
     } catch (error) {
-      console.error(error.message)
+      setMessage({ type: "error", text: "Error al registrar usuario" })
     }
   }
 
@@ -108,39 +112,33 @@ const PageRegister = () => {
             <p className="text-red-500">{errors.confirmPassword.message}</p>
           )}
 
-          <input
-            {...register("phone")}
-            placeholder="Teléfono (123-456-7890)"
-            className="w-full border p-2"
-          />
-          {errors.phone && (
-            <p className="text-red-500">{errors.phone.message}</p>
-          )}
-
-          <input
-            {...register("company")}
-            placeholder="Empresa"
-            className="w-full border p-2"
-          />
-          {errors.company && (
-            <p className="text-red-500">{errors.company.message}</p>
-          )}
-
-          {/* <select {...register("role")} className="border p-2 w-full">
-                    <option value="">Selecciona un perfil</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                    <option value="program">Program</option>
-                </select>
-                {errors.role && <p className="text-red-500">{errors.role.message}</p>} */}
-
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 p-2 text-white"
+            className={`w-full rounded-lg py-4 text-green-100 ${
+              isSubmitting
+                ? "cursor-not-allowed bg-green-400"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
           >
-            {isSubmitting ? "Registrando..." : "Registrar"}
+            {isSubmitting
+              ? "Registrando..."
+              : message?.type === "success"
+                ? "¡Registro exitoso!"
+                : message?.type === "error"
+                  ? "Error en el registro"
+                  : "Registrar"}
           </button>
+
+          {message && (
+            <p
+              className={`mt-2 text-sm ${
+                message.type === "error" ? "text-red-500" : "text-green-500"
+              }`}
+            >
+              {message.text}
+            </p>
+          )}
         </form>
       </div>
     </section>

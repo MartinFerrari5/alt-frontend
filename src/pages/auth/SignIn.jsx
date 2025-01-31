@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useContext, useState } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
 
 import { AuthContext } from "../../components/auth/AuthContext"
@@ -177,12 +177,12 @@ const SignIn = () => {
               )}
               <p className="text-sm font-light text-gray-500">
                 ¿No tienes cuenta?{" "}
-                <a
-                  href="#"
+                <Link
+                  href="/register"
                   className="text-primary-600 font-medium hover:underline"
                 >
                   Regístrate
-                </a>
+                </Link>
               </p>
             </form>
           </div>
