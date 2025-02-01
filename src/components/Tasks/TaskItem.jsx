@@ -18,7 +18,9 @@ const TaskItem = ({ task }) => {
   const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useDeleteTask(
     task.id
   )
-  const { mutate } = useUpdateTask(task.id)
+  const { mutate: updateTask, isPending: updateTaskIsLoading } = useUpdateTask(
+    task.id
+  )
 
   const getStatusClasses = () => {
     switch (task.status) {
@@ -34,22 +36,24 @@ const TaskItem = ({ task }) => {
   const handleDeleteClick = () => {
     deleteTask(undefined, {
       onSuccess: () => toast.success("¡Tarea eliminada exitosamente!"),
-      onError: () =>
-        toast.error("Error al eliminar la tarea. Inténtalo de nuevo."),
+      onError: (error) => {
+        console.error("🔴 Error al eliminar tarea:", error)
+        toast.error("Error al eliminar la tarea. Inténtalo de nuevo.")
+      },
     })
   }
 
-  const getNewStatus = () => {
-    return task.status === 0 ? 1 : task.status === 1 ? 2 : 0
-  }
+  const getNewStatus = () => (task.status === 0 ? 1 : task.status === 1 ? 2 : 0)
 
   const handleCheckboxClick = () => {
-    mutate(
+    updateTask(
       { status: getNewStatus() },
       {
         onSuccess: () => toast.success("¡Estado de la tarea actualizado!"),
-        onError: () =>
-          toast.error("Error al actualizar la tarea. Inténtalo de nuevo."),
+        onError: (error) => {
+          console.error("🔴 Error al actualizar tarea:", error)
+          toast.error("Error al actualizar la tarea. Inténtalo de nuevo.")
+        },
       }
     )
   }
@@ -67,6 +71,7 @@ const TaskItem = ({ task }) => {
             checked={task.status === 2}
             className="absolute h-full w-full cursor-pointer opacity-0"
             onChange={handleCheckboxClick}
+            disabled={updateTaskIsLoading}
           />
           {task.status === 2 && <CheckIcon />}
           {task.status === 1 && (

@@ -8,6 +8,7 @@ import { useGetTasks } from "../hooks/data/use-get-tasks"
 
 const DisboardPage = () => {
   const { data: tasks = [] } = useGetTasks()
+  const validTasks = tasks.filter((task) => task?.id)
 
   return (
     <div className="flex">
@@ -22,12 +23,12 @@ const DisboardPage = () => {
               Resumen de las tareas disponibles
             </span>
             <div className="space-y-3">
-              {tasks.length === 0 ? (
+              {validTasks.length === 0 ? (
                 <p className="text-sm text-brand-text-gray">
                   No hay tareas disponibles.
                 </p>
               ) : (
-                tasks.map((task) => <TaskItem key={task.id} task={task} />)
+                validTasks.map((task) => <TaskItem key={task.id} task={task} />)
               )}
             </div>
           </div>

@@ -8,7 +8,6 @@ export const api = axios.create({
 // Función para obtener nuevos tokens usando el refreshToken
 const refreshAccessToken = async () => {
   const storedTokens = localStorage.getItem("authTokens")
-
   if (!storedTokens) return null
 
   const authTokens = JSON.parse(storedTokens)
@@ -16,14 +15,15 @@ const refreshAccessToken = async () => {
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/refresh`,
-      {
-        refreshToken: authTokens.refreshToken,
-      }
+      { refreshToken: authTokens.refreshToken }
     )
 
-    // Guarda los nuevos tokens
     const newTokens = response.data
     localStorage.setItem("authTokens", JSON.stringify(newTokens))
+
+    // 🛠️ Asegurar que todas las nuevas peticiones usen el nuevo token
+    axios.defaults.headers.common["Authorization"] = `${newTokens.accessToken}`
+
     return newTokens.accessToken
   } catch (error) {
     console.error("🔴 Error al refrescar el token:", error)
@@ -52,7 +52,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // Si el error es 401 y no hemos intentado refrescar antes, intentamos renovar el token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
       const newAccessToken = await refreshAccessToken()

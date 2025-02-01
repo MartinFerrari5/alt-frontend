@@ -20,32 +20,48 @@ import { useUpdateTask } from "../hooks/data/use-update-task"
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams()
-  const { mutate: updateTask } = useUpdateTask(taskId)
-  const { mutate: deleteTask } = useDeleteTask(taskId)
-  const { data: task } = useGetTask({
-    taskId,
-    onSuccess: (task) => reset(task),
-  })
   const navigate = useNavigate()
+
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
     reset,
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      time: "",
+    },
+  })
 
-  const handleBackClick = () => {
-    navigate(-1)
-  }
+  const { mutate: updateTask } = useUpdateTask(taskId)
+  const { mutate: deleteTask } = useDeleteTask(taskId)
+
+  const { data: task, isLoading } = useGetTask({
+    taskId,
+    onSuccess: (task) => {
+      const taskDetails = task?.task?.[0]
+      if (taskDetails) {
+        reset({
+          title: taskDetails.task_description || "",
+          description: taskDetails.task_description || "",
+          time: taskDetails.entry_time || "",
+        })
+      }
+    },
+  })
+
+  console.log("📌 Tarea TaskDetailsPage:", task)
+
+  const taskDetails = task?.task?.[0]
+
+  const handleBackClick = () => navigate(-1)
 
   const handleSaveClick = async (data) => {
     updateTask(data, {
-      onSuccess: () => {
-        toast.success("¡Tarea guardada con éxito!")
-      },
-      onError: () => {
-        toast.error("Ocurrió un error al guardar la tarea.")
-      },
+      onSuccess: () => toast.success("¡Tarea guardada con éxito!"),
+      onError: () => toast.error("Ocurrió un error al guardar la tarea."),
     })
   }
 
@@ -59,13 +75,30 @@ const TaskDetailsPage = () => {
     })
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoaderIcon className="animate-spin" />
+        <span className="ml-2">Cargando tarea...</span>
+      </div>
+    )
+  }
+
+  if (!taskDetails) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <span>No se encontró la tarea.</span>
+      </div>
+    )
+  }
+
   return (
     <div className="flex">
       <Sidebar />
       <div className="w-full space-y-6 px-8 py-16">
-        {/* barra superior */}
+        {/* Barra superior */}
         <div className="flex w-full justify-between">
-          {/* parte izquierda */}
+          {/* Parte izquierda */}
           <div>
             <button
               onClick={handleBackClick}
@@ -79,14 +112,16 @@ const TaskDetailsPage = () => {
               </Link>
               <ChevronRightIcon className="text-brand-text-gray" />
               <span className="font-semibold text-brand-custom-green">
-                {task?.title}
+                {taskDetails.task_description}
               </span>
             </div>
 
-            <h1 className="mt-2 text-xl font-semibold">{task?.title}</h1>
+            <h1 className="mt-2 text-xl font-semibold">
+              {taskDetails.task_description}
+            </h1>
           </div>
 
-          {/* parte derecha */}
+          {/* Parte derecha */}
           <Button
             className="h-fit self-end"
             color="danger"
@@ -98,20 +133,17 @@ const TaskDetailsPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(handleSaveClick)}>
-          {/* datos de la tarea */}
+          {/* Datos de la tarea */}
           <div className="space-y-6 rounded-xl bg-brand-white p-6">
             <div>
               <Input
                 id="title"
                 label="Título"
+                defaultValue={taskDetails.task_description}
                 {...register("title", {
                   required: "El título es obligatorio.",
-                  validate: (value) => {
-                    if (!value.trim()) {
-                      return "El título no puede estar vacío."
-                    }
-                    return true
-                  },
+                  validate: (value) =>
+                    value.trim() ? true : "El título no puede estar vacío.",
                 })}
                 errorMessage={errors?.title?.message}
               />
@@ -119,6 +151,7 @@ const TaskDetailsPage = () => {
 
             <div>
               <TimeSelect
+                defaultValue={taskDetails.entry_time}
                 {...register("time", {
                   required: "El horario es obligatorio.",
                 })}
@@ -130,20 +163,20 @@ const TaskDetailsPage = () => {
               <Input
                 id="description"
                 label="Descripción"
+                defaultValue={taskDetails.task_description}
                 {...register("description", {
                   required: "La descripción es obligatoria.",
-                  validate: (value) => {
-                    if (!value.trim()) {
-                      return "La descripción no puede estar vacía."
-                    }
-                    return true
-                  },
+                  validate: (value) =>
+                    value.trim()
+                      ? true
+                      : "La descripción no puede estar vacía.",
                 })}
                 errorMessage={errors?.description?.message}
               />
             </div>
           </div>
-          {/* botón de guardar */}
+
+          {/* Botón de guardar */}
           <div className="flex w-full justify-end gap-3">
             <Button
               size="large"

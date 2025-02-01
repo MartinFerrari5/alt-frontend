@@ -11,14 +11,14 @@ import { CSSTransition } from "react-transition-group"
 import { toast } from "sonner"
 
 import { LoaderIcon } from "../../assets/icons"
-import { useAuth } from "../../components/auth/AuthContext"
+// import { useAuth } from "../../components/auth/AuthContext"
 import { useAddTask } from "../../hooks/data/use-add-task"
 import Button from "../Button"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
-  const { userId } = useAuth()
+  // const { userId } = useAuth()
   const { mutate: addTask } = useAddTask()
   const nodeRef = useRef()
   const [taskDate, setTaskDate] = useState(new Date())
@@ -87,7 +87,6 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
       lunch_hours: data.lunch_hours.toString(),
       status: statusMap[data.status],
       task_date: formattedDate,
-      user_id: userId,
     }
     addTask(taskPayload, {
       onSuccess: () => {

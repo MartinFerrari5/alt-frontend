@@ -10,14 +10,16 @@ const Tasks = () => {
   const { data: tasks = [] } = useGetTasks()
 
   const morningTasks = tasks.filter(
-    (task) => parseInt(task.entry_time.split(":")[0], 10) < 12
+    (task) => task?.id && parseInt(task.entry_time.split(":")[0], 10) < 12
   )
-  const afternoonTasks = tasks.filter((task) => {
-    const hour = parseInt(task.entry_time.split(":")[0], 10)
-    return hour >= 12 && hour < 18
-  })
+  const afternoonTasks = tasks.filter(
+    (task) =>
+      task?.id &&
+      parseInt(task.entry_time.split(":")[0], 10) >= 12 &&
+      parseInt(task.entry_time.split(":")[0], 10) < 18
+  )
   const eveningTasks = tasks.filter(
-    (task) => parseInt(task.entry_time.split(":")[0], 10) >= 18
+    (task) => task?.id && parseInt(task.entry_time.split(":")[0], 10) >= 18
   )
 
   return (
