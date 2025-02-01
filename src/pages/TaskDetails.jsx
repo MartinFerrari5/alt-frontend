@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
-
 import {
   ArrowLeftIcon,
   ChevronRightIcon,
@@ -13,27 +12,29 @@ import {
 import Button from "../components/Button"
 import Input from "../components/Input"
 import Sidebar from "../components/Sidebar"
-import TimeSelect from "../components/TimeSelect"
+import DatePicker from "../components/Tasks/DatePicker"
 import { useDeleteTask } from "../hooks/data/use-delete-task"
 import { useGetTask } from "../hooks/data/use-get-task"
 import { useUpdateTask } from "../hooks/data/use-update-task"
+import { useState } from "react"
+
+const statusMap = {
+  0: "No iniciado",
+  1: "En progreso",
+  2: "Completado",
+}
 
 const TaskDetailsPage = () => {
   const { taskId } = useParams()
   const navigate = useNavigate()
+  const [taskDate, setTaskDate] = useState("")
 
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
     reset,
-  } = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      time: "",
-    },
-  })
+  } = useForm()
 
   const { mutate: updateTask } = useUpdateTask(taskId)
   const { mutate: deleteTask } = useDeleteTask(taskId)
@@ -43,23 +44,44 @@ const TaskDetailsPage = () => {
     onSuccess: (task) => {
       const taskDetails = task?.task?.[0]
       if (taskDetails) {
+        const formattedDate = taskDetails.task_date
+          ? taskDetails.task_date.split("T")[0]
+          : ""
+        setTaskDate(formattedDate)
         reset({
-          title: taskDetails.task_description || "",
-          description: taskDetails.task_description || "",
-          time: taskDetails.entry_time || "",
+          company: taskDetails.company || "",
+          project: taskDetails.project || "",
+          task_type: taskDetails.task_type || "",
+          task_description: taskDetails.task_description || "",
+          entry_time: taskDetails.entry_time || "09:00",
+          exit_time: taskDetails.exit_time || "18:00",
+          lunch_hours: taskDetails.lunch_hours
+            ? taskDetails.lunch_hours.toString()
+            : "1",
+          status: taskDetails.status?.toString() || "0",
         })
       }
     },
   })
 
-  console.log("📌 Tarea TaskDetailsPage:", task)
-
-  const taskDetails = task?.task?.[0]
-
   const handleBackClick = () => navigate(-1)
 
   const handleSaveClick = async (data) => {
-    updateTask(data, {
+    if (data.entry_time >= data.exit_time) {
+      toast.error(
+        "La hora de entrada no puede ser mayor o igual a la de salida."
+      )
+      return
+    }
+
+    const updatedTask = {
+      ...data,
+      lunch_hours: Number(data.lunch_hours),
+      status: Number(data.status),
+      task_date: taskDate,
+    }
+
+    updateTask(updatedTask, {
       onSuccess: () => toast.success("¡Tarea guardada con éxito!"),
       onError: () => toast.error("Ocurrió un error al guardar la tarea."),
     })
@@ -84,21 +106,11 @@ const TaskDetailsPage = () => {
     )
   }
 
-  if (!taskDetails) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <span>No se encontró la tarea.</span>
-      </div>
-    )
-  }
-
   return (
     <div className="flex">
       <Sidebar />
       <div className="w-full space-y-6 px-8 py-16">
-        {/* Barra superior */}
         <div className="flex w-full justify-between">
-          {/* Parte izquierda */}
           <div>
             <button
               onClick={handleBackClick}
@@ -112,16 +124,13 @@ const TaskDetailsPage = () => {
               </Link>
               <ChevronRightIcon className="text-brand-text-gray" />
               <span className="font-semibold text-brand-custom-green">
-                {taskDetails.task_description}
+                {task?.task?.[0]?.task_description}
               </span>
             </div>
-
             <h1 className="mt-2 text-xl font-semibold">
-              {taskDetails.task_description}
+              {task?.task?.[0]?.task_description}
             </h1>
           </div>
-
-          {/* Parte derecha */}
           <Button
             className="h-fit self-end"
             color="danger"
@@ -133,50 +142,66 @@ const TaskDetailsPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(handleSaveClick)}>
-          {/* Datos de la tarea */}
           <div className="space-y-6 rounded-xl bg-brand-white p-6">
-            <div>
-              <Input
-                id="title"
-                label="Título"
-                defaultValue={taskDetails.task_description}
-                {...register("title", {
-                  required: "El título es obligatorio.",
-                  validate: (value) =>
-                    value.trim() ? true : "El título no puede estar vacío.",
-                })}
-                errorMessage={errors?.title?.message}
-              />
-            </div>
-
-            <div>
-              <TimeSelect
-                defaultValue={taskDetails.entry_time}
-                {...register("time", {
-                  required: "El horario es obligatorio.",
-                })}
-                errorMessage={errors?.time?.message}
-              />
-            </div>
-
-            <div>
-              <Input
-                id="description"
-                label="Descripción"
-                defaultValue={taskDetails.task_description}
-                {...register("description", {
-                  required: "La descripción es obligatoria.",
-                  validate: (value) =>
-                    value.trim()
-                      ? true
-                      : "La descripción no puede estar vacía.",
-                })}
-                errorMessage={errors?.description?.message}
-              />
-            </div>
+            <Input
+              id="company"
+              label="Empresa"
+              {...register("company")}
+              errorMessage={errors.company?.message}
+            />
+            <Input
+              id="project"
+              label="Proyecto"
+              {...register("project")}
+              errorMessage={errors.project?.message}
+            />
+            <Input
+              id="task_type"
+              label="Tipo de Tarea"
+              {...register("task_type")}
+              errorMessage={errors.task_type?.message}
+            />
+            <Input
+              id="task_description"
+              label="Descripción"
+              {...register("task_description")}
+              errorMessage={errors.task_description?.message}
+            />
+            <Input
+              id="entry_time"
+              label="Hora de Entrada"
+              type="time"
+              {...register("entry_time")}
+              errorMessage={errors.entry_time?.message}
+            />
+            <Input
+              id="exit_time"
+              label="Hora de Salida"
+              type="time"
+              {...register("exit_time")}
+              errorMessage={errors.exit_time?.message}
+            />
+            <Input
+              id="lunch_hours"
+              label="Horas de Almuerzo"
+              type="number"
+              {...register("lunch_hours")}
+              errorMessage={errors.lunch_hours?.message}
+            />
+            <DatePicker value={taskDate} onChange={setTaskDate} />
+            <select
+              {...register("status")}
+              value={task?.task?.[0]?.status?.toString() || "0"}
+              className="form-select"
+            >
+              {Object.entries(statusMap).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            {errors.status && <p className="error">{errors.status.message}</p>}
           </div>
-
-          {/* Botón de guardar */}
           <div className="flex w-full justify-end gap-3">
             <Button
               size="large"
@@ -184,8 +209,7 @@ const TaskDetailsPage = () => {
               disabled={isSubmitting}
               type="submit"
             >
-              {isSubmitting && <LoaderIcon className="animate-spin" />}
-              Guardar
+              {isSubmitting && <LoaderIcon className="animate-spin" />} Guardar
             </Button>
           </div>
         </form>
