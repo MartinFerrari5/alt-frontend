@@ -1,7 +1,7 @@
-// AuthContext.jsx
+// src/components/auth/AuthContext.jsx
 
 import { jwtDecode } from "jwt-decode"
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 
 const AuthContext = createContext()
 
@@ -14,18 +14,34 @@ export const AuthProvider = ({ children }) => {
     return savedTokens ? JSON.parse(savedTokens) : null
   })
 
-  const [userId, setUserId] = useState(() => {
+  const [userId, setUserId] = useState(null)
+  const [fullName, setFullName] = useState(null)
+  const [email, setEmail] = useState(null)
+  const [role, setRole] = useState(null)
+
+  // Decodificar el token solo cuando cambie `authTokens`
+  useEffect(() => {
     if (authTokens) {
       try {
         const decodedToken = jwtDecode(authTokens.accessToken)
-        return decodedToken?.userId || null
+        setUserId(decodedToken?.userId || null)
+        setFullName(decodedToken?.full_name || null)
+        setEmail(decodedToken?.email || null)
+        setRole(decodedToken?.role || null)
       } catch (error) {
         console.error("Error decoding token:", error)
-        return null
+        setUserId(null)
+        setFullName(null)
+        setEmail(null)
+        setRole(null)
       }
+    } else {
+      setUserId(null)
+      setFullName(null)
+      setEmail(null)
+      setRole(null)
     }
-    return null
-  })
+  }, [authTokens])
 
   const isAuthenticated = !!authTokens
 
@@ -34,34 +50,41 @@ export const AuthProvider = ({ children }) => {
       console.error("Token inválido recibido en login:", tokens)
       return
     }
+
     const formattedTokens = {
-      accessToken: tokens.token, // Asegura que se almacena correctamente
+      accessToken: tokens.token,
       refreshToken: tokens.refreshToken,
     }
+
     setAuthTokens(formattedTokens)
     localStorage.setItem("authTokens", JSON.stringify(formattedTokens))
-    try {
-      const decodedToken = jwtDecode(formattedTokens.accessToken)
-      setUserId(decodedToken?.userId || null)
-    } catch (error) {
-      console.error("Error decoding token:", error)
-      setUserId(null)
-    }
   }
 
   const logout = () => {
     setAuthTokens(null)
     setUserId(null)
+    setFullName(null)
+    setEmail(null)
+    setRole(null)
     localStorage.removeItem("authTokens")
   }
 
   return (
     <AuthContext.Provider
-      value={{ authTokens, isAuthenticated, userId, login, logout }}
+      value={{
+        authTokens,
+        isAuthenticated,
+        userId,
+        fullName,
+        email,
+        role,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
   )
 }
 
-export { AuthContext } // 🔥 SOLUCIÓN: Exportar AuthContext
+export { AuthContext }

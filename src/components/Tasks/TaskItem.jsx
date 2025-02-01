@@ -12,9 +12,12 @@ import {
 } from "../../assets/icons"
 import { useDeleteTask } from "../../hooks/data/use-delete-task"
 import { useUpdateTask } from "../../hooks/data/use-update-task"
+import { useAuth } from "../../components/auth/AuthContext" // 👈 Importamos useAuth
 import Button from "../Button"
 
 const TaskItem = ({ task }) => {
+  const { role } = useAuth() // 👈 Obtenemos el rol del usuario
+  console.log("📌 Rol del usuario:", role)
   const { mutate: deleteTask, isPending: deleteTaskIsLoading } = useDeleteTask(
     task.id
   )
@@ -82,17 +85,20 @@ const TaskItem = ({ task }) => {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          color="ghost"
-          onClick={handleDeleteClick}
-          disabled={deleteTaskIsLoading}
-        >
-          {deleteTaskIsLoading ? (
-            <LoaderIcon className="animate-spin text-brand-text-gray" />
-          ) : (
-            <TrashIcon className="text-brand-text-gray" />
-          )}
-        </Button>
+        {/* ✅ Solo muestra el botón de eliminar si el usuario es admin */}
+        {role === "admin" && (
+          <Button
+            color="ghost"
+            onClick={handleDeleteClick}
+            disabled={deleteTaskIsLoading}
+          >
+            {deleteTaskIsLoading ? (
+              <LoaderIcon className="animate-spin text-brand-text-gray" />
+            ) : (
+              <TrashIcon className="text-brand-text-gray" />
+            )}
+          </Button>
+        )}
 
         <Link to={`/task/${task.id}`}>
           <DetailsIcon />
