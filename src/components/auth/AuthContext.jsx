@@ -11,7 +11,6 @@ export const useAuth = () => useContext(AuthContext)
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() => {
     const savedTokens = localStorage.getItem("authTokens")
-    console.log("savedTokens: ", savedTokens)
     return savedTokens ? JSON.parse(savedTokens) : null
   })
 
@@ -19,7 +18,6 @@ export const AuthProvider = ({ children }) => {
     if (authTokens) {
       try {
         const decodedToken = jwtDecode(authTokens.accessToken)
-        console.log("decodedToken: ", decodedToken)
         return decodedToken?.userId || null
       } catch (error) {
         console.error("Error decoding token:", error)
@@ -32,10 +30,18 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!authTokens
 
   const login = (tokens) => {
-    setAuthTokens(tokens)
-    localStorage.setItem("authTokens", JSON.stringify(tokens))
+    if (!tokens?.token) {
+      console.error("Token inválido recibido en login:", tokens)
+      return
+    }
+    const formattedTokens = {
+      accessToken: tokens.token, // Asegura que se almacena correctamente
+      refreshToken: tokens.refreshToken,
+    }
+    setAuthTokens(formattedTokens)
+    localStorage.setItem("authTokens", JSON.stringify(formattedTokens))
     try {
-      const decodedToken = jwtDecode(tokens.accessToken)
+      const decodedToken = jwtDecode(formattedTokens.accessToken)
       setUserId(decodedToken?.userId || null)
     } catch (error) {
       console.error("Error decoding token:", error)

@@ -3,21 +3,17 @@ import { useGetTasks } from "../hooks/data/use-get-tasks"
 import DashboardCard from "./DashboardCard"
 
 const DashboardCards = () => {
-  const { data: tasks } = useGetTasks()
+  const { data: tasks = [] } = useGetTasks() // Evita undefined, usa [] como valor por defecto
 
-  const notStartedTasks = tasks?.filter(
-    (task) => task.status === "not_started"
-  ).length
-  const inProgressTasks = tasks?.filter(
-    (task) => task.status === "in_progress"
-  ).length
-  const completedTasks = tasks?.filter((task) => task.status === "done").length
+  const notStartedTasks = tasks.filter((task) => task.status === 0).length
+  const inProgressTasks = tasks.filter((task) => task.status === 1).length
+  const completedTasks = tasks.filter((task) => task.status === 2).length
 
   return (
     <div className="grid grid-cols-4 gap-9">
       <DashboardCard
         icon={<Tasks2Icon />}
-        mainText={tasks?.length}
+        mainText={tasks.length}
         secondaryText="Tareas totales"
       />
       <DashboardCard

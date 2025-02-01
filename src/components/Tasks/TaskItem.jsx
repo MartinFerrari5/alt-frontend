@@ -1,3 +1,5 @@
+// src/components/Tasks/TaskItem.jsx
+
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
@@ -19,52 +21,35 @@ const TaskItem = ({ task }) => {
   const { mutate } = useUpdateTask(task.id)
 
   const getStatusClasses = () => {
-    if (task.status === "done") {
-      return "bg-brand-custom-green text-brand-custom-green"
-    }
-
-    if (task.status === "in_progress") {
-      return "bg-brand-process text-brand-process"
-    }
-
-    if (task.status === "not_started") {
-      return "bg-brand-dark-blue bg-opacity-5 text-brand-dark-blue"
+    switch (task.status) {
+      case 2:
+        return "bg-brand-custom-green text-brand-custom-green"
+      case 1:
+        return "bg-brand-process text-brand-process"
+      default:
+        return "bg-brand-dark-blue bg-opacity-5 text-brand-dark-blue"
     }
   }
 
   const handleDeleteClick = () => {
     deleteTask(undefined, {
-      onSuccess: () => {
-        toast.success("¡Tarea eliminada exitosamente!")
-      },
-      onError: () => {
-        toast.error("Error al eliminar tarea. Por favor, inténtalo de nuevo.")
-      },
+      onSuccess: () => toast.success("¡Tarea eliminada exitosamente!"),
+      onError: () =>
+        toast.error("Error al eliminar la tarea. Inténtalo de nuevo."),
     })
   }
 
   const getNewStatus = () => {
-    if (task.status === "not_started") {
-      return "in_progress"
-    }
-    if (task.status === "in_progress") {
-      return "done"
-    }
-    return "not_started"
+    return task.status === 0 ? 1 : task.status === 1 ? 2 : 0
   }
 
   const handleCheckboxClick = () => {
     mutate(
+      { status: getNewStatus() },
       {
-        status: getNewStatus(),
-      },
-      {
-        onSuccess: () =>
-          toast.success("¡Estado de la tarea actualizado exitosamente!"),
+        onSuccess: () => toast.success("¡Estado de la tarea actualizado!"),
         onError: () =>
-          toast.error(
-            "Error al actualizar el estado de la tarea. Por favor, inténtalo de nuevo."
-          ),
+          toast.error("Error al actualizar la tarea. Inténtalo de nuevo."),
       }
     )
   }
@@ -79,17 +64,16 @@ const TaskItem = ({ task }) => {
         >
           <input
             type="checkbox"
-            checked={task.status === "done"}
+            checked={task.status === 2}
             className="absolute h-full w-full cursor-pointer opacity-0"
             onChange={handleCheckboxClick}
           />
-          {task.status === "done" && <CheckIcon />}
-          {task.status === "in_progress" && (
+          {task.status === 2 && <CheckIcon />}
+          {task.status === 1 && (
             <LoaderIcon className="animate-spin text-brand-white" />
           )}
         </label>
-
-        {task.title}
+        {task.project} - {task.task_type}
       </div>
 
       <div className="flex items-center gap-2">
@@ -116,13 +100,10 @@ const TaskItem = ({ task }) => {
 TaskItem.propTypes = {
   task: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    time: PropTypes.oneOf(["morning", "afternoon", "evening"]).isRequired,
-    status: PropTypes.oneOf(["not_started", "in_progress", "done"]).isRequired,
+    project: PropTypes.string.isRequired,
+    task_type: PropTypes.string.isRequired,
+    status: PropTypes.number.isRequired,
   }).isRequired,
-  handleCheckboxClick: PropTypes.func.isRequired,
-  handleDeleteClick: PropTypes.func.isRequired,
 }
 
 export default TaskItem

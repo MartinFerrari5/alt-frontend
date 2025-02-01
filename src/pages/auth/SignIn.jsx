@@ -52,7 +52,6 @@ const SignIn = () => {
       }
 
       const { token, refreshToken } = await response.json() // Obtenemos los tokens desde el backend
-      console.log("Tokens:", token, refreshToken)
       login({ token, refreshToken }) // Guardamos los tokens en el contexto para autenticar al usuario
       setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
 
