@@ -7,31 +7,31 @@ import InputErrorMessage from "./InputErrorMessage"
 import InputLabel from "./InputLabel"
 
 const TimeSelect = forwardRef((props, ref) => {
-  return (
-    <div className="flex flex-col gap-1 text-left">
-      <InputLabel htmlFor="time">Horario</InputLabel>
+    return (
+        <div className="flex flex-col gap-1 text-left">
+            <InputLabel htmlFor="time">Horario</InputLabel>
 
-      <select
-        id="time"
-        className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"
-        {...props}
-        ref={ref}
-      >
-        <option value="morning">Mañana</option>
-        <option value="afternoon">Tarde</option>
-        <option value="evening">Noche</option>
-      </select>
+            <select
+                id="time"
+                className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"
+                {...props}
+                ref={ref}
+            >
+                <option value="morning">Mañana</option>
+                <option value="afternoon">Tarde</option>
+                <option value="evening">Noche</option>
+            </select>
 
-      {props.errorMessage && (
-        <InputErrorMessage>{props.errorMessage}</InputErrorMessage>
-      )}
-    </div>
-  )
+            {props.errorMessage && (
+                <InputErrorMessage>{props.errorMessage}</InputErrorMessage>
+            )}
+        </div>
+    )
 })
 
 TimeSelect.displayName = "TimeSelect"
 TimeSelect.propTypes = {
-  errorMessage: PropTypes.string,
+    errorMessage: PropTypes.string,
 }
 
 export default TimeSelect

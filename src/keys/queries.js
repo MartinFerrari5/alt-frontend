@@ -1,4 +1,4 @@
 export const taskQueryKeys = {
-  getAll: () => ["tasks"],
-  getOne: (taskId) => ["task", taskId],
+    getAll: () => ["tasks"],
+    getOne: (taskId) => ["task", taskId],
 }

@@ -17,47 +17,47 @@ import TasksPage from "./pages/Tasks.jsx"
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/register",
-    element: <PageRegister />,
-  },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <DisboardPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/tasks",
-    element: (
-      <ProtectedRoute>
-        <TasksPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/task/:taskId",
-    element: (
-      <ProtectedRoute>
-        <TaskDetailsPage />
-      </ProtectedRoute>
-    ),
-  },
+    {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/register",
+        element: <PageRegister />,
+    },
+    {
+        path: "/",
+        element: (
+            <ProtectedRoute>
+                <DisboardPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/tasks",
+        element: (
+            <ProtectedRoute>
+                <TasksPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/task/:taskId",
+        element: (
+            <ProtectedRoute>
+                <TaskDetailsPage />
+            </ProtectedRoute>
+        ),
+    },
 ])
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <Toaster toastOptions={{ style: { color: "#35383E" } }} />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </AuthProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+                <Toaster toastOptions={{ style: { color: "#35383E" } }} />
+                <RouterProvider router={router} />
+            </QueryClientProvider>
+        </AuthProvider>
+    </React.StrictMode>
 )

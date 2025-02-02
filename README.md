@@ -45,9 +45,9 @@ Ejecuta ESLint para analizar el código y encontrar errores o problemas de estil
 
 - **Opciones utilizadas:**
 
-  - `--ext js,jsx`: Define las extensiones de los archivos a analizar.
-  - `--report-unused-disable-directives`: Muestra advertencias si hay directivas `eslint-disable` innecesarias.
-  - `--max-warnings 0`: No permite advertencias; cualquier advertencia se considera un error.
+    - `--ext js,jsx`: Define las extensiones de los archivos a analizar.
+    - `--report-unused-disable-directives`: Muestra advertencias si hay directivas `eslint-disable` innecesarias.
+    - `--max-warnings 0`: No permite advertencias; cualquier advertencia se considera un error.
 
 - **Uso:** Útil para mantener un código limpio y sin errores de estilo o sintaxis.
 
