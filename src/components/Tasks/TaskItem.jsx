@@ -12,12 +12,11 @@ import {
 } from "../../assets/icons"
 import { useDeleteTask } from "../../hooks/data/use-delete-task"
 import { useUpdateTask } from "../../hooks/data/use-update-task"
-import { useAuth } from "../../components/auth/AuthContext" // 👈 Importamos useAuth
+import { useAuth } from "../../components/auth/AuthContext"
 import Button from "../Button"
 
 const TaskItem = ({ task }) => {
-    const { role } = useAuth() // 👈 Obtenemos el rol del usuario
-    console.log("📌 Rol del usuario:", role)
+    const { role } = useAuth()
     const { mutate: deleteTask, isPending: deleteTaskIsLoading } =
         useDeleteTask(task.id)
     const { mutate: updateTask, isPending: updateTaskIsLoading } =
@@ -64,10 +63,8 @@ const TaskItem = ({ task }) => {
     }
 
     return (
-        <div
-            className={`flex items-center justify-between gap-2 rounded-lg bg-opacity-10 px-4 py-3 text-sm transition ${getStatusClasses()}`}
-        >
-            <div className="flex items-center gap-2">
+        <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+            <td className="px-6 py-4">
                 <label
                     className={`relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg ${getStatusClasses()}`}
                 >
@@ -83,11 +80,16 @@ const TaskItem = ({ task }) => {
                         <LoaderIcon className="animate-spin text-brand-white" />
                     )}
                 </label>
-                {task.project} - {task.task_type}
-            </div>
-
-            <div className="flex items-center gap-2">
-                {/* ✅ Solo muestra el botón de eliminar si el usuario es admin */}
+            </td>
+            <td className="px-6 py-4">{task.company}</td>
+            <td className="px-6 py-4">{task.project}</td>
+            <td className="px-6 py-4">
+                {new Date(task.task_date).toLocaleDateString()}
+            </td>
+            <td className="px-6 py-4">
+                {task.entry_time} - {task.exit_time}
+            </td>
+            <td className="flex justify-end gap-2 px-6 py-4 text-right">
                 {role === "admin" && (
                     <Button
                         color="ghost"
@@ -101,12 +103,11 @@ const TaskItem = ({ task }) => {
                         )}
                     </Button>
                 )}
-
                 <Link to={`/task/${task.id}`}>
                     <DetailsIcon />
                 </Link>
-            </div>
-        </div>
+            </td>
+        </tr>
     )
 }
 
@@ -116,6 +117,10 @@ TaskItem.propTypes = {
         project: PropTypes.string.isRequired,
         task_type: PropTypes.string.isRequired,
         status: PropTypes.number.isRequired,
+        company: PropTypes.string.isRequired,
+        task_date: PropTypes.string.isRequired,
+        entry_time: PropTypes.string.isRequired,
+        exit_time: PropTypes.string.isRequired,
     }).isRequired,
 }
 

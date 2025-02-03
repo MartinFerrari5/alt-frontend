@@ -13,6 +13,7 @@ import Login from "./pages/auth/SignIn.jsx"
 import DisboardPage from "./pages/Disboard.jsx"
 import TaskDetailsPage from "./pages/TaskDetails.jsx"
 import TasksPage from "./pages/Tasks.jsx"
+import UsersPage from "./pages/Users.jsx"
 
 const queryClient = new QueryClient()
 
@@ -46,6 +47,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute>
                 <TaskDetailsPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/users",
+        element: (
+            <ProtectedRoute>
+                <UsersPage />
             </ProtectedRoute>
         ),
     },

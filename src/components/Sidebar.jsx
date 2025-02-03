@@ -44,6 +44,10 @@ const Sidebar = () => {
                             <TasksIcon />
                             Mis Tareas
                         </SidebarButton>
+                        <SidebarButton to="/users">
+                            <TasksIcon />
+                            Users
+                        </SidebarButton>
                     </div>
                 </div>
 

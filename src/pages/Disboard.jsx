@@ -22,16 +22,38 @@ const DisboardPage = () => {
                         <span className="text-sm text-brand-dark-gray">
                             Resumen de las tareas disponibles
                         </span>
-                        <div className="space-y-3">
-                            {validTasks.length === 0 ? (
-                                <p className="text-sm text-brand-text-gray">
-                                    No hay tareas disponibles.
-                                </p>
-                            ) : (
-                                validTasks.map((task) => (
-                                    <TaskItem key={task.id} task={task} />
-                                ))
-                            )}
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th className="px-6 py-3">Status</th>
+                                        <th className="px-6 py-3">Empresa</th>
+                                        <th className="px-6 py-3">Proyecto</th>
+                                        <th className="px-6 py-3">Fecha</th>
+                                        <th className="px-6 py-3">Hora</th>
+                                        <th className="px-6 py-3">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {validTasks.length === 0 ? (
+                                        <tr>
+                                            <td
+                                                colSpan="6"
+                                                className="px-6 py-4 text-center text-sm text-brand-text-gray"
+                                            >
+                                                No hay tareas disponibles.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        validTasks.map((task) => (
+                                            <TaskItem
+                                                key={task.id}
+                                                task={task}
+                                            />
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
