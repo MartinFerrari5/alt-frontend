@@ -16,9 +16,9 @@ const Tasks = () => {
                         No hay tareas disponibles.
                     </p>
                 ) : (
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <div className="relative max-h-[400px] overflow-y-auto shadow-md sm:rounded-lg">
+                        <table className="w-full text-left text-sm text-gray-500 rtl:text-right">
+                            <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" className="px-6 py-3">
                                         Status

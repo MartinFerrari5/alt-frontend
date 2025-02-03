@@ -22,10 +22,10 @@ const DisboardPage = () => {
                         <span className="text-sm text-brand-dark-gray">
                             Resumen de las tareas disponibles
                         </span>
-                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <div className="relative max-h-[400px] overflow-y-auto shadow-md sm:rounded-lg">
                             <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
+                                <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr className="">
                                         <th className="px-6 py-3">Status</th>
                                         <th className="px-6 py-3">Empresa</th>
                                         <th className="px-6 py-3">Proyecto</th>

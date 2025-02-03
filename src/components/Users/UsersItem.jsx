@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { TrashIcon, DetailsIcon, LoaderIcon } from "../../assets/icons"
 import { useDeleteUser } from "../../hooks/data/use-delete-user"
-// import { useUpdateUser } from "../../hooks/data/use-update-user";
 import { useAuth } from "../../components/auth/AuthContext"
 import Button from "../Button"
 
@@ -12,7 +11,6 @@ const UsersItem = ({ user }) => {
     const { role } = useAuth()
     const { mutate: deleteUser, isPending: deleteUserIsLoading } =
         useDeleteUser(user.id)
-    // const { mutate: updateUser, isPending: updateUserIsLoading } = useUpdateUser(user.id);
 
     const handleDeleteClick = () => {
         deleteUser(undefined, {
@@ -25,11 +23,11 @@ const UsersItem = ({ user }) => {
     }
 
     return (
-        <div className="flex items-center justify-between gap-2 rounded-lg bg-opacity-10 px-4 py-3 text-sm">
-            <div>
-                {user.full_name} - {user.email} - {user.role}
-            </div>
-            <div className="flex items-center gap-2">
+        <tr className="border-b bg-white">
+            <td className="px-6 py-4">{user.full_name}</td>
+            <td className="px-6 py-4">{user.email}</td>
+            <td className="px-6 py-4">{user.role}</td>
+            <td className="flex items-center gap-2 px-6 py-4">
                 {role === "admin" && (
                     <Button
                         color="ghost"
@@ -46,8 +44,8 @@ const UsersItem = ({ user }) => {
                 <Link to={`/user/${user.id}`}>
                     <DetailsIcon />
                 </Link>
-            </div>
-        </div>
+            </td>
+        </tr>
     )
 }
 
