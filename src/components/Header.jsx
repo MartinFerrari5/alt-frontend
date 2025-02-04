@@ -1,13 +1,18 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
+import { useLocation } from "react-router-dom"
 
 import Button from "./Button"
 import AddTaskDialog from "./Tasks/AddTaskDialog"
+import AddEmailDialog from "./email/AddEmailDialog"
 
 import { AddIcon, TrashIcon } from "../assets/icons"
 
 function Header({ subtitle, title }) {
-    const [addTaskDialogIsOpen, setAddTaskDialogIsOpen] = useState(false)
+    const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
+    const location = useLocation()
+    const isUsersPage = location.pathname === "/users"
+
     return (
         <div className="flex w-full justify-between">
             <div>
@@ -23,22 +28,30 @@ function Header({ subtitle, title }) {
                     <TrashIcon />
                 </Button>
 
-                <Button onClick={() => setAddTaskDialogIsOpen(true)}>
+                <Button onClick={() => setAddDialogIsOpen(true)}>
                     <AddIcon />
-                    Nueva tarea
+                    {isUsersPage ? "Agregar correo" : "Nueva tarea"}
                 </Button>
 
-                <AddTaskDialog
-                    isOpen={addTaskDialogIsOpen}
-                    handleClose={() => setAddTaskDialogIsOpen(false)}
-                />
+                {isUsersPage ? (
+                    <AddEmailDialog
+                        isOpen={addDialogIsOpen}
+                        handleClose={() => setAddDialogIsOpen(false)}
+                    />
+                ) : (
+                    <AddTaskDialog
+                        isOpen={addDialogIsOpen}
+                        handleClose={() => setAddDialogIsOpen(false)}
+                    />
+                )}
             </div>
         </div>
     )
 }
 
 Header.propTypes = {
-    children: PropTypes.node.isRequired,
+    subtitle: PropTypes.string,
+    title: PropTypes.string,
 }
 
 export default Header
