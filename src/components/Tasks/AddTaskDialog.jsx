@@ -6,52 +6,21 @@ import { useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { CSSTransition } from "react-transition-group"
 import { toast } from "sonner"
 
 import { LoaderIcon } from "../../assets/icons"
-// import { useAuth } from "../../components/auth/AuthContext"
 import { useAddTask } from "../../hooks/data/use-add-task"
 import Button from "../Button"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
+import { companies, statusMap } from "../../util/taskConstants"
+import { schema } from "../../util/validationSchema"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
-    // const { userId } = useAuth()
     const { mutate: addTask } = useAddTask()
     const nodeRef = useRef()
     const [taskDate, setTaskDate] = useState(new Date())
-
-    const companies = ["Tech Solutions", "InnovateX", "CloudTech"]
-    const statusMap = {
-        "Not Started": "0",
-        "In Progress": "1",
-        Completed: "2",
-    }
-
-    // Esquema de validación con Zod
-    const schema = z.object({
-        company: z.string().nonempty("Seleccioná una empresa."),
-        project: z.string().nonempty("El nombre del proyecto es obligatorio."),
-        task_type: z.string().nonempty("El tipo de tarea es obligatorio."),
-        task_description: z
-            .string()
-            .min(10, "La descripción debe tener al menos 10 caracteres."),
-        entry_time: z
-            .string()
-            .regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)."),
-        exit_time: z
-            .string()
-            .regex(/^\d{2}:\d{2}$/, "Formato de hora inválido (HH:MM)."),
-        lunch_hours: z
-            .string()
-            .regex(
-                /^[0-3](\.5)?$/,
-                "Las horas de almuerzo deben ser entre 0 y 3 horas."
-            ),
-        status: z.string().nonempty("Seleccioná un estado."),
-    })
 
     const {
         register,
@@ -108,118 +77,132 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             nodeRef={nodeRef}
             in={isOpen}
             timeout={500}
-            classNames="add-task-dialog"
+            classNames="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
             unmountOnExit
         >
-            <div>
+            <div className="relative max-h-full w-full max-w-md p-4">
                 {createPortal(
                     <div
                         ref={nodeRef}
                         className="fixed inset-0 flex items-center justify-center backdrop-blur"
                     >
-                        <div className="rounded-xl bg-white p-5 text-center shadow">
-                            <h2 className="text-xl font-semibold text-brand-dark-blue">
-                                Nueva Tarea
-                            </h2>
-                            <p className="mb-4 mt-1 text-sm text-brand-text-gray">
-                                Ingresá la información a continuación
-                            </p>
+                        <div className="relative rounded-xl bg-white shadow-sm">
+                            <div className="flex items-center justify-center rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600">
+                                <h3 className="text-gray-900e text-lg font-semibold">
+                                    Nueva Tarea
+                                </h3>
+                                {/* <p className="p-4 md:p-5 text-sm text-brand-text-gray">
+                                  Ingresá la información a continuación
+                              </p> */}
+                            </div>
                             <form
                                 onSubmit={handleSubmit(handleSaveClick)}
-                                className="flex w-[336px] flex-col space-y-4"
+                                className="p-4 md:p-5"
                             >
-                                <label>Empresa</label>
-                                <select
-                                    {...register("company")}
-                                    className="form-select"
-                                >
-                                    {companies.map((company) => (
-                                        <option key={company} value={company}>
-                                            {company}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.company && (
-                                    <p className="error">
-                                        {errors.company.message}
-                                    </p>
-                                )}
-                                <Input
-                                    id="project"
-                                    label="Proyecto"
-                                    {...register("project")}
-                                    error={errors.project}
-                                />
-                                <Input
-                                    id="task_type"
-                                    label="Tipo de Tarea"
-                                    {...register("task_type")}
-                                    error={errors.task_type}
-                                />
-                                <Input
-                                    id="task_description"
-                                    label="Descripción"
-                                    {...register("task_description")}
-                                    error={errors.task_description}
-                                />
-                                <DatePicker
-                                    value={taskDate}
-                                    onChange={setTaskDate}
-                                />
-                                <Input
-                                    id="entry_time"
-                                    label="Hora de Entrada"
-                                    type="time"
-                                    {...register("entry_time")}
-                                    error={errors.entry_time}
-                                />
-                                <Input
-                                    id="exit_time"
-                                    label="Hora de Salida"
-                                    type="time"
-                                    {...register("exit_time")}
-                                    error={errors.exit_time}
-                                />
-                                <Input
-                                    id="lunch_hours"
-                                    label="Horas de Almuerzo"
-                                    type="number"
-                                    {...register("lunch_hours")}
-                                    error={errors.lunch_hours}
-                                />
-                                <label>Estado</label>
-                                <select
-                                    {...register("status")}
-                                    className="form-select"
-                                >
-                                    {Object.keys(statusMap).map((status) => (
-                                        <option key={status} value={status}>
-                                            {status}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.status && (
-                                    <p className="error">
-                                        {errors.status.message}
-                                    </p>
-                                )}
-                                <div className="flex gap-3">
-                                    <Button
-                                        type="button"
-                                        color="secondary"
-                                        onClick={handleClose}
+                                <div className="mb-4 grid grid-cols-2 gap-4">
+                                    <label>Empresa</label>
+                                    <select
+                                        {...register("company")}
+                                        className="form-select"
                                     >
-                                        Cancelar
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        disabled={isSubmitting}
+                                        {companies.map((company) => (
+                                            <option
+                                                key={company}
+                                                value={company}
+                                            >
+                                                {company}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors.company && (
+                                        <p className="error">
+                                            {errors.company.message}
+                                        </p>
+                                    )}
+                                    <Input
+                                        id="project"
+                                        label="Proyecto"
+                                        {...register("project")}
+                                        error={errors.project}
+                                    />
+                                    <Input
+                                        id="task_type"
+                                        label="Tipo de Tarea"
+                                        {...register("task_type")}
+                                        error={errors.task_type}
+                                    />
+                                    <Input
+                                        id="task_description"
+                                        label="Descripción"
+                                        {...register("task_description")}
+                                        error={errors.task_description}
+                                    />
+                                    <DatePicker
+                                        value={taskDate}
+                                        onChange={setTaskDate}
+                                    />
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <Input
+                                            id="entry_time"
+                                            label="Hora de Entrada"
+                                            type="time"
+                                            {...register("entry_time")}
+                                            error={errors.entry_time}
+                                        />
+                                        <Input
+                                            id="exit_time"
+                                            label="Hora de Salida"
+                                            type="time"
+                                            {...register("exit_time")}
+                                            error={errors.exit_time}
+                                        />
+                                    </div>
+                                    <Input
+                                        id="lunch_hours"
+                                        label="Horas de Almuerzo"
+                                        type="number"
+                                        {...register("lunch_hours")}
+                                        error={errors.lunch_hours}
+                                    />
+                                    <label>Estado</label>
+                                    <select
+                                        {...register("status")}
+                                        className="form-select"
                                     >
-                                        {isSubmitting && (
-                                            <LoaderIcon className="animate-spin" />
-                                        )}{" "}
-                                        Guardar
-                                    </Button>
+                                        {Object.keys(statusMap).map(
+                                            (status) => (
+                                                <option
+                                                    key={status}
+                                                    value={status}
+                                                >
+                                                    {status}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                    {errors.status && (
+                                        <p className="error">
+                                            {errors.status.message}
+                                        </p>
+                                    )}
+                                    <div className="flex gap-3">
+                                        <Button
+                                            type="button"
+                                            color="secondary"
+                                            onClick={handleClose}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting && (
+                                                <LoaderIcon className="animate-spin" />
+                                            )}{" "}
+                                            Guardar
+                                        </Button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

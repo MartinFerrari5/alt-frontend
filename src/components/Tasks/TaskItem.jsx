@@ -64,7 +64,7 @@ const TaskItem = ({ task }) => {
 
     return (
         <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
-            <td className="px-6 py-4">
+            <td className="whitespace-nowrap px-6 py-4 font-medium">
                 <label
                     className={`relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg ${getStatusClasses()}`}
                 >

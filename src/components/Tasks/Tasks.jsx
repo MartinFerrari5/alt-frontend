@@ -16,40 +16,65 @@ const Tasks = () => {
                         No hay tareas disponibles.
                     </p>
                 ) : (
-                    // text-brand-custom-green
-                    <div className="relative max-h-[700px] overflow-y-auto shadow-md sm:rounded-lg">
-                        <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                            <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-600 dark:bg-gray-600 dark:text-gray-400">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3">
-                                        Status
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Empresa
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Proyecto
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Fecha
-                                    </th>
-                                    <th scope="col" className="px-6 py-3">
-                                        Hora
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-right"
-                                    >
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tasks.map((task) => (
-                                    <TaskItem key={task.id} task={task} />
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="flex flex-col">
+                        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                                <div className="max-h-[500px] overflow-y-auto rounded-lg border">
+                                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                        <thead className="sticky top-0 z-10 bg-white text-xs uppercase text-gray-600 shadow-md dark:bg-gray-600 dark:text-gray-400">
+                                            <tr>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3"
+                                                >
+                                                    Status
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3"
+                                                >
+                                                    Empresa
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3"
+                                                >
+                                                    Proyecto
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3"
+                                                >
+                                                    Fecha
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3"
+                                                >
+                                                    Hora
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-3 text-right"
+                                                >
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        {/* Cabecera fija */}
+                                        {/* Cuerpo de la tabla con scroll */}
+                                        <tbody>
+                                            {tasks.map((task) => (
+                                                <TaskItem
+                                                    key={task.id}
+                                                    task={task}
+                                                />
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

@@ -8,10 +8,10 @@ import InputLabel from "./InputLabel"
 
 const Input = forwardRef(({ label, errorMessage, ...rest }, ref) => {
     return (
-        <div className="flex flex-col space-y-1 text-left">
+        <div className="col-span-2">
             <InputLabel htmlFor={rest.id}>{label}</InputLabel>
             <input
-                className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"
+                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
                 ref={ref}
                 {...rest}
             />
@@ -31,3 +31,5 @@ Input.propTypes = {
 }
 
 export default Input
+
+// className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"
