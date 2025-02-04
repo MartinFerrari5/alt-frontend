@@ -1,4 +1,4 @@
-// src/components/auth/AuthContext.jsx
+// /src/components/auth/AuthContext.jsx
 
 import { jwtDecode } from "jwt-decode"
 import { createContext, useContext, useState, useEffect } from "react"
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     const [email, setEmail] = useState(null)
     const [role, setRole] = useState(null)
 
-    // Decodificar el token solo cuando cambie `authTokens`
     useEffect(() => {
         if (authTokens) {
             try {

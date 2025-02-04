@@ -1,3 +1,5 @@
+// /src/main.jsx
+
 import "./index.css"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -53,7 +55,7 @@ const router = createBrowserRouter([
     {
         path: "/users",
         element: (
-            <ProtectedRoute>
+            <ProtectedRoute adminOnly={true}>
                 <UsersPage />
             </ProtectedRoute>
         ),
