@@ -1,5 +1,7 @@
-import { useState } from "react"
+// /src/components/Sidebar.jsx
 
+import { useState } from "react"
+import { useAuth } from "./auth/AuthContext" // Importamos el hook de autenticación
 import { HomeIcon, TasksIcon } from "../assets/icons"
 import LogoutButton from "./auth/LogoutButton"
 import HamburgerButton from "./HamburgerButton"
@@ -7,6 +9,7 @@ import SidebarButton from "./SidebarButton"
 
 const Sidebar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const { role } = useAuth() // Obtenemos el rol del usuario
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen)
@@ -44,10 +47,14 @@ const Sidebar = () => {
                             <TasksIcon />
                             Mis Tareas
                         </SidebarButton>
-                        <SidebarButton to="/users">
-                            <TasksIcon />
-                            Users
-                        </SidebarButton>
+
+                        {/* Solo mostrar si el usuario es admin */}
+                        {role === "admin" && (
+                            <SidebarButton to="/users">
+                                <TasksIcon />
+                                Users
+                            </SidebarButton>
+                        )}
                     </div>
                 </div>
 
