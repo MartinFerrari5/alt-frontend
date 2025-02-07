@@ -4,7 +4,7 @@ import DashboardCards from "../components/DashboardCards"
 import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
 import TaskItem from "../components/Tasks/TaskItem"
-import { useGetTasks } from "../hooks/data/use-get-tasks"
+import { useGetTasks } from "../hooks/data/task/use-get-tasks"
 
 const DisboardPage = () => {
     const { data: tasks = [] } = useGetTasks()

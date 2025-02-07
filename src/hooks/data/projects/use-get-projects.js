@@ -1,7 +1,7 @@
 // src/hooks/data/use-get-companies.js
 
 import { useQuery } from "@tanstack/react-query"
-import { api } from "../../lib/axios"
+import { api } from "../../../lib/axios"
 
 export const useGetProjects = () => {
     return useQuery({

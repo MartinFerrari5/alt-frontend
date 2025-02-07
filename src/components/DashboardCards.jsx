@@ -1,5 +1,5 @@
 import { LoaderIcon, Tasks2Icon, TasksIcon } from "../assets/icons"
-import { useGetTasks } from "../hooks/data/use-get-tasks"
+import { useGetTasks } from "../hooks/data/task/use-get-tasks"
 import DashboardCard from "./DashboardCard"
 
 const DashboardCards = () => {

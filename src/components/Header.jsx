@@ -4,9 +4,10 @@ import { useLocation } from "react-router-dom"
 
 import Button from "./Button"
 import AddTaskDialog from "./Tasks/AddTaskDialog"
-import AddEmailDialog from "./email/AddEmailDialog"
+// import AddEmailDialog from "./email/AddEmailDialog"
 
 import { AddIcon, TrashIcon } from "../assets/icons"
+import AddOptionDialog from "./email/AddOptionDialog"
 
 function Header({ subtitle, title }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
@@ -34,7 +35,7 @@ function Header({ subtitle, title }) {
                 </Button>
 
                 {isUsersPage ? (
-                    <AddEmailDialog
+                    <AddOptionDialog
                         isOpen={addDialogIsOpen}
                         handleClose={() => setAddDialogIsOpen(false)}
                     />

@@ -2,7 +2,7 @@
 
 import { useGetHourTypes } from "../../../hooks/data/use-get-typeHour"
 import { useGetCompanies } from "../../../hooks/data/use-get-companies"
-import { useGetProjects } from "../../../hooks/data/use-get-projects"
+import { useGetProjects } from "../../../hooks/data/projects/use-get-projects"
 import Header from "../../Header"
 import TableItem from "./TableItem"
 import { useGetEmail } from "../../../hooks/data/email/Use-get-email"

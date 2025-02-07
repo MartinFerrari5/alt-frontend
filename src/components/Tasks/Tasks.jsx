@@ -1,6 +1,6 @@
 // src/components/Tasks/Tasks.jsx
 
-import { useGetTasks } from "../../hooks/data/use-get-tasks"
+import { useGetTasks } from "../../hooks/data/task/use-get-tasks"
 import Header from "../Header"
 import TaskItem from "./TaskItem"
 

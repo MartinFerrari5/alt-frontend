@@ -10,8 +10,8 @@ import {
     LoaderIcon,
     TrashIcon,
 } from "../../assets/icons"
-import { useDeleteTask } from "../../hooks/data/use-delete-task"
-import { useUpdateTask } from "../../hooks/data/use-update-task"
+import { useDeleteTask } from "../../hooks/data/task/use-delete-task"
+import { useUpdateTask } from "../../hooks/data/task/use-update-task"
 import { useAuth } from "../../components/auth/AuthContext"
 import Button from "../Button"
 

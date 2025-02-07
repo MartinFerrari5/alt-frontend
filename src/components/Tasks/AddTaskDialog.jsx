@@ -10,7 +10,7 @@ import { CSSTransition } from "react-transition-group"
 import Swal from "sweetalert2"
 
 import { LoaderIcon } from "../../assets/icons"
-import { useAddTask } from "../../hooks/data/use-add-task"
+import { useAddTask } from "../../hooks/data/task/use-add-task"
 import { useGetCompanies } from "../../hooks/data/use-get-companies"
 import Button from "../Button"
 import Input from "../Input"

@@ -13,9 +13,9 @@ import Button from "../components/Button"
 import Input from "../components/Input"
 import Sidebar from "../components/Sidebar"
 import DatePicker from "../components/Tasks/DatePicker"
-import { useDeleteTask } from "../hooks/data/use-delete-task"
-import { useGetTask } from "../hooks/data/use-get-task"
-import { useUpdateTask } from "../hooks/data/use-update-task"
+import { useDeleteTask } from "../hooks/data/task/use-delete-task"
+import { useGetTask } from "../hooks/data/task/use-get-task"
+import { useUpdateTask } from "../hooks/data/task/use-update-task"
 import { useState } from "react"
 
 const statusMap = {

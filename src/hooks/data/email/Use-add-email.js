@@ -1,9 +1,9 @@
 // // src/hooks/data/use-add-email.js
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { emailMutationKeys } from "../../../keys/mutations"
-import { emailQueryKeys } from "../../../keys/queries"
-import { api } from "../../../lib/axios"
+import { emailMutationKeys } from "../../keys/mutations"
+import { emailQueryKeys } from "../../keys/queries"
+import { api } from "../../lib/axios"
 
 export const useAddEmail = () => {
     const queryClient = useQueryClient()
