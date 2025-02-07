@@ -1,8 +1,8 @@
 // src/hooks/data/use-get-tasks.js
 
 import { useQuery } from "@tanstack/react-query"
-import { taskQueryKeys } from "../../keys/queries"
-import { api } from "../../lib/axios"
+import { taskQueryKeys } from "../../../keys/queries"
+import { api } from "../../../lib/axios"
 
 export const useGetTasks = () => {
     return useQuery({

@@ -1,8 +1,8 @@
 // src/hooks/data/use-get-tasks.js
 
 import { useQuery } from "@tanstack/react-query"
-import { taskQueryKeys } from "../../keys/queries"
-import { api } from "../../lib/axios"
+import { taskQueryKeys } from "../../../keys/queries"
+import { api } from "../../../lib/axios"
 
 // Función para decodificar el token JWT y extraer el payload
 const decodeToken = (token) => {

@@ -1,8 +1,8 @@
 // // src/hooks/data/use-delete-task.js
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { taskMutationKeys } from "../../keys/mutations"
-import { taskQueryKeys } from "../../keys/queries"
-import { api } from "../../lib/axios"
+import { taskMutationKeys } from "../../../keys/mutations"
+import { taskQueryKeys } from "../../../keys/queries"
+import { api } from "../../../lib/axios"
 
 export const useDeleteTask = (taskId) => {
     const queryClient = useQueryClient()
