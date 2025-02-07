@@ -1,6 +1,6 @@
 // /src/components/Users/Users.jsx
-import { useGetUsers } from "../../hooks/data/use-get-users"
-import Header from "../Header"
+import { useGetUsers } from "../../../hooks/data/use-get-users"
+import Header from "../../Header"
 import UsersItem from "./UsersItem"
 
 const Users = () => {

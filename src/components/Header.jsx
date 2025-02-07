@@ -11,7 +11,7 @@ import { AddIcon, TrashIcon } from "../assets/icons"
 function Header({ subtitle, title }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
-    const isUsersPage = location.pathname === "/users"
+    const isUsersPage = location.pathname === "/admin/management"
 
     return (
         <div className="flex w-full justify-between">

@@ -1,4 +1,4 @@
-// // AddTaskDialog.jsx
+// /src/components/Tasks/AddTaskDialog.jsx
 
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
@@ -7,18 +7,23 @@ import { createPortal } from "react-dom"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CSSTransition } from "react-transition-group"
-import { toast } from "sonner"
+import Swal from "sweetalert2"
 
 import { LoaderIcon } from "../../assets/icons"
 import { useAddTask } from "../../hooks/data/use-add-task"
+import { useGetCompanies } from "../../hooks/data/use-get-companies"
 import Button from "../Button"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
-import { companies, statusMap } from "../../util/taskConstants"
+import { statusMap } from "../../util/taskConstants"
 import { schema } from "../../util/validationSchema"
+import { useGetHourTypes } from "../../hooks/data/use-get-typeHour"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
     const { mutate: addTask } = useAddTask()
+    const { data: companies = [], isLoading } = useGetCompanies()
+    const { data: hourTypes = [], isLoading: isLoadingHourTypes } =
+        useGetHourTypes()
     const nodeRef = useRef()
     const [taskDate, setTaskDate] = useState(new Date())
 
@@ -26,17 +31,17 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         register,
         formState: { errors, isSubmitting },
         handleSubmit,
-        reset,
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            company: companies[0],
+            company: "",
             project: "Website Redesign",
             task_type: "Development",
             task_description: "",
             entry_time: "09:00",
             exit_time: "18:00",
             lunch_hours: "1",
+            hour_type: hourTypes[0],
             status: "Not Started",
         },
     })
@@ -50,24 +55,34 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             taskDate instanceof Date
                 ? formatDateForBackend(taskDate)
                 : formatDateForBackend(new Date())
+
         const taskPayload = {
             ...data,
             task_description: data.task_description.trim(),
             lunch_hours: data.lunch_hours.toString(),
             status: statusMap[data.status],
             task_date: formattedDate,
+            hour_type: data.hour_type,
         }
+
         addTask(taskPayload, {
             onSuccess: () => {
-                handleClose()
-                reset()
-                toast.success("¡Tarea agregada con éxito!")
+                Swal.fire({
+                    title: "¡Tarea creada con éxito!",
+                    text: "Puedes seguir agregando más tareas.",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                })
             },
             onError: (error) => {
-                console.error("Error en la creación de tarea:", error)
-                toast.error(
-                    `Error: ${error.response?.data?.message || "No se pudo agregar la tarea"}`
-                )
+                Swal.fire({
+                    title: "Error",
+                    text:
+                        error.response?.data?.message ||
+                        "No se pudo agregar la tarea",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                })
             },
         })
     }
@@ -88,12 +103,9 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                     >
                         <div className="relative rounded-xl bg-white shadow-sm">
                             <div className="flex items-center justify-center rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600">
-                                <h3 className="text-gray-900e text-lg font-semibold">
+                                <h3 className="text-lg font-semibold text-gray-900">
                                     Nueva Tarea
                                 </h3>
-                                {/* <p className="p-4 md:p-5 text-sm text-brand-text-gray">
-                                  Ingresá la información a continuación
-                              </p> */}
                             </div>
                             <form
                                 onSubmit={handleSubmit(handleSaveClick)}
@@ -103,17 +115,22 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                     <label>Empresa</label>
                                     <select
                                         {...register("company")}
-                                        className="form-select"
+                                        className="form-select focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
                                     >
-                                        {companies.map((company) => (
-                                            <option
-                                                key={company}
-                                                value={company}
-                                            >
-                                                {company}
-                                            </option>
-                                        ))}
+                                        {isLoading ? (
+                                            <option>Cargando...</option>
+                                        ) : (
+                                            companies.map((company, index) => (
+                                                <option
+                                                    key={index}
+                                                    value={company}
+                                                >
+                                                    {company}
+                                                </option>
+                                            ))
+                                        )}
                                     </select>
+
                                     {errors.company && (
                                         <p className="error">
                                             {errors.company.message}
@@ -141,22 +158,20 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                         value={taskDate}
                                         onChange={setTaskDate}
                                     />
-                                    <div className="col-span-2 sm:col-span-1">
-                                        <Input
-                                            id="entry_time"
-                                            label="Hora de Entrada"
-                                            type="time"
-                                            {...register("entry_time")}
-                                            error={errors.entry_time}
-                                        />
-                                        <Input
-                                            id="exit_time"
-                                            label="Hora de Salida"
-                                            type="time"
-                                            {...register("exit_time")}
-                                            error={errors.exit_time}
-                                        />
-                                    </div>
+                                    <Input
+                                        id="entry_time"
+                                        label="Hora de Entrada"
+                                        type="time"
+                                        {...register("entry_time")}
+                                        error={errors.entry_time}
+                                    />
+                                    <Input
+                                        id="exit_time"
+                                        label="Hora de Salida"
+                                        type="time"
+                                        {...register("exit_time")}
+                                        error={errors.exit_time}
+                                    />
                                     <Input
                                         id="lunch_hours"
                                         label="Horas de Almuerzo"
@@ -164,6 +179,25 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                         {...register("lunch_hours")}
                                         error={errors.lunch_hours}
                                     />
+                                    <label>Tipo de Hora</label>
+                                    <select
+                                        {...register("hour_type")}
+                                        className="form-select"
+                                    >
+                                        {isLoadingHourTypes ? (
+                                            <option>Cargando...</option>
+                                        ) : (
+                                            hourTypes.map((typeHora, index) => (
+                                                <option
+                                                    key={index}
+                                                    value={typeHora}
+                                                >
+                                                    {typeHora}
+                                                </option>
+                                            ))
+                                        )}
+                                    </select>
+
                                     <label>Estado</label>
                                     <select
                                         {...register("status")}
@@ -180,11 +214,6 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             )
                                         )}
                                     </select>
-                                    {errors.status && (
-                                        <p className="error">
-                                            {errors.status.message}
-                                        </p>
-                                    )}
                                     <div className="flex gap-3">
                                         <Button
                                             type="button"
@@ -200,7 +229,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             {isSubmitting && (
                                                 <LoaderIcon className="animate-spin" />
                                             )}{" "}
-                                            Guardar
+                                            Guardar y Continuar
                                         </Button>
                                     </div>
                                 </div>

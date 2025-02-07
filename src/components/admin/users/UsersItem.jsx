@@ -2,10 +2,10 @@
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
-import { TrashIcon, DetailsIcon, LoaderIcon } from "../../assets/icons"
-import { useDeleteUser } from "../../hooks/data/use-delete-user"
-import { useAuth } from "../../components/auth/AuthContext"
-import Button from "../Button"
+import { TrashIcon, DetailsIcon, LoaderIcon } from "../../../assets/icons"
+import { useDeleteUser } from "../../../hooks/data/use-delete-user"
+import { useAuth } from "../../auth/AuthContext"
+import Button from "../../Button"
 
 const UsersItem = ({ user }) => {
     const { role } = useAuth()

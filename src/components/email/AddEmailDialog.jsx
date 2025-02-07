@@ -9,7 +9,7 @@ import { CSSTransition } from "react-transition-group"
 import { toast } from "sonner"
 
 import { LoaderIcon } from "../../assets/icons"
-import { useAddEmail } from "../../hooks/data/Use-add-email"
+import { useAddEmail } from "../../hooks/data/email/Use-add-email"
 import Button from "../Button"
 import Input from "../Input"
 

@@ -21,4 +21,5 @@ export const schema = z.object({
             "Las horas de almuerzo deben ser entre 0 y 3 horas."
         ),
     status: z.string().nonempty("Seleccioná un estado."),
+    hour_type: z.string().nonempty("Seleccioná un tipo de hora."),
 })
