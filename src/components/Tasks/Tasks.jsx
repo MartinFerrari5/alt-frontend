@@ -55,7 +55,13 @@ const Tasks = () => {
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-right"
+                                                    className="px-6 py-4 text-right"
+                                                >
+                                                    tipo de hora
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="px-6 py-4 text-right"
                                                 >
                                                     Acciones
                                                 </th>

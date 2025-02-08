@@ -73,7 +73,7 @@ const TaskItem = ({ task }) => {
     return (
         <>
             <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-4 font-medium">
+                <td className="whitespace-nowrap px-6 py-5 font-medium">
                     <label
                         className={`relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg ${getStatusClasses()}`}
                     >
@@ -90,15 +90,16 @@ const TaskItem = ({ task }) => {
                         )}
                     </label>
                 </td>
-                <td className="px-6 py-4">{task.company}</td>
-                <td className="px-6 py-4">{task.project}</td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-5">{task.company}</td>
+                <td className="px-6 py-5">{task.project}</td>
+                <td className="px-6 py-5">
                     {new Date(task.task_date).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-6 py-5">
                     {task.entry_time} - {task.exit_time}
                 </td>
-                <td className="flex justify-end gap-2 px-6 py-4 text-right">
+                <td className="px-6 py-5">{task.hour_type}</td>
+                <td className="flex justify-end gap-2 px-6 py-5 text-right">
                     {role === "admin" && (
                         <Button
                             color="ghost"

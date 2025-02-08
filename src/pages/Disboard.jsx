@@ -9,6 +9,7 @@ import { useGetTasks } from "../hooks/data/task/use-get-tasks"
 const DisboardPage = () => {
     const { data: tasks = [] } = useGetTasks()
     const validTasks = tasks.filter((task) => task?.id)
+    const firstTask = validTasks[0]
 
     return (
         <div className="flex">
@@ -19,6 +20,12 @@ const DisboardPage = () => {
                 <div className="grid grid-cols-[1.5fr,1fr] gap-6">
                     <div className="space-y-6 rounded-[10px] bg-white p-6">
                         <h3 className="text-xl font-semibold">Tareas</h3>
+                       {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
+                        {firstTask ? (
+                            <p>{firstTask.worked_hours}</p>
+                        ) : (
+                            <p>No hay tareas disponibles.</p>
+                        )}
                         <span className="text-sm text-brand-dark-gray">
                             Resumen de las tareas disponibles
                         </span>
@@ -31,6 +38,7 @@ const DisboardPage = () => {
                                         <th className="px-6 py-3">Proyecto</th>
                                         <th className="px-6 py-3">Fecha</th>
                                         <th className="px-6 py-3">Hora</th>
+                                        <th className="px-6 py-3">tipo de hora</th>
                                         <th className="px-6 py-3">Acciones</th>
                                     </tr>
                                 </thead>
@@ -39,7 +47,7 @@ const DisboardPage = () => {
                                         <tr>
                                             <td
                                                 colSpan="6"
-                                                className="px-6 py-4 text-center text-sm text-brand-text-gray"
+                                                className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                             >
                                                 No hay tareas disponibles.
                                             </td>
@@ -56,12 +64,12 @@ const DisboardPage = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
+                    {/* <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
                         <p className="text-brand-dark-gray">
                             Cada acción de hoy te acerca a grandes logros
                             mañana. ¡Hazlo!
                         </p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
