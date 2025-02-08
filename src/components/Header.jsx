@@ -12,7 +12,11 @@ import AddOptionDialog from "./email/AddOptionDialog"
 function Header({ subtitle, title }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
-    const isUsersPage = location.pathname === "/admin/management"
+
+    // Extraer todo lo que sigue a "/admin/"
+    const adminPath = location.pathname.startsWith("/admin/")
+        ? location.pathname.replace("/admin/", "")
+        : ""
 
     return (
         <div className="flex w-full justify-between">
@@ -24,17 +28,21 @@ function Header({ subtitle, title }) {
             </div>
 
             <div className="flex items-center gap-3">
-                <Button color="ghost">
-                    Limpiar tareas
-                    <TrashIcon />
-                </Button>
+                {adminPath ? (
+                    ""
+                ) : (
+                    <Button color="ghost">
+                        Limpiar tareas
+                        <TrashIcon />
+                    </Button>
+                )}
 
                 <Button onClick={() => setAddDialogIsOpen(true)}>
                     <AddIcon />
-                    {isUsersPage ? "Agregar correo" : "Nueva tarea"}
+                    {adminPath ? "" : "Nueva tarea"}
                 </Button>
 
-                {isUsersPage ? (
+                {adminPath ? (
                     <AddOptionDialog
                         isOpen={addDialogIsOpen}
                         handleClose={() => setAddDialogIsOpen(false)}
