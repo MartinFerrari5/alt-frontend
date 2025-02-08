@@ -20,12 +20,6 @@ const DisboardPage = () => {
                 <div className="grid grid-cols-[1.5fr,1fr] gap-6">
                     <div className="space-y-6 rounded-[10px] bg-white p-6">
                         <h3 className="text-xl font-semibold">Tareas</h3>
-                       {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
-                        {firstTask ? (
-                            <p>{firstTask.worked_hours}</p>
-                        ) : (
-                            <p>No hay tareas disponibles.</p>
-                        )}
                         <span className="text-sm text-brand-dark-gray">
                             Resumen de las tareas disponibles
                         </span>
@@ -64,12 +58,15 @@ const DisboardPage = () => {
                             </table>
                         </div>
                     </div>
-                    {/* <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
-                        <p className="text-brand-dark-gray">
-                            Cada acción de hoy te acerca a grandes logros
-                            mañana. ¡Hazlo!
-                        </p>
-                    </div> */}
+                    <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
+                        {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
+                        <h4 className="text-xl font-semibold">Horas totales</h4>
+                        {firstTask ? (
+                            <p className="text-brand-dark-gray">{firstTask.worked_hours}</p>
+                        ) : (
+                            <p className="text-brand-dark-gray">No hay tareas disponibles.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
