@@ -32,7 +32,9 @@ const DisboardPage = () => {
                                         <th className="px-6 py-3">Proyecto</th>
                                         <th className="px-6 py-3">Fecha</th>
                                         <th className="px-6 py-3">Hora</th>
-                                        <th className="px-6 py-3">tipo de hora</th>
+                                        <th className="px-6 py-3">
+                                            tipo de hora
+                                        </th>
                                         <th className="px-6 py-3">Acciones</th>
                                     </tr>
                                 </thead>
@@ -62,9 +64,13 @@ const DisboardPage = () => {
                         {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
                         <h4 className="text-xl font-semibold">Horas totales</h4>
                         {firstTask ? (
-                            <p className="text-brand-dark-gray">{firstTask.worked_hours}</p>
+                            <span className="ml-2 text-sm text-brand-dark-gray">
+                                {firstTask.worked_hours}
+                            </span>
                         ) : (
-                            <p className="text-brand-dark-gray">No hay tareas disponibles.</p>
+                            <p className="text-brand-dark-gray">
+                                No hay tareas disponibles.
+                            </p>
                         )}
                     </div>
                 </div>

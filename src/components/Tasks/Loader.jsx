@@ -4,6 +4,6 @@ const Loader = ({ text }) => (
         <span className="animate-spin">🔄</span>
         <span className="ml-2">{text}</span>
     </div>
-);
+)
 
-export default Loader;
+export default Loader
