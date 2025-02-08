@@ -98,7 +98,7 @@ const Sidebar = () => {
                                                         }) + " block px-4 py-2"
                                                     }
                                                 >
-                                                    Management
+                                                    Gestión
                                                 </NavLink>
                                             </li>
                                             <li>
@@ -112,7 +112,21 @@ const Sidebar = () => {
                                                         }) + " block px-4 py-2"
                                                     }
                                                 >
-                                                    Users
+                                                    Usuarios
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    to="/admin/Exported"
+                                                    className={({ isActive }) =>
+                                                        sidebar({
+                                                            color: isActive
+                                                                ? "selected"
+                                                                : "unselected",
+                                                        }) + " block px-4 py-2"
+                                                    }
+                                                >
+                                                    Exportados
                                                 </NavLink>
                                             </li>
                                         </ul>
