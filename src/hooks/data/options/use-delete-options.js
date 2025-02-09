@@ -1,16 +1,21 @@
 // src/hooks/data/use-delete-options.js
-
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "../../../lib/axios"
 
-export const useDeleteOptions = (id, option) => {
+export const useDeleteOptions = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async () => {
+        mutationFn: async ({ table, element }) => {
             try {
-                console.log("📌 Eliminando opción con ID:", option)
-                await api.delete(`/options/${id}`, option)
+                console.log("📌 Eliminando table:", table)
+                console.log("📌 Eliminando elemento:", element)
+
+                // Send the table name in the body if needed
+                const requestBody = { table }
+
+                // Make the DELETE request with the body
+                await api.delete(`/options/${element}`, { data: requestBody })
             } catch (error) {
                 console.error(
                     "❌ Error al eliminar la opción:",
@@ -19,9 +24,9 @@ export const useDeleteOptions = (id, option) => {
                 throw error
             }
         },
-        onSuccess: (_, id) => {
-            queryClient.setQueryData(["options"], (oldOptions = []) =>
-                oldOptions.filter((option) => option.id !== id)
+        onSuccess: (_, { table, element }) => {
+            queryClient.setQueryData([table], (oldData = []) =>
+                oldData.filter((item) => item.id !== element.id)
             )
         },
     })

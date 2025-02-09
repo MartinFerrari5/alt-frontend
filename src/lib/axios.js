@@ -11,7 +11,6 @@ const refreshAccessToken = async () => {
     if (!storedTokens) return null
 
     const authTokens = JSON.parse(storedTokens)
-
     try {
         const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/refresh`,

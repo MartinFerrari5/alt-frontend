@@ -36,21 +36,40 @@ const DataTable = ({ title, data }) => {
     const [selectedItem, setSelectedItem] = useState(null)
 
     const handleDeleteClick = (item) => {
+        console.log("Selected Item:", item) // Debugging
         setSelectedItem(item)
         setShowConfirm(true)
     }
 
     const confirmDelete = () => {
-        deleteOptions(selectedItem?.id, {
-            onSuccess: () => {
-                toast.success("¡Elemento eliminado exitosamente!")
-                setShowConfirm(false)
-            },
-            onError: (error) => {
-                console.error("🔴 Error al eliminar:", error)
-                toast.error("Error al eliminar. Inténtalo de nuevo.")
-            },
-        })
+        // Map the title to the correct table name
+        const tableMap = {
+            Compañías: "companies_table",
+            "Tipos de Hora": "hour_type_table",
+            Proyectos: "projects_table",
+        }
+
+        const table = tableMap[title] // Get the table name from the title
+
+        if (!table) {
+            console.error("🔴 Error: Tabla no definida")
+            toast.error("Error: Tabla no definida.")
+            return
+        }
+
+        deleteOptions(
+            { table, element: selectedItem }, // Pass table and element
+            {
+                onSuccess: () => {
+                    toast.success("¡Elemento eliminado exitosamente!")
+                    setShowConfirm(false)
+                },
+                onError: (error) => {
+                    console.error("🔴 Error al eliminar:", error)
+                    toast.error("Error al eliminar. Inténtalo de nuevo.")
+                },
+            }
+        )
     }
 
     const cancelDelete = () => {
