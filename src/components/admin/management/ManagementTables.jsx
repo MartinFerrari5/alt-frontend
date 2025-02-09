@@ -6,6 +6,10 @@ import { useGetProjects } from "../../../hooks/data/projects/use-get-projects"
 import Header from "../../Header"
 import TableItem from "./TableItem"
 import { useGetEmail } from "../../../hooks/data/email/Use-get-email"
+import { useDeleteOptions } from "../../../hooks/data/options/use-delete-options"
+import { useState } from "react"
+import { toast } from "react-toastify"
+import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
 
 const ManagementTables = () => {
     const { data: hourTypes = [] } = useGetHourTypes()
@@ -27,6 +31,33 @@ const ManagementTables = () => {
 }
 
 const DataTable = ({ title, data }) => {
+    const { mutate: deleteOptions } = useDeleteOptions()
+    const [showConfirm, setShowConfirm] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+
+    const handleDeleteClick = (item) => {
+        setSelectedItem(item)
+        setShowConfirm(true)
+    }
+
+    const confirmDelete = () => {
+        deleteOptions(selectedItem?.id, {
+            onSuccess: () => {
+                toast.success("¡Elemento eliminado exitosamente!")
+                setShowConfirm(false)
+            },
+            onError: (error) => {
+                console.error("🔴 Error al eliminar:", error)
+                toast.error("Error al eliminar. Inténtalo de nuevo.")
+            },
+        })
+    }
+
+    const cancelDelete = () => {
+        setShowConfirm(false)
+        setSelectedItem(null)
+    }
+
     return (
         <div className="rounded-xl bg-white p-6 shadow-md">
             <h2 className="mb-4 text-lg font-semibold text-gray-700">
@@ -38,38 +69,38 @@ const DataTable = ({ title, data }) => {
                         <tr>
                             <th className="px-6 py-3">Id</th>
                             <th className="px-6 py-3">{title}</th>
+                            <th className="px-6 py-3 text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {data.length === 0 ? (
                             <tr>
                                 <td
-                                    colSpan="2"
+                                    colSpan="3"
                                     className="px-6 py-4 text-center text-sm text-gray-500"
                                 >
                                     No hay datos disponibles.
                                 </td>
                             </tr>
                         ) : (
-                            data.map((item, index) =>
-                                typeof item === "object" && item !== null ? (
-                                    <TableItem
-                                        key={item.id || index}
-                                        id={item.id}
-                                        name={item.email || "Sin email"}
-                                    />
-                                ) : (
-                                    <TableItem
-                                        key={index}
-                                        id={index + 1}
-                                        name={item}
-                                    />
-                                )
-                            )
+                            data.map((item, index) => (
+                                <TableItem
+                                    key={item.id || index}
+                                    id={item.id || index + 1}
+                                    name={item.email || item.name || item}
+                                    onDelete={() => handleDeleteClick(item)}
+                                />
+                            ))
                         )}
                     </tbody>
                 </table>
             </div>
+            {showConfirm && (
+                <DeleteConfirmationModal
+                    onConfirm={confirmDelete}
+                    onCancel={cancelDelete}
+                />
+            )}
         </div>
     )
 }
