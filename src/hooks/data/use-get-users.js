@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../lib/axios"
-import { useAuth } from "../../components/auth/AuthContext"
+import useAuthStore from "../../store/authStore"
 
 // Claves de consulta para react-query
 const userQueryKeys = {
@@ -11,7 +11,7 @@ const userQueryKeys = {
 }
 
 export const useGetUsers = (userId = null) => {
-    const { role } = useAuth()
+    const role = useAuthStore((state) => state.role)
 
     return useQuery({
         queryKey: userId

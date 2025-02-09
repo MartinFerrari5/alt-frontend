@@ -4,11 +4,12 @@ import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { TrashIcon, DetailsIcon, LoaderIcon } from "../../../assets/icons"
 import { useDeleteUser } from "../../../hooks/data/use-delete-user"
-import { useAuth } from "../../auth/AuthContext"
+
 import Button from "../../Button"
+import useAuthStore from "../../../store/authStore"
 
 const UsersItem = ({ user }) => {
-    const { role } = useAuth()
+    const role = useAuthStore((state) => state.role)
     const { mutate: deleteUser, isPending: deleteUserIsLoading } =
         useDeleteUser(user.id)
 

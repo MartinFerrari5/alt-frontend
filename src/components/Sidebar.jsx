@@ -1,15 +1,15 @@
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
 import { HomeIcon, TasksIcon } from "../assets/icons"
-import { useAuth } from "./auth/AuthContext"
 import LogoutButton from "./auth/LogoutButton"
 import HamburgerButton from "./HamburgerButton"
 import { tv } from "tailwind-variants"
+import useAuthStore from "../store/authStore"
 
 const Sidebar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const { role } = useAuth()
+    const role = useAuthStore((state) => state.role)
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen)

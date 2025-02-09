@@ -1,10 +1,10 @@
+// src/pages/auth/SignIn.jsx
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
-
-import { AuthContext } from "../../components/auth/AuthContext"
+import useAuthStore from "../../store/authStore"
 
 // Esquema de validación usando zod
 const schema = z.object({
@@ -27,8 +27,7 @@ const SignIn = () => {
         resolver: zodResolver(schema),
     })
 
-    // Use the AuthContext here
-    const { login } = useContext(AuthContext) // Call it directly here
+    const login = useAuthStore((state) => state.login)
     const navigate = useNavigate()
     const [message, setMessage] = useState(null)
 
@@ -54,12 +53,12 @@ const SignIn = () => {
                 return
             }
 
-            const { token, refreshToken } = await response.json() // Obtenemos los tokens desde el backend
-            login({ token, refreshToken }) // Guardamos los tokens en el contexto para autenticar al usuario
+            const { token, refreshToken } = await response.json()
+            login({ token, refreshToken })
             setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
 
             setTimeout(() => {
-                navigate("/") // Redirigimos al usuario a la página principal
+                navigate("/")
             }, 1000)
         } catch (error) {
             console.error("Error:", error)

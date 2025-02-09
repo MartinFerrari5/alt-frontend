@@ -1,14 +1,15 @@
-import { useNavigate } from "react-router-dom"
+// /src/components/auth/LogoutButton.jsx
 
-import { useAuth } from "./AuthContext"
+import { useNavigate } from "react-router-dom"
+import useAuthStore from "../../store/authStore"
 
 const LogoutButton = () => {
-    const { logout } = useAuth()
+    const logout = useAuthStore((state) => state.logout)
     const navigate = useNavigate()
 
     const handleLogout = () => {
-        logout() // Llama a la función logout del contexto
-        navigate("/login") // Redirige al usuario a la página de login
+        logout()
+        navigate("/login")
     }
 
     return (

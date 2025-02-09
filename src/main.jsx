@@ -1,5 +1,4 @@
-// /src/main.jsx
-
+// src/main.jsx
 import "./index.css"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -8,7 +7,6 @@ import ReactDOM from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Toaster } from "sonner"
 
-import { AuthProvider } from "./components/auth/AuthContext.jsx"
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx"
 import PageRegister from "./pages/auth/Register.jsx"
 import Login from "./pages/auth/SignIn.jsx"
@@ -78,11 +76,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <AuthProvider>
-            <QueryClientProvider client={queryClient}>
-                <Toaster toastOptions={{ style: { color: "#35383E" } }} />
-                <RouterProvider router={router} />
-            </QueryClientProvider>
-        </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+            <Toaster toastOptions={{ style: { color: "#35383E" } }} />
+            <RouterProvider router={router} />
+        </QueryClientProvider>
     </React.StrictMode>
 )
