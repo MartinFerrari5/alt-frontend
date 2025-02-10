@@ -1,11 +1,12 @@
 // src/components/Tasks/Tasks.jsx
 
-import { useGetTasks } from "../../hooks/data/task/use-get-tasks"
+import useTaskStore from "../../store/taskStore"
 import Header from "../Header"
 import TaskItem from "./TaskItem"
 
 const Tasks = () => {
-    const { data: tasks = [] } = useGetTasks()
+    // Get tasks from the Zustand store
+    const tasks = useTaskStore((state) => state.tasks)
 
     return (
         <div className="w-full space-y-6 px-8 py-16">
@@ -20,7 +21,7 @@ const Tasks = () => {
                         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                                 <div className="max-h-[500px] overflow-y-auto rounded-lg border">
-                                    <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                    <table className="rti:text-right w-full text-left text-sm text-gray-500 dark:text-gray-400">
                                         <thead className="sticky top-0 z-10 bg-white text-xs uppercase text-gray-600 shadow-md dark:bg-gray-600 dark:text-gray-400">
                                             <tr>
                                                 <th

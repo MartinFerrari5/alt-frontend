@@ -1,5 +1,4 @@
 // /src/components/Tasks/AddTaskDialog.jsx
-
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState } from "react"
@@ -10,7 +9,7 @@ import { CSSTransition } from "react-transition-group"
 import Swal from "sweetalert2"
 
 import { LoaderIcon } from "../../assets/icons"
-import { useAddTask } from "../../hooks/data/task/use-add-task"
+import { useAddTask } from "../../hooks/data/task/use-add-task" // Updated hook with Zustand
 import { useGetCompanies } from "../../hooks/data/use-get-companies"
 import Button from "../Button"
 import Input from "../Input"
@@ -20,7 +19,7 @@ import { schema } from "../../util/validationSchema"
 import { useGetHourTypes } from "../../hooks/data/use-get-typeHour"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
-    const { mutate: addTask } = useAddTask()
+    const { mutate: addTask } = useAddTask() // Hook for adding tasks (already integrated with Zustand)
     const { data: companies = [], isLoading } = useGetCompanies()
     const { data: hourTypes = [], isLoading: isLoadingHourTypes } =
         useGetHourTypes()
@@ -47,24 +46,22 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
     })
 
     const formatDateForBackend = (date) => {
-        return date.toISOString().split("T")[0].replace(/-/g, "")
+        return date.toISOString() // Ensure the date is in ISO 8601 format
     }
 
     const handleSaveClick = async (data) => {
-        const formattedDate =
-            taskDate instanceof Date
-                ? formatDateForBackend(taskDate)
-                : formatDateForBackend(new Date())
+        const formattedDate = formatDateForBackend(taskDate) // Format the date correctly
 
         const taskPayload = {
             ...data,
             task_description: data.task_description.trim(),
             lunch_hours: data.lunch_hours.toString(),
             status: statusMap[data.status],
-            task_date: formattedDate,
+            task_date: formattedDate, // Use the correctly formatted date
             hour_type: data.hour_type,
         }
 
+        // Call the addTask mutation
         addTask(taskPayload, {
             onSuccess: () => {
                 Swal.fire({
@@ -73,6 +70,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                     icon: "success",
                     confirmButtonText: "OK",
                 })
+                handleClose() // Close the dialog after successful creation
             },
             onError: (error) => {
                 Swal.fire({

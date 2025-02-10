@@ -8,15 +8,20 @@ import { toast } from "sonner"
 import { TrashIcon, DetailsIcon, LoaderIcon } from "../../assets/icons"
 import { useDeleteTask } from "../../hooks/data/task/use-delete-task"
 import { useUpdateTask } from "../../hooks/data/task/use-update-task"
+import useTaskStore from "../../store/taskStore"
 import Button from "../Button"
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 
 const TaskItem = ({ task }) => {
-    const { mutate: deleteTask, isPending: deleteTaskIsLoading } =
+    const { mutate: deleteTaskApi, isPending: deleteTaskIsLoading } =
         useDeleteTask(task.id)
-    const { mutate: updateTask, isPending: updateTaskIsLoading } =
+    const { mutate: updateTaskApi, isPending: updateTaskIsLoading } =
         useUpdateTask(task.id)
+
+    // Zustand store functions
+    const deleteTask = useTaskStore((state) => state.deleteTask)
+    const updateTask = useTaskStore((state) => state.updateTask)
 
     const [showConfirm, setShowConfirm] = useState(false)
 
@@ -25,8 +30,9 @@ const TaskItem = ({ task }) => {
     }
 
     const confirmDelete = () => {
-        deleteTask(undefined, {
+        deleteTaskApi(undefined, {
             onSuccess: () => {
+                deleteTask(task.id)
                 toast.success("¡Tarea eliminada exitosamente!")
                 setShowConfirm(false)
             },
@@ -41,11 +47,14 @@ const TaskItem = ({ task }) => {
         task.status === 0 ? 1 : task.status === 1 ? 2 : 0
 
     const handleCheckboxClick = () => {
-        updateTask(
-            { status: getNewStatus() },
+        const newStatus = getNewStatus()
+        updateTaskApi(
+            { status: newStatus },
             {
-                onSuccess: () =>
-                    toast.success("¡Estado de la tarea actualizado!"),
+                onSuccess: () => {
+                    updateTask(task.id, { ...task, status: newStatus }) // Update Zustand store
+                    toast.success("¡Estado de la tarea actualizado!")
+                },
                 onError: (error) => {
                     console.error("🔴 Error al actualizar tarea:", error)
                     toast.error(
