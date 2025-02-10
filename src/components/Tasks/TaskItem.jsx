@@ -4,8 +4,12 @@ import PropTypes from "prop-types"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
+import {
+    AiFillDelete,
+    AiOutlineInfoCircle,
+    AiOutlineLoading3Quarters,
+} from "react-icons/ai"
 
-import { TrashIcon, DetailsIcon, LoaderIcon } from "../../assets/icons"
 import { useDeleteTask } from "../../hooks/data/task/use-delete-task"
 import { useUpdateTask } from "../../hooks/data/task/use-update-task"
 import useTaskStore from "../../store/taskStore"
@@ -52,7 +56,7 @@ const TaskItem = ({ task }) => {
             { status: newStatus },
             {
                 onSuccess: () => {
-                    updateTask(task.id, { ...task, status: newStatus }) // Update Zustand store
+                    updateTask(task.id, { ...task, status: newStatus })
                     toast.success("¡Estado de la tarea actualizado!")
                 },
                 onError: (error) => {
@@ -63,6 +67,12 @@ const TaskItem = ({ task }) => {
                 },
             }
         )
+    }
+
+    // Helper function to format the date
+    const formatDate = (dateString) => {
+        const date = new Date(dateString)
+        return isNaN(date) ? "Invalid Date" : date.toLocaleDateString()
     }
 
     return (
@@ -77,9 +87,7 @@ const TaskItem = ({ task }) => {
                 </td>
                 <td className="px-6 py-5">{task.company}</td>
                 <td className="px-6 py-5">{task.project}</td>
-                <td className="px-6 py-5">
-                    {new Date(task.task_date).toLocaleDateString()}
-                </td>
+                <td className="px-6 py-5">{formatDate(task.task_date)}</td>
                 <td className="px-6 py-5">
                     {task.entry_time} - {task.exit_time}
                 </td>
@@ -91,13 +99,13 @@ const TaskItem = ({ task }) => {
                         disabled={deleteTaskIsLoading}
                     >
                         {deleteTaskIsLoading ? (
-                            <LoaderIcon className="animate-spin text-brand-text-gray" />
+                            <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
                         ) : (
-                            <TrashIcon className="text-brand-text-gray" />
+                            <AiFillDelete className="text-brand-text-gray" />
                         )}
                     </Button>
                     <Link to={`/task/${task.id}`}>
-                        <DetailsIcon />
+                        <AiOutlineInfoCircle />
                     </Link>
                 </td>
             </tr>

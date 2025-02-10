@@ -5,12 +5,20 @@ import { persist } from "zustand/middleware"
 const useTaskStore = create(
     persist(
         (set) => ({
-            tasks: [], // Lista de tareas
+            tasks: [],
 
             // Agregar una tarea
             addTask: (newTask) => {
                 set((state) => ({
-                    tasks: [...state.tasks, newTask],
+                    tasks: [
+                        ...state.tasks,
+                        {
+                            ...newTask,
+                            task_date: new Date(
+                                newTask.task_date
+                            ).toISOString(),
+                        },
+                    ],
                 }))
             },
 
@@ -18,7 +26,14 @@ const useTaskStore = create(
             updateTask: (taskId, updatedTask) => {
                 set((state) => ({
                     tasks: state.tasks.map((task) =>
-                        task.id === taskId ? updatedTask : task
+                        task.id === taskId
+                            ? {
+                                  ...updatedTask,
+                                  task_date: new Date(
+                                      updatedTask.task_date
+                                  ).toISOString(),
+                              }
+                            : task
                     ),
                 }))
             },
@@ -32,7 +47,12 @@ const useTaskStore = create(
 
             // Establecer la lista completa de tareas (útil para cargar datos iniciales)
             setTasks: (tasks) => {
-                set({ tasks })
+                set({
+                    tasks: tasks.map((task) => ({
+                        ...task,
+                        task_date: new Date(task.task_date).toISOString(),
+                    })),
+                })
             },
         }),
         {

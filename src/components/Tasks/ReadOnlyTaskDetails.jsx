@@ -1,14 +1,11 @@
 export const ReadOnlyTaskDetails = ({ task }) => {
-    if (!task) return null
-
-    const taskData = task?.task?.[0] // Acceder al primer objeto dentro del array
-    console.log("📌 Detalles de la tarea:", taskData.company)
+    if (!task) {
+        return <p>No hay datos disponibles para esta tarea.</p>
+    }
 
     const statusMap = {
-        0: "Pendiente",
-        1: "En Progreso",
-        2: "Completada",
-        3: "Cancelada",
+        0: "En Progreso",
+        1: "Completada",
     }
 
     const formatTime = (time) => (time ? time.slice(0, 5) : "-")
@@ -25,7 +22,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Empresa
                         </td>
                         <td className="border px-4 py-2">
-                            {taskData.company ?? "-"}
+                            {task.company ?? "-"}
                         </td>
                     </tr>
                     <tr>
@@ -33,7 +30,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Proyecto
                         </td>
                         <td className="border px-4 py-2">
-                            {taskData?.project ?? "-"}
+                            {task.project ?? "-"}
                         </td>
                     </tr>
                     <tr>
@@ -41,7 +38,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Tipo de Tarea
                         </td>
                         <td className="border px-4 py-2">
-                            {taskData.task_type ?? "-"}
+                            {task.task_type ?? "-"}
                         </td>
                     </tr>
                     <tr>
@@ -49,7 +46,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Descripción
                         </td>
                         <td className="border px-4 py-2">
-                            {taskData.task_description ?? "-"}
+                            {task.task_description ?? "-"}
                         </td>
                     </tr>
                     <tr>
@@ -57,7 +54,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Hora de Entrada
                         </td>
                         <td className="border px-4 py-2">
-                            {formatTime(taskData.entry_time)}
+                            {formatTime(task.entry_time)}
                         </td>
                     </tr>
                     <tr>
@@ -65,7 +62,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Hora de Salida
                         </td>
                         <td className="border px-4 py-2">
-                            {formatTime(taskData.exit_time)}
+                            {formatTime(task.exit_time)}
                         </td>
                     </tr>
                     <tr>
@@ -73,19 +70,19 @@ export const ReadOnlyTaskDetails = ({ task }) => {
                             Horas de Almuerzo
                         </td>
                         <td className="border px-4 py-2">
-                            {taskData.lunch_hours ?? "0"}
+                            {task.lunch_hours ?? "0"}
                         </td>
                     </tr>
                     <tr>
                         <td className="border px-4 py-2 font-medium">Fecha</td>
                         <td className="border px-4 py-2">
-                            {formatDate(taskData.task_date)}
+                            {formatDate(task.task_date)}
                         </td>
                     </tr>
                     <tr>
                         <td className="border px-4 py-2 font-medium">Estado</td>
                         <td className="border px-4 py-2">
-                            {statusMap[taskData.status] ?? "No definido"}
+                            {statusMap[task.status] ?? "No definido"}
                         </td>
                     </tr>
                 </tbody>
