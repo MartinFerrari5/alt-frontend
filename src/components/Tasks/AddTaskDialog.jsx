@@ -19,12 +19,16 @@ import { schema } from "../../util/validationSchema"
 import { useGetHourTypes } from "../../hooks/data/use-get-typeHour"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
-    const { mutate: addTask } = useAddTask() // Hook for adding tasks (already integrated with Zustand)
+    const { mutate: addTask } = useAddTask()
     const { data: companies = [], isLoading } = useGetCompanies()
     const { data: hourTypes = [], isLoading: isLoadingHourTypes } =
         useGetHourTypes()
     const nodeRef = useRef()
-    const [taskDate, setTaskDate] = useState(new Date())
+    const [taskDate, setTaskDate] = useState(() => {
+        const initialDate = new Date()
+        initialDate.setHours(0, 0, 0, 0) // Establecer hora a medianoche
+        return initialDate
+    })
 
     const {
         register,
@@ -41,12 +45,18 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             exit_time: "18:00",
             lunch_hours: "1",
             hour_type: hourTypes[0],
-            status: "Not Started",
+            status: "en progreso",
         },
     })
 
     const formatDateForBackend = (date) => {
-        return date.toISOString() // Ensure the date is in ISO 8601 format
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+        const hours = String(date.getHours()).padStart(2, "0")
+        const minutes = String(date.getMinutes()).padStart(2, "0")
+        const seconds = String(date.getSeconds()).padStart(2, "0")
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
     const handleSaveClick = async (data) => {

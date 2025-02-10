@@ -1,4 +1,4 @@
-// validationSchema.js
+// /src/util/validationSchema.js
 import { z } from "zod"
 
 export const schema = z.object({

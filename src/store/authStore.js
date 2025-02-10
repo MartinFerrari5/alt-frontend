@@ -1,11 +1,10 @@
-// src/store/authStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { jwtDecode } from "jwt-decode"
 
 const useAuthStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             authTokens: null,
             userId: null,
             fullName: null,
@@ -13,15 +12,15 @@ const useAuthStore = create(
             role: null,
 
             isAuthenticated: () => {
-                const tokens = JSON.parse(localStorage.getItem("authTokens"))
-                if (!tokens) return false
+                const { authTokens } = get() // Usar el estado actual del store
+                if (!authTokens) return false
 
-                // Check if the token is expired
+                // Verificar si el token ha expirado
                 try {
-                    const decodedToken = jwtDecode(tokens.accessToken)
+                    const decodedToken = jwtDecode(authTokens.accessToken)
                     const currentTime = Date.now() / 1000
                     if (decodedToken.exp < currentTime) {
-                        // Token is expired
+                        // Token expirado
                         set({ authTokens: null })
                         return false
                     }
@@ -61,6 +60,7 @@ const useAuthStore = create(
                     email: null,
                     role: null,
                 })
+                get()._clearStorage()
             },
         }),
         {

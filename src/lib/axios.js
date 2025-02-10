@@ -1,5 +1,6 @@
-// // src/lib/axios.js
+// src/lib/axios.js
 import axios from "axios"
+import useAuthStore from "../store/authStore"
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -7,10 +8,10 @@ export const api = axios.create({
 
 // Función para obtener nuevos tokens usando el refreshToken
 const refreshAccessToken = async () => {
-    const storedTokens = localStorage.getItem("authTokens")
-    if (!storedTokens) return null
+    const { authTokens, login } = useAuthStore.getState()
 
-    const authTokens = JSON.parse(storedTokens)
+    if (!authTokens?.refreshToken) return null
+
     try {
         const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/refresh`,
@@ -18,10 +19,10 @@ const refreshAccessToken = async () => {
         )
 
         const newTokens = response.data
-        localStorage.setItem("authTokens", JSON.stringify(newTokens))
+        login(newTokens) // Update the store with the new tokens
 
         // 🛠️ Asegurar que todas las nuevas peticiones usen el nuevo token
-        axios.defaults.headers.common["Authorization"] =
+        api.defaults.headers.common["Authorization"] =
             `${newTokens.accessToken}`
 
         return newTokens.accessToken
@@ -34,12 +35,9 @@ const refreshAccessToken = async () => {
 // Interceptor para incluir el token en cada request
 api.interceptors.request.use(
     (config) => {
-        const storedTokens = localStorage.getItem("authTokens")
-        if (storedTokens) {
-            const authTokens = JSON.parse(storedTokens)
-            if (authTokens?.accessToken) {
-                config.headers.Authorization = `${authTokens.accessToken}`
-            }
+        const { authTokens } = useAuthStore.getState()
+        if (authTokens?.accessToken) {
+            config.headers.Authorization = `${authTokens.accessToken}`
         }
         return config
     },
