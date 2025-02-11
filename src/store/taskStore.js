@@ -1,6 +1,8 @@
 // src/store/taskStore.js
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { api } from "../lib/axios";
+
 
 const useTaskStore = create(
     persist(
@@ -19,7 +21,7 @@ const useTaskStore = create(
                                 : null,
                         },
                     ],
-                }))
+                }));
             },
 
             // Actualizar una tarea
@@ -32,7 +34,7 @@ const useTaskStore = create(
                                   ...updatedTask,
                                   task_date: updatedTask.task_date
                                       ? new Date(updatedTask.task_date).toISOString()
-                                      : task.task_date, // Preserve existing date if not provided
+                                      : task.task_date,
                               }
                             : task
                     ),
@@ -43,7 +45,21 @@ const useTaskStore = create(
             deleteTask: (taskId) => {
                 set((state) => ({
                     tasks: state.tasks.filter((task) => task.id !== taskId),
-                }))
+                }));
+            },
+
+            // Filtrar tareas por nombre y fecha
+            filterTasks: async (fullname, dateRange) => {
+                try {
+                const queryParams = new URLSearchParams();
+                if (fullname) queryParams.append("fullname", fullname);
+                if (dateRange) queryParams.append("date", dateRange);
+
+                const { data } = await api.get(`/tasks/filtertasks?${queryParams.toString()}`);
+                set({ tasks: data.tasks });
+                } catch (error) {
+                console.error("Error al filtrar tareas:", error);
+                }
             },
 
             // Establecer la lista completa de tareas (útil para cargar datos iniciales)
@@ -53,7 +69,7 @@ const useTaskStore = create(
                         ...task,
                         task_date: task.task_date ? new Date(task.task_date).toISOString() : null,
                     })),
-                })
+                });
             },
         }),
         {
@@ -61,6 +77,6 @@ const useTaskStore = create(
             getStorage: () => localStorage,
         }
     )
-)
+);
 
-export default useTaskStore
+export default useTaskStore;
