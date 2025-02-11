@@ -117,7 +117,7 @@ const Sidebar = () => {
                                             </li>
                                             <li>
                                                 <NavLink
-                                                    to="/admin/Exported"
+                                                    to="/admin/exported"
                                                     className={({ isActive }) =>
                                                         sidebar({
                                                             color: isActive

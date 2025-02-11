@@ -16,6 +16,7 @@ import TasksPage from "./pages/Tasks.jsx"
 import ManagementPage from "./pages/admin/Management.jsx"
 import UsersPage from "./pages/admin/Users.jsx"
 import NotFoundPage from "./pages/NotFound.jsx" // Import a NotFound page
+import { Status } from "./pages/Status.jsx"
 
 const queryClient = new QueryClient()
 
@@ -65,6 +66,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute adminOnly={true}>
                 <UsersPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/admin/exported",
+        element: (
+            <ProtectedRoute adminOnly={true}>
+                <Status/>
             </ProtectedRoute>
         ),
     },
