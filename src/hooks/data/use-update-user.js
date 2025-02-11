@@ -10,7 +10,6 @@ export const useUpdateUser = (userId) => {
     return useMutation({
         mutationKey: userMutationKeys.update(userId),
         mutationFn: async (data) => {
-            console.log("📌 Datos a actualizar:", data)
             const { data: updatedUser } = await api.put(`/users/${userId}`, {
                 full_name: data?.full_name?.trim(),
                 email: data?.email?.trim(),

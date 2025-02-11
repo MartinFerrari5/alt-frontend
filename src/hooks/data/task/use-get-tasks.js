@@ -12,8 +12,7 @@ export const useGetTasks = () => {
         queryFn: async () => {
             try {
                 const { data } = await api.get("/tasks")
-                console.log("📌 Tareas obtenidas:", data.tasks)
-                setTasks(data.tasks) // Establecer las tareas en el store de Zustand
+                setTasks(data.tasks)
                 return data.tasks
             } catch (error) {
                 console.error("❌ Error obteniendo las tareas:", error)

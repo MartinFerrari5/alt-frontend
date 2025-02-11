@@ -9,7 +9,6 @@ export const useGetProjects = () => {
         queryFn: async () => {
             try {
                 const { data } = await api.get("/options/projects_table")
-                // console.log("📌 Empresas obtenidas:", data)
                 return data
             } catch (error) {
                 console.error("❌ Error obteniendo los proyectos:", error)

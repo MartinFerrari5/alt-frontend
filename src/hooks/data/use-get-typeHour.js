@@ -9,7 +9,6 @@ export const useGetHourTypes = () => {
         queryFn: async () => {
             try {
                 const { data } = await api.get("/options/hour_type_table")
-                // console.log("📌 Tipos de horas obtenidos:", data);
                 return data
             } catch (error) {
                 console.error("❌ Error obteniendo los tipos de horas:", error)

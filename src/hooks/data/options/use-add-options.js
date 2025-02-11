@@ -12,7 +12,6 @@ export const useAddOptions = () => {
         mutationKey: optionMutationKeys.add(),
         mutationFn: async (option) => {
             try {
-                console.log("📌 Opción a crear:", option)
                 const { data } = await api.post("/options", option)
                 return data
             } catch (error) {

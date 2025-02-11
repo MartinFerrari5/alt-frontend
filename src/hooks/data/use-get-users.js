@@ -26,7 +26,6 @@ export const useGetUsers = (userId = null) => {
             try {
                 const endpoint = userId ? `/users/${userId}` : "/users"
                 const { data } = await api.get(endpoint)
-                console.log("📌 Datos obtenidos:", data)
                 return userId ? data.user : data
             } catch (error) {
                 console.error("❌ Error obteniendo los datos:", error)

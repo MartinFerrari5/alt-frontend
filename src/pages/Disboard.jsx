@@ -8,7 +8,6 @@ import useTaskStore from "../store/taskStore"
 
 const DisboardPage = () => {
     const tasks = useTaskStore((state) => state.tasks)
-    console.log("Tasks in Disboard:", tasks)
 
     const validTasks = tasks.filter((task) => task?.id)
     const firstTask = validTasks[0]

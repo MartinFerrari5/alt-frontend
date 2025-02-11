@@ -9,7 +9,6 @@ export const useGetEmail = () => {
         queryFn: async () => {
             try {
                 const { data } = await api.get("/emails")
-                console.log("📌 Emails obtenidas:", data)
                 return data
             } catch (error) {
                 console.error("❌ Error obteniendo los Emails:", error)

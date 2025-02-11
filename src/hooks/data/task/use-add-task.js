@@ -14,7 +14,6 @@ export const useAddTask = () => {
         mutationFn: async (task) => {
             try {
                 const { data } = await api.post("/tasks", task)
-                console.log("📌 Tarea creada:", data)
                 return data
             } catch (error) {
                 console.error(
