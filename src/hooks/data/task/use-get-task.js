@@ -14,6 +14,7 @@ export const useGetTask = ({ taskId, onSuccess }) => {
 
             // Verificar si la tarea ya está en el store
             const existingTask = tasks.find((task) => task.id === taskId)
+            
             if (existingTask) {
                 if (onSuccess) onSuccess(existingTask)
                 return existingTask

@@ -1,7 +1,7 @@
 // /src/components/Tasks/TaskItem.jsx
 
 import PropTypes from "prop-types"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import {
@@ -18,10 +18,9 @@ import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 
 const TaskItem = ({ task }) => {
-    const { mutate: deleteTaskApi, isPending: deleteTaskIsLoading } =
-        useDeleteTask(task.id)
-    const { mutate: updateTaskApi, isPending: updateTaskIsLoading } =
-        useUpdateTask(task.id)
+    console.log("TaskItem:", task)
+    const { mutate: deleteTaskApi, isPending: deleteTaskIsLoading } = useDeleteTask(task.id)
+    const { mutate: updateTaskApi, isPending: updateTaskIsLoading } = useUpdateTask(task.id)
 
     // Zustand store functions
     const deleteTask = useTaskStore((state) => state.deleteTask)
@@ -29,11 +28,11 @@ const TaskItem = ({ task }) => {
 
     const [showConfirm, setShowConfirm] = useState(false)
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = useCallback(() => {
         setShowConfirm(true)
-    }
+    }, [])
 
-    const confirmDelete = () => {
+    const confirmDelete = useCallback(() => {
         deleteTaskApi(undefined, {
             onSuccess: () => {
                 deleteTask(task.id)
@@ -45,13 +44,18 @@ const TaskItem = ({ task }) => {
                 toast.error("Error al eliminar la tarea. Inténtalo de nuevo.")
             },
         })
-    }
+    }, [deleteTaskApi, deleteTask, task.id])
 
-    const getNewStatus = () =>
-        task.status === 0 ? 1 : task.status === 1 ? 2 : 0
+    const getNewStatus = useCallback(() => (task.status + 1) % 3, [task.status])
 
-    const handleCheckboxClick = () => {
+    const handleCheckboxClick = useCallback(() => {
         const newStatus = getNewStatus()
+
+        if (!task.task_date || isNaN(new Date(task.task_date).getTime())) {
+            toast.error("Fecha de tarea inválida. Verifica los datos.")
+            return
+        }
+
         updateTaskApi(
             { status: newStatus },
             {
@@ -61,19 +65,28 @@ const TaskItem = ({ task }) => {
                 },
                 onError: (error) => {
                     console.error("🔴 Error al actualizar tarea:", error)
-                    toast.error(
-                        "Error al actualizar la tarea. Inténtalo de nuevo."
-                    )
+                    toast.error("Error al actualizar la tarea. Inténtalo de nuevo.")
                 },
             }
         )
-    }
+    }, [updateTaskApi, updateTask, task, getNewStatus])
 
-    // Helper function to format the date
-    const formatDate = (dateString) => {
-        const date = new Date(dateString)
-        return isNaN(date) ? "Invalid Date" : date.toLocaleDateString()
-    }
+    const formatDate = useCallback((dateString) => {
+        if (!dateString) return "Fecha no disponible"
+        
+        const parsedDate = new Date(dateString)
+        
+        if (isNaN(parsedDate.getTime())) {
+            console.warn(`⚠️ Fecha inválida recibida: ${dateString}`)
+            return "Fecha inválida"
+        }
+
+        return new Intl.DateTimeFormat("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }).format(parsedDate)
+    }, [])
 
     return (
         <>

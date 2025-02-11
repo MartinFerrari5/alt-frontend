@@ -1,18 +1,31 @@
 // src/components/Tasks/Tasks.jsx
 
-import useTaskStore from "../../store/taskStore"
-import Header from "../Header"
-import TaskItem from "./TaskItem"
+
+
+import { useGetTasks } from "../../hooks/data/task/use-get-tasks";
+import useTaskStore from "../../store/taskStore";
+import Header from "../Header";
+import TaskItem from "./TaskItem";
 
 const Tasks = () => {
+    // Fetch tasks from the backend and update the Zustand store
+    const { data: tasks = [], isLoading, isError } = useGetTasks();
+
     // Get tasks from the Zustand store
-    const tasks = useTaskStore((state) => state.tasks)
+    const tasksFromStore = useTaskStore((state) => state.tasks);
+
+    // Use tasks from the store if available, otherwise use the fetched tasks
+    const tasksToDisplay = tasksFromStore.length > 0 ? tasksFromStore : tasks;
 
     return (
         <div className="w-full space-y-6 px-8 py-16">
             <Header subtitle="Mis Tareas" title="Mis Tareas" />
             <div className="space-y-3 rounded-xl bg-white p-6">
-                {tasks.length === 0 ? (
+                {isLoading ? (
+                    <p className="text-sm text-brand-text-gray">Cargando tareas...</p>
+                ) : isError ? (
+                    <p className="text-sm text-red-500">Error al cargar las tareas.</p>
+                ) : tasksToDisplay.length === 0 ? (
                     <p className="text-sm text-brand-text-gray">
                         No hay tareas disponibles.
                     </p>
@@ -24,58 +37,32 @@ const Tasks = () => {
                                     <table className="rti:text-right w-full text-left text-sm text-gray-500 dark:text-gray-400">
                                         <thead className="sticky top-0 z-10 bg-white text-xs uppercase text-gray-600 shadow-md dark:bg-gray-600 dark:text-gray-400">
                                             <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3"
-                                                >
+                                                <th scope="col" className="px-6 py-3">
                                                     Status
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3"
-                                                >
+                                                <th scope="col" className="px-6 py-3">
                                                     Empresa
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3"
-                                                >
+                                                <th scope="col" className="px-6 py-3">
                                                     Proyecto
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3"
-                                                >
+                                                <th scope="col" className="px-6 py-3">
                                                     Fecha
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3"
-                                                >
+                                                <th scope="col" className="px-6 py-3">
                                                     Hora
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-4 text-right"
-                                                >
-                                                    tipo de hora
+                                                <th scope="col" className="px-6 py-4 text-right">
+                                                    Tipo de hora
                                                 </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-4 text-right"
-                                                >
+                                                <th scope="col" className="px-6 py-4 text-right">
                                                     Acciones
                                                 </th>
                                             </tr>
                                         </thead>
-                                        {/* Cabecera fija */}
-                                        {/* Cuerpo de la tabla con scroll */}
                                         <tbody>
-                                            {tasks.map((task) => (
-                                                <TaskItem
-                                                    key={task.id}
-                                                    task={task}
-                                                />
+                                            {tasksToDisplay.map((task) => (
+                                                <TaskItem key={task.id} task={task} />
                                             ))}
                                         </tbody>
                                     </table>
@@ -86,7 +73,7 @@ const Tasks = () => {
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Tasks
+export default Tasks;

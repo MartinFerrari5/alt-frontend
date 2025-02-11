@@ -66,7 +66,7 @@ const DisboardPage = () => {
                         <h4 className="text-xl font-semibold">Horas totales</h4>
                         {firstTask ? (
                             <span className="ml-2 text-sm text-brand-dark-gray">
-                                {firstTask.worked_hours}
+                                {firstTask.total}
                             </span>
                         ) : (
                             <p className="text-brand-dark-gray">

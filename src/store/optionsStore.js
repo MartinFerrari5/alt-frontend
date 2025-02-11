@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware"
 
 export const useOptionsStore = create(
     persist(
-        (set, get) => ({
+        (set) => ({
             // Estado para companies
             companies: null,
             setCompanies: (data) =>

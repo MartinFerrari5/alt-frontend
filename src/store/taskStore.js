@@ -14,9 +14,9 @@ const useTaskStore = create(
                         ...state.tasks,
                         {
                             ...newTask,
-                            task_date: new Date(
-                                newTask.task_date
-                            ).toISOString(),
+                            task_date: newTask.task_date
+                                ? new Date(newTask.task_date).toISOString()
+                                : null,
                         },
                     ],
                 }))
@@ -28,14 +28,15 @@ const useTaskStore = create(
                     tasks: state.tasks.map((task) =>
                         task.id === taskId
                             ? {
+                                  ...task,
                                   ...updatedTask,
-                                  task_date: new Date(
-                                      updatedTask.task_date
-                                  ).toISOString(),
+                                  task_date: updatedTask.task_date
+                                      ? new Date(updatedTask.task_date).toISOString()
+                                      : task.task_date, // Preserve existing date if not provided
                               }
                             : task
                     ),
-                }))
+                }));
             },
 
             // Eliminar una tarea
@@ -50,7 +51,7 @@ const useTaskStore = create(
                 set({
                     tasks: tasks.map((task) => ({
                         ...task,
-                        task_date: new Date(task.task_date).toISOString(),
+                        task_date: task.task_date ? new Date(task.task_date).toISOString() : null,
                     })),
                 })
             },

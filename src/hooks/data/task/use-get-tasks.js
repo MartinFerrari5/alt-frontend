@@ -12,6 +12,7 @@ export const useGetTasks = () => {
         queryFn: async () => {
             try {
                 const { data } = await api.get("/tasks")
+                console.log("🚀 Tareas obtenidas:", data.tasks)
                 setTasks(data.tasks)
                 return data.tasks
             } catch (error) {
