@@ -7,7 +7,7 @@ import useAuthStore from "./authStore";
 
 const useStatusStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Estado inicial
       statuses: [],
       currentTaskStatus: null,
