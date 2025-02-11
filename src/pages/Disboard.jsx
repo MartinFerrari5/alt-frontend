@@ -61,15 +61,17 @@ const DisboardPage = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="flex items-center justify-center space-y-6 rounded-[10px] bg-white p-6">
+                    <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
                         {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
-                        <h4 className="text-xl font-semibold">Horas totales</h4>
+                        <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                            Horas totales
+                        </h4>
                         {firstTask ? (
-                            <span className="ml-2 text-sm text-brand-dark-gray">
+                            <span className="font-normal text-gray-700 ">
                                 {firstTask.total}
                             </span>
                         ) : (
-                            <p className="text-brand-dark-gray">
+                            <p className="font-normal text-gray-700 ">
                                 No hay tareas disponibles.
                             </p>
                         )}
