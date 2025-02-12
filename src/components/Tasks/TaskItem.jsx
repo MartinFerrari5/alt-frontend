@@ -5,8 +5,6 @@ import { useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import {
-    AiFillDelete,
-    AiOutlineInfoCircle,
     AiOutlineLoading3Quarters,
 } from "react-icons/ai"
 
@@ -16,6 +14,7 @@ import useTaskStore from "../../store/taskStore"
 import Button from "../Button"
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 const TaskItem = ({ task }) => {
     console.log("TaskItem:", task)
@@ -114,11 +113,11 @@ const TaskItem = ({ task }) => {
                         {deleteTaskIsLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
                         ) : (
-                            <AiFillDelete className="text-brand-text-gray" />
+                            <FaTrash className="h-5 w-5" />
                         )}
                     </Button>
                     <Link to={`/task/${task.id}`}>
-                        <AiOutlineInfoCircle />
+                        <FaEdit className="h-5 w-5" />
                     </Link>
                 </td>
             </tr>

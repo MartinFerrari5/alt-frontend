@@ -1,4 +1,5 @@
 // src/components/Tasks/TaskHeader.jsx
+import { FaEdit } from "react-icons/fa"
 import { ArrowLeftIcon, ChevronRightIcon, TrashIcon } from "../../assets/icons"
 import Button from "../Button"
 import { Link } from "react-router-dom"
@@ -27,8 +28,9 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
         </div>
         <div className="flex gap-3">
             <Button className="h-fit self-end" color="ghost" onClick={onEdit}>
-                {isEditing ? "Cancelar edición" : "Editar tarea"}{" "}
-                {/* Cambia el texto del botón */}
+                {isEditing ? "Cancelar" :
+                <FaEdit className="h-5 w-5" />
+                }
             </Button>
             <Button
                 className="h-fit self-end"

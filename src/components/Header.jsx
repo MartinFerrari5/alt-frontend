@@ -7,7 +7,8 @@ import Button from "./Button"
 
 // import AddEmailDialog from "./email/AddEmailDialog"
 
-import { AddIcon, TrashIcon } from "../assets/icons"
+import { AddIcon } from "../assets/icons"
+// import { FaEdit, FaTrash } from "react-icons/fa"
 import AddOptionDialog from "./email/AddOptionDialog"
 import AddTaskDialog from "./Tasks/AddTaskDialog"
 
@@ -30,14 +31,6 @@ function Header({ subtitle, title }) {
             </div>
 
             <div className="flex items-center gap-3">
-                {adminPath ? (
-                    ""
-                ) : (
-                    <Button color="ghost">
-                        Limpiar tareas
-                        <TrashIcon />
-                    </Button>
-                )}
 
                 <Button onClick={() => setAddDialogIsOpen(true)}>
                     <AddIcon />
