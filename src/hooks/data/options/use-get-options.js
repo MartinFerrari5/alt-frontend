@@ -8,7 +8,7 @@ export const useGetOptions = (endpoint, queryKey) => {
         queryKey: [queryKey],
         queryFn: async () => {
             try {
-                const { data } = await api.get(`/options/${endpoint}`)
+                const { data } = await api.get(`/options?table=${endpoint}`)
                 return data
             } catch (error) {
                 console.error(

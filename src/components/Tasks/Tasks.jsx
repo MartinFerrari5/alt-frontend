@@ -1,15 +1,14 @@
 // src/components/Tasks/Tasks.jsx
-import { useGetTasks } from "../../hooks/data/task/use-get-tasks";
+import { useTasks } from "../../hooks/data/task/useTasks";
 
 import Header from "../Header";
 import TaskItem from "./TaskItem";
 import TaskFilter from "./TaskFilter";
-import useTaskStore from "../../store/taskStore";
 
 const Tasks = () => {
-  const { isLoading, isError } = useGetTasks();
-  const tasks = useTaskStore((state) => state.tasks);
-  const filterTasks = useTaskStore((state) => state.filterTasks);
+  // Obtenemos las tareas, el query de "getTasks" y la función para filtrar
+  const { tasks, getTasks, filterTasks } = useTasks();
+  const { isLoading, isError } = getTasks;
 
   const handleFilter = async ({ fullname, date }) => {
     await filterTasks(fullname, date);

@@ -3,12 +3,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { api } from "../lib/axios";
 
-// Función auxiliar para formatear una hora a "HH:mm:ss" si se recibe en "HH:mm"
-const formatTime = (timeStr) => {
-  if (!timeStr) return timeStr;
-  // Si tiene formato "HH:mm" (5 caracteres) se le agregan los segundos
-  return timeStr.length === 5 ? `${timeStr}:00` : timeStr;
-};
+// Función auxiliar para formatear la hora (opcional)
+// const formatTime = (timeStr) => {
+//   if (!timeStr) return timeStr;
+//   return timeStr.length === 5 ? `${timeStr}:00` : timeStr;
+// };
+
 
 const useTaskStore = create(
   persist(
@@ -16,49 +16,24 @@ const useTaskStore = create(
       tasks: [],
 
       // Agregar una tarea
-      addTask: (newTask) => {
-        set((state) => ({
-          tasks: [
-            ...state.tasks,
-            {
-              ...newTask,
-              task_date: newTask.task_date
-                ? new Date(newTask.task_date).toISOString()
-                : null,
-            },
-          ],
-        }));
-      },
+      addTask: (newTask) => set((state) => ({ tasks: [...state.tasks, newTask] })),
 
       // Actualizar una tarea
-      updateTask: (taskId, updatedTask) => {
+      updateTask: (taskId, updatedTask) =>
         set((state) => ({
           tasks: state.tasks.map((task) =>
-            task.id === taskId
-              ? {
-                  ...task,
-                  ...updatedTask,
-                  task_date: updatedTask.task_date
-                    ? new Date(updatedTask.task_date).toISOString()
-                    : task.task_date,
-                  entry_time: updatedTask.entry_time
-                    ? formatTime(updatedTask.entry_time)
-                    : task.entry_time,
-                  exit_time: updatedTask.exit_time
-                    ? formatTime(updatedTask.exit_time)
-                    : task.exit_time,
-                }
-              : task
+            task.id === taskId ? { ...task, ...updatedTask } : task
           ),
-        }));
-      },
+        })),
 
       // Eliminar una tarea
-      deleteTask: (taskId) => {
+      deleteTask: (taskId) =>
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== taskId),
-        }));
-      },
+        })),
+
+      // Establecer el listado completo de tareas
+      setTasks: (tasks) => set({ tasks }),
 
       // Filtrar tareas por nombre y fecha
       filterTasks: async (fullname, dateRange) => {
@@ -75,21 +50,8 @@ const useTaskStore = create(
           console.error("Error al filtrar tareas:", error);
         }
       },
-
-      // Establecer la lista completa de tareas (útil para cargar datos iniciales)
-      setTasks: (tasks) => {
-        set({
-          tasks: tasks.map((task) => ({
-            ...task,
-            task_date: task.task_date ? new Date(task.task_date).toISOString() : null,
-          })),
-        });
-      },
     }),
-    {
-      name: "task-storage",
-      getStorage: () => localStorage,
-    }
+    { name: "task-storage", getStorage: () => localStorage }
   )
 );
 
