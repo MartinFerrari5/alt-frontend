@@ -53,7 +53,7 @@ const Sidebar = () => {
                             <HomeIcon /> Inicio
                         </SidebarButton>
                         <SidebarButton to="/tasks">
-                            <TasksIcon /> Mis Tareas
+                            <TasksIcon /> Tareas
                         </SidebarButton>
                         {role === "admin" && (
                             <div className="relative">

@@ -4,10 +4,11 @@ import DashboardCards from "../components/DashboardCards"
 import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
 import TaskItem from "../components/Tasks/TaskItem"
-import useTaskStore from "../store/taskStore"
+import { useTasks } from "../hooks/data/task/useTasks"
+
 
 const DisboardPage = () => {
-    const tasks = useTaskStore((state) => state.tasks)
+  const { tasks } = useTasks();
 
     const validTasks = tasks.filter((task) => task?.id)
     const firstTask = validTasks[0]

@@ -1,98 +1,68 @@
 // src/store/optionsStore.js
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { getOptions, addOption, updateOption, deleteOption } from "../hooks/data/options/options";
 
 export const useOptionsStore = create(
-    persist(
-        (set) => ({
-            // Estado para companies
-            companies: null,
-            setCompanies: (data) =>
-                set((state) => ({
-                    companies:
-                        typeof data === "function"
-                            ? data(state.companies ?? [])
-                            : data,
-                })),
-            updateCompany: (id, updatedData) =>
-                set((state) => ({
-                    companies: state.companies
-                        ? state.companies.map((item) =>
-                              item.id === id
-                                  ? { ...item, ...updatedData }
-                                  : item
-                          )
-                        : [],
-                })),
+  persist(
+    (set) => ({
+      // Estados iniciales para cada tabla
+      companies: [],
+      hourTypes: [],
+      projects: [],
 
-            // Estado para hourTypes
-            hourTypes: null,
-            setHourTypes: (data) =>
-                set((state) => ({
-                    hourTypes:
-                        typeof data === "function"
-                            ? data(state.hourTypes ?? [])
-                            : data,
-                })),
-            updateHourType: (id, updatedData) =>
-                set((state) => ({
-                    hourTypes: state.hourTypes
-                        ? state.hourTypes.map((item) =>
-                              item.id === id
-                                  ? { ...item, ...updatedData }
-                                  : item
-                          )
-                        : [],
-                })),
-
-            // Estado para projects
-            projects: null,
-            setProjects: (data) =>
-                set((state) => ({
-                    projects:
-                        typeof data === "function"
-                            ? data(state.projects ?? [])
-                            : data,
-                })),
-            updateProject: (id, updatedData) =>
-                set((state) => ({
-                    projects: state.projects
-                        ? state.projects.map((item) =>
-                              item.id === id
-                                  ? { ...item, ...updatedData }
-                                  : item
-                          )
-                        : [],
-                })),
-
-            // Función para limpiar todos los datos de options
-            clearOptions: () =>
-                set({ companies: null, hourTypes: null, projects: null }),
-
-            // Función para agregar una opción a la tabla correspondiente
-            addOption: (table, option) => {
-                // Mapeo para normalizar el nombre de la tabla
-                const tableMapping = {
-                    companies_table: "companies",
-                    hour_type_table: "hourTypes",
-                    projects_table: "projects",
-                    emails_table: "emails", // En caso de que manejes emails
-                }
-
-                const normalizedKey = tableMapping[table] || table
-
-                set((state) => ({
-                    [normalizedKey]:
-                        state[normalizedKey] &&
-                        Array.isArray(state[normalizedKey])
-                            ? [...state[normalizedKey], option]
-                            : [option],
-                }))
-            },
-        }),
-        {
-            name: "options-storage", // Nombre único para la key en localStorage
-            getStorage: () => localStorage,
+      // Acción para obtener opciones y actualizar el estado
+      fetchOptions: async (table) => {
+        try {
+          const data = await getOptions(table);
+          set({ [table]: data });
+        } catch (error) {
+          console.error(`Error en fetchOptions para ${table}:`, error);
         }
-    )
-)
+      },
+
+      // Acción para agregar una opción y actualizar el estado
+      addOption: async (table, option) => {
+        try {
+          const newOption = await addOption(table, option);
+          set((state) => ({
+            [table]: state[table] ? [...state[table], newOption] : [newOption]
+          }));
+        } catch (error) {
+          console.error(`Error en addOption para ${table}:`, error);
+        }
+      },
+
+      // Acción para actualizar una opción y modificar el estado
+      updateOption: async (table, id, updatedData) => {
+        try {
+          const updatedOption = await updateOption(table, id, updatedData);
+          set((state) => ({
+            [table]: state[table].map(item => item.id === id ? updatedOption : item)
+          }));
+        } catch (error) {
+          console.error(`Error en updateOption para ${table}:`, error);
+        }
+      },
+
+      // Acción para eliminar una opción y limpiar el estado
+      deleteOption: async (table, id) => {
+        try {
+          await deleteOption(table, id);
+          set((state) => ({
+            [table]: state[table].filter(item => item.id !== id)
+          }));
+        } catch (error) {
+          console.error(`Error en deleteOption para ${table}:`, error);
+        }
+      },
+
+      // Acción para limpiar todas las opciones
+      clearOptions: () => set({ companies: [], hourTypes: [], projects: [] })
+    }),
+    {
+      name: "options-storage", // Nombre de la key en localStorage
+      getStorage: () => localStorage,
+    }
+  )
+);

@@ -18,7 +18,7 @@ export const useDeleteOptions = () => {
     const deleteOption = async ({ table, id }) => {
         const requestBody = { table }
         console.log("🟢 Eliminando opción:", table, id)
-        await api.delete(`/options/${id}`, { data: requestBody })
+        await api.delete(`/options?table=${id}`, { data: requestBody })
     }
 
     return useMutation({

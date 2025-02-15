@@ -12,7 +12,7 @@ export const useAddOptions = () => {
         mutationKey: optionMutationKeys.add(),
         mutationFn: async (option) => {
             try {
-                const { data } = await api.post("/options", option)
+                const { data } = await api.post(`/options?table=${option}`)
                 return data
             } catch (error) {
                 console.error(

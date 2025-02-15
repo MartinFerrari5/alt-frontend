@@ -11,7 +11,7 @@ export const useEditOptions = () => {
         mutationFn: async ({ table, id, updatedData }) => {
             try {
                 console.log("📌 Opción a actualizar:", updatedData)
-                const { data } = await api.put(`/options/${id}`, updatedData)
+                const { data } = await api.put(`/options?table=${id}`, updatedData)
                 return data
             } catch (error) {
                 console.error(
