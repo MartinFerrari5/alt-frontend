@@ -1,19 +1,27 @@
-// // src/hooks/data/use-add-email.js
+//  src/hooks/data/use-add-email.js
 
-import { useQuery } from "@tanstack/react-query"
-import { api } from "../../../lib/axios"
+import { useQuery } from "@tanstack/react-query";
+import { emailQueryKeys } from "../../../keys/queries";
+import { api } from "../../../lib/axios";
+import { useEmailStore } from "../../../store/emailStore";
 
-export const useGetEmail = () => {
-    return useQuery({
-        queryKey: ["emails"],
-        queryFn: async () => {
-            try {
-                const { data } = await api.get("/emails")
-                return data
-            } catch (error) {
-                console.error("❌ Error obteniendo los Emails:", error)
-                throw new Error("Error al obtener los Emails.")
-            }
-        },
-    })
-}
+export const useGetEmails = () => {
+  // Obtenemos el estado actual y la función para actualizarlo desde Zustand
+  const { emails, setEmails } = useEmailStore();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: emailQueryKeys.getAll(),
+    queryFn: async () => {
+      const response = await api.get("/emails");
+      return response.data;
+    },
+    onSuccess: (fetchedData) => {
+      setEmails(fetchedData);
+    },
+    // Fuerza la revalidación al montar (opcional, para depurar)
+    refetchOnMount: true,
+  });
+
+  // Si ya se obtuvo data por la query, se utiliza; de lo contrario, se utiliza el estado del store
+  return { emails: data || emails, isLoading, error };
+};

@@ -13,7 +13,6 @@ export const useAddTask = () => {
         mutationKey: taskMutationKeys.add(),
         mutationFn: async (task) => {
             try {
-                console.log("Creando tarea:", task)
                 const { data } = await api.post("/tasks", task)
                 return data
             } catch (error) {

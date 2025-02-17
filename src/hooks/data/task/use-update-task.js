@@ -12,7 +12,6 @@ export const useUpdateTask = (taskId) => {
   return useMutation({
     mutationKey: taskMutationKeys.update(taskId),
     mutationFn: async (data) => {
-      console.log("Datos enviados al servidor:", data);
       // Construir payload con los nombres de campo correctos
       const payload = {
         company: data.company?.trim(),

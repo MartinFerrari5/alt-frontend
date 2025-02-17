@@ -56,8 +56,6 @@ export const updateOption = async (table, id, updatedData) => {
  */
 export const deleteOption = async (table, id) => {
 // Se arma el payload que incluye table y id
-console.log("table", table)
-console.log("id", id)
   try {
     const requestBody = { table };
     const { data } = await api.delete(`/options?options_id=${id}`, { data: requestBody });

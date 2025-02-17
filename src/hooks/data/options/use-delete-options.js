@@ -17,7 +17,6 @@ export const useDeleteOptions = () => {
     // Función que realiza la petición DELETE
     const deleteOption = async ({ table, id }) => {
         const requestBody = { table }
-        console.log("🟢 Eliminando opción:", table, id)
         await api.delete(`/options?table=${id}`, { data: requestBody })
     }
 

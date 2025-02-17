@@ -32,7 +32,6 @@ export const useGetTasks = () => {
             }
             try {
                 const { data } = await api.get(`/tasks/user/${userId}`)
-                console.log("📌 Tareas obtenidas:", data.tasks)
                 return data.tasks
             } catch (error) {
                 console.error("❌ Error obteniendo las tareas:", error)
