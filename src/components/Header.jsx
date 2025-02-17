@@ -31,7 +31,6 @@ function Header({ subtitle, title }) {
             </div>
 
             <div className="flex items-center gap-3">
-
                 <Button onClick={() => setAddDialogIsOpen(true)}>
                     <AddIcon />
                     {adminPath ? "" : "Nueva tarea"}

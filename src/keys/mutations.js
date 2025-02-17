@@ -13,8 +13,8 @@ export const userMutationKeys = {
 
 export const emailMutationKeys = {
     add: () => ["add-email"],
-    edit: (emailId) => ["edit-email", emailId],      // Se agrega la función "edit"
-    remove: (emailId) => ["remove-email", emailId],  // Se agrega la función "remove"
+    edit: (emailId) => ["edit-email", emailId], // Se agrega la función "edit"
+    remove: (emailId) => ["remove-email", emailId], // Se agrega la función "remove"
 }
 
 export const optionMutationKeys = {

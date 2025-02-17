@@ -28,9 +28,7 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
         </div>
         <div className="flex gap-3">
             <Button className="h-fit self-end" color="ghost" onClick={onEdit}>
-                {isEditing ? "Cancelar" :
-                <FaEdit className="h-5 w-5" />
-                }
+                {isEditing ? "Cancelar" : <FaEdit className="h-5 w-5" />}
             </Button>
             <Button
                 className="h-fit self-end"

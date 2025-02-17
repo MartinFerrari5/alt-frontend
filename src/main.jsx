@@ -73,7 +73,7 @@ const router = createBrowserRouter([
         path: "/admin/exported",
         element: (
             <ProtectedRoute adminOnly={true}>
-                <Status/>
+                <Status />
             </ProtectedRoute>
         ),
     },

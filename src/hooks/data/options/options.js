@@ -1,20 +1,20 @@
 // src/api/options.js
 
-import { api } from "../../../lib/axios";
+import { api } from "../../../lib/axios"
 
 /**
  * Obtiene las opciones según la tabla
  * @param {string} table - Nombre de la tabla (ej: companies, hourTypes, projects)
  */
 export const getOptions = async (table) => {
-  try {
-    const { data } = await api.get(`/options?table=${table}`);
-    return data;
-  } catch (error) {
-    console.error(`Error obteniendo opciones de ${table}:`, error);
-    throw error;
-  }
-};
+    try {
+        const { data } = await api.get(`/options?table=${table}`)
+        return data
+    } catch (error) {
+        console.error(`Error obteniendo opciones de ${table}:`, error)
+        throw error
+    }
+}
 
 /**
  * Crea una nueva opción en la tabla indicada
@@ -22,16 +22,17 @@ export const getOptions = async (table) => {
  * @param {object} option - Datos de la nueva opción
  */
 export const addOption = async (table, option) => {
-  try {
-    // Se arma el payload que incluye table y option
-    const payload = { table, option };
-    const { data } = await api.post(`/options`, payload);
-    return data;
-  } catch (error) {
-    console.error(`Error creando opción en ${table}:`, error);
-    throw error;
-  }
-};
+    try {
+        // Se arma el payload que incluye table y option
+        const payload = { table, option }
+        const { data } = await api.post(`/options`, payload)
+        console.log(data)
+        return data
+    } catch (error) {
+        console.error(`Error creando opción en ${table}:`, error)
+        throw error
+    }
+}
 
 /**
  * Actualiza una opción existente
@@ -40,14 +41,14 @@ export const addOption = async (table, option) => {
  * @param {object} updatedData - Datos a actualizar
  */
 export const updateOption = async (table, id, updatedData) => {
-  try {
-    const { data } = await api.put(`/options?table=${id}`, updatedData);
-    return data;
-  } catch (error) {
-    console.error(`Error actualizando opción en ${table}:`, error);
-    throw error;
-  }
-};
+    try {
+        const { data } = await api.put(`/options?table=${id}`, updatedData)
+        return data
+    } catch (error) {
+        console.error(`Error actualizando opción en ${table}:`, error)
+        throw error
+    }
+}
 
 /**
  * Elimina una opción de la tabla
@@ -55,14 +56,15 @@ export const updateOption = async (table, id, updatedData) => {
  * @param {number|string} id - Identificador de la opción
  */
 export const deleteOption = async (table, id) => {
-// Se arma el payload que incluye table y id
-  try {
-    const requestBody = { table };
-    const { data } = await api.delete(`/options?options_id=${id}`, { data: requestBody });
-    return data;
-  } catch (error) {
-    console.error(`Error eliminando opción en ${table}:`, error);
-    throw error;
-  }
-};
-
+    // Se arma el payload que incluye table y id
+    try {
+        const requestBody = { table }
+        const { data } = await api.delete(`/options?options_id=${id}`, {
+            data: requestBody,
+        })
+        return data
+    } catch (error) {
+        console.error(`Error eliminando opción en ${table}:`, error)
+        throw error
+    }
+}

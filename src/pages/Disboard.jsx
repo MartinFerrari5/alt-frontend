@@ -6,9 +6,8 @@ import Sidebar from "../components/Sidebar"
 import TaskItem from "../components/Tasks/TaskItem"
 import { useTasks } from "../hooks/data/task/useTasks"
 
-
 const DisboardPage = () => {
-  const { tasks } = useTasks();
+    const { tasks } = useTasks()
 
     const validTasks = tasks.filter((task) => task?.id)
     const firstTask = validTasks[0]
@@ -62,17 +61,17 @@ const DisboardPage = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div className="block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                         {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
                         <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
                             Horas totales
                         </h4>
                         {firstTask ? (
-                            <span className="font-normal text-gray-700 ">
+                            <span className="font-normal text-gray-700">
                                 {firstTask.total}
                             </span>
                         ) : (
-                            <p className="font-normal text-gray-700 ">
+                            <p className="font-normal text-gray-700">
                                 No hay tareas disponibles.
                             </p>
                         )}

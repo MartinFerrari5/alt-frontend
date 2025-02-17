@@ -1,8 +1,18 @@
 import PropTypes from "prop-types"
 
-const Dropdown = ({ id, label, register, error, isLoading, isError, items, loadingText, errorText }) => {
+const Dropdown = ({
+    id,
+    label,
+    register,
+    error,
+    isLoading,
+    isError,
+    items,
+    loadingText,
+    errorText,
+}) => {
     return (
-        <div className="mb-6">
+        <div className="relative z-0 w-full mb-5 group">
             <label htmlFor={id} className="mb-1 block">
                 {label}
             </label>
@@ -17,9 +27,9 @@ const Dropdown = ({ id, label, register, error, isLoading, isError, items, loadi
                 ) : isError ? (
                     <option className="text-red-500">{errorText}</option>
                 ) : (
-                    items.map((item, index) => (
-                        <option key={index} value={item}>
-                            {item}
+                    items.map((item) => (
+                        <option key={item.id} value={item.id}>
+                            {item.options}
                         </option>
                     ))
                 )}
@@ -36,7 +46,13 @@ Dropdown.propTypes = {
     error: PropTypes.object,
     isLoading: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
-    items: PropTypes.array.isRequired,
+    items: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+                .isRequired,
+            options: PropTypes.string.isRequired,
+        })
+    ).isRequired,
     loadingText: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
 }
