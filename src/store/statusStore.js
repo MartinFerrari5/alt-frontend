@@ -1,5 +1,4 @@
 // /src/store/statusStore.js
-
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { api } from "../lib/axios"
@@ -14,8 +13,12 @@ const useStatusStore = create(
             loading: false,
             error: null,
 
+            // Setter para actualizar directamente el listado de statuses
+            setStatuses: (statuses) => set({ statuses }),
+
             /**
-             * Obtiene todos los estados y actualiza el store.
+             * Obtiene todos los status y actualiza el store.
+             * (Este método lo usaremos desde el hook si se desea realizar la consulta desde el store)
              */
             fetchStatuses: async () => {
                 const { role } = useAuthStore.getState()
@@ -39,8 +42,8 @@ const useStatusStore = create(
             },
 
             /**
-             * Crea un nuevo estado y lo agrega al store.
-             * Se espera que el parámetro tenga la siguiente estructura:
+             * Crea un nuevo status y lo agrega al store.
+             * Se espera recibir un objeto con la siguiente estructura:
              * {
              *   tasks: [ ... ], // Array de tareas
              *   id: "..."       // Identificador (por ejemplo, user_id)
@@ -66,9 +69,9 @@ const useStatusStore = create(
             },
 
             /**
-             * Actualiza un estado existente en el store.
+             * Actualiza un status existente en el store.
              *
-             * @param {number|string} id - ID del estado a actualizar.
+             * @param {number|string} id - ID del status a actualizar.
              * @param {Object} updatedData - Datos actualizados.
              */
             updateStatus: async (id, updatedData) => {
@@ -98,7 +101,7 @@ const useStatusStore = create(
             },
 
             /**
-             * Obtiene el estado asociado a una tarea específica y lo guarda en el store.
+             * Obtiene el status asociado a una tarea específica y lo guarda en el store.
              *
              * @param {number|string} task_id - ID de la tarea.
              */
@@ -132,7 +135,7 @@ const useStatusStore = create(
             clearError: () => set({ error: null }),
         }),
         {
-            name: "status-store", // Nombre de la clave en localStorage
+            name: "status-store", // Clave para localStorage
         }
     )
 )

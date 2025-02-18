@@ -77,15 +77,15 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                 ...watch(),
                 company:
                     companies_table.length > 0
-                        ? companies_table[0].id
+                        ? companies_table[0].company
                         : watch("company"),
                 project:
                     projects_table.length > 0
-                        ? projects_table[0].id
+                        ? projects_table[0].project
                         : watch("project"),
                 hour_type:
                     hour_type_table.length > 0
-                        ? hour_type_table[0].id
+                        ? hour_type_table[0].hour_type
                         : watch("hour_type"),
             })
         }
@@ -115,7 +115,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         // Realiza la llamada a la API
         addTask(taskPayload, {
             onSuccess: (createdTask) => {
-                useTaskStore.getState().updateTask(createdTask.id, {
+                useTaskStore.getState().updateTask(createdTask.name, {
                     status: createdTask.status,
                 })
                 setAlert({
@@ -167,68 +167,68 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                     />
                                 )}
                                 <form onSubmit={handleSubmit(handleSaveClick)}>
-                                    <div className="max-w-md mx-auto">
-                                      <div className="grid md:grid-cols-2 md:gap-6">
-                                        <Dropdown
-                                            id="company"
-                                            label="Empresa"
-                                            register={register}
-                                            error={errors.company}
-                                            isLoading={isLoadingCompanies}
-                                            isError={false}
-                                            items={companies_table}
-                                            loadingText="Cargando empresas..."
-                                            errorText="Error cargando empresas"
-                                        />
+                                    <div className="mx-auto max-w-md">
+                                        <div className="grid md:grid-cols-2 md:gap-6">
+                                            <Dropdown
+                                                id="company"
+                                                label="Empresa"
+                                                register={register}
+                                                error={errors.company}
+                                                isLoading={isLoadingCompanies}
+                                                isError={false}
+                                                items={companies_table}
+                                                loadingText="Cargando empresas..."
+                                                errorText="Error cargando empresas"
+                                            />
 
-                                        <Dropdown
-                                            id="project"
-                                            label="Proyecto"
-                                            register={register}
-                                            error={errors.project}
-                                            isLoading={isLoadingProjects}
-                                            isError={false}
-                                            items={projects_table}
-                                            loadingText="Cargando proyectos..."
-                                            errorText="Error cargando proyectos"
-                                        />
+                                            <Dropdown
+                                                id="project"
+                                                label="Proyecto"
+                                                register={register}
+                                                error={errors.project}
+                                                isLoading={isLoadingProjects}
+                                                isError={false}
+                                                items={projects_table}
+                                                loadingText="Cargando proyectos..."
+                                                errorText="Error cargando proyectos"
+                                            />
 
-                                        <Dropdown
-                                            id="hour_type"
-                                            label="Tipo de Hora"
-                                            register={register}
-                                            error={errors.hour_type}
-                                            isLoading={isLoadingHourTypes}
-                                            isError={false}
-                                            items={hour_type_table}
-                                            loadingText="Cargando tipos de hora..."
-                                            errorText="Error cargando tipos de hora"
-                                        />
-                                        <div className="relative z-0 w-full mb-5 group">
-                                            <label
-                                                htmlFor="status"
-                                                className="mb-1 block"
-                                            >
-                                                Estado
-                                            </label>
-                                            <select
-                                                id="status"
-                                                {...register("status")}
-                                                className="form-select"
-                                            >
-                                                {Object.keys(statusMap).map(
-                                                    (status) => (
-                                                        <option
-                                                            key={status}
-                                                            value={status}
-                                                        >
-                                                            {status}
-                                                        </option>
-                                                    )
-                                                )}
-                                            </select>
+                                            <Dropdown
+                                                id="hour_type"
+                                                label="Tipo de Hora"
+                                                register={register}
+                                                error={errors.hour_type}
+                                                isLoading={isLoadingHourTypes}
+                                                isError={false}
+                                                items={hour_type_table}
+                                                loadingText="Cargando tipos de hora..."
+                                                errorText="Error cargando tipos de hora"
+                                            />
+                                            <div className="group relative z-0 mb-5 w-full">
+                                                <label
+                                                    htmlFor="status"
+                                                    className="mb-1 block"
+                                                >
+                                                    Estado
+                                                </label>
+                                                <select
+                                                    id="status"
+                                                    {...register("status")}
+                                                    className="form-select"
+                                                >
+                                                    {Object.keys(statusMap).map(
+                                                        (status) => (
+                                                            <option
+                                                                key={status}
+                                                                value={status}
+                                                            >
+                                                                {status}
+                                                            </option>
+                                                        )
+                                                    )}
+                                                </select>
+                                            </div>
                                         </div>
-                                      </div>
 
                                         <Input
                                             id="task_type"
@@ -248,46 +248,49 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             }
                                         />
 
-                                      <div className="grid md:grid-cols-2 md:gap-6">
-                                        <DatePicker
-                                            value={taskDate}
-                                            onChange={setTaskDate}
-                                            className="relative z-0 w-full mb-5 group"
-                                        />
-                                        <div className="relative z-0 w-full mb-5 group">
-                                          <Input
-                                              id="entry_time"
-                                              label="Hora de Entrada"
-                                              type="time"
-                                              {...register("entry_time")}
-                                              errorMessage={
-                                                  errors.entry_time?.message
-                                              }
-                                          />
+                                        <div className="grid md:grid-cols-2 md:gap-6">
+                                            <DatePicker
+                                                value={taskDate}
+                                                onChange={setTaskDate}
+                                                className="group relative z-0 mb-5 w-full"
+                                            />
+                                            <div className="group relative z-0 mb-5 w-full">
+                                                <Input
+                                                    id="entry_time"
+                                                    label="Hora de Entrada"
+                                                    type="time"
+                                                    {...register("entry_time")}
+                                                    errorMessage={
+                                                        errors.entry_time
+                                                            ?.message
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="group relative z-0 mb-5 w-full">
+                                                <Input
+                                                    id="exit_time"
+                                                    label="Hora de Salida"
+                                                    type="time"
+                                                    {...register("exit_time")}
+                                                    errorMessage={
+                                                        errors.exit_time
+                                                            ?.message
+                                                    }
+                                                />
+                                            </div>
+                                            <div className="group relative z-0 mb-5 w-full">
+                                                <Input
+                                                    id="lunch_hours"
+                                                    label="Horas de Almuerzo"
+                                                    type="number"
+                                                    {...register("lunch_hours")}
+                                                    errorMessage={
+                                                        errors.lunch_hours
+                                                            ?.message
+                                                    }
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="relative z-0 w-full mb-5 group">
-                                          <Input
-                                              id="exit_time"
-                                              label="Hora de Salida"
-                                              type="time"
-                                              {...register("exit_time")}
-                                              errorMessage={
-                                                  errors.exit_time?.message
-                                              }
-                                          />
-                                        </div>
-                                        <div className="relative z-0 w-full mb-5 group">
-                                          <Input
-                                              id="lunch_hours"
-                                              label="Horas de Almuerzo"
-                                              type="number"
-                                              {...register("lunch_hours")}
-                                              errorMessage={
-                                                  errors.lunch_hours?.message
-                                              }
-                                          />
-                                        </div>
-                                      </div>
                                     </div>
 
                                     <div className="flex justify-end gap-3">

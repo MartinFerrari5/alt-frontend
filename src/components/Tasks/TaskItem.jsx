@@ -84,20 +84,22 @@ const TaskItem = ({ task }) => {
     return (
         <>
             <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-5 font-medium">
+                {/* <td className="whitespace-nowrap px-6 py-5 font-medium">
                     <StatusIndicator
                         status={task.status}
                         isLoading={updateTaskIsLoading}
                         onChange={handleCheckboxClick}
                     />
-                </td>
-                <td className="px-6 py-5">{task.company}</td>
-                <td className="px-6 py-5">{task.project}</td>
-                <td className="px-6 py-5">{formatDate(task.task_date)}</td>
-                <td className="px-6 py-5">
+                </td> */}
+                <td className="px-4 py-5">{task.full_name}</td>
+                <td className="px-4 py-5">{task.company}</td>
+                <td className="px-4 py-5">{task.project}</td>
+                <td className="px-4 py-5">{formatDate(task.task_date)}</td>
+                <td className="px-4 py-5">
                     {task.entry_time} - {task.exit_time}
                 </td>
-                <td className="px-6 py-5">{task.hour_type}</td>
+                <td className="px-4 py-5">{task.hour_type}</td>
+                <td className="px-4 py-5">{task.worked_hours}</td>
                 <td className="flex justify-end gap-2 px-6 py-5 text-right">
                     <Button
                         color="ghost"

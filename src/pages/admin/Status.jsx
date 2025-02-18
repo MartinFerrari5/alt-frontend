@@ -1,5 +1,5 @@
-import StatusManager from "../components/admin/StatusManager/StatusManager"
-import Sidebar from "../components/Sidebar"
+import StatusManager from "../../components/admin/StatusManager/StatusManager"
+import Sidebar from "../../components/Sidebar"
 
 export const Status = () => {
     return (

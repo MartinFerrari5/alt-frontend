@@ -12,7 +12,7 @@ const Dropdown = ({
     errorText,
 }) => {
     return (
-        <div className="relative z-0 w-full mb-5 group">
+        <div className="group relative z-0 mb-5 w-full">
             <label htmlFor={id} className="mb-1 block">
                 {label}
             </label>
@@ -28,7 +28,7 @@ const Dropdown = ({
                     <option className="text-red-500">{errorText}</option>
                 ) : (
                     items.map((item) => (
-                        <option key={item.id} value={item.id}>
+                        <option key={item.id} value={item.options}>
                             {item.options}
                         </option>
                     ))

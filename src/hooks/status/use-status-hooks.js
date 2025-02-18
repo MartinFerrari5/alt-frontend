@@ -27,6 +27,7 @@ export const useGetStatus = () => {
                 )
             }
             const { data } = await api.get("/status")
+            console.log("data", data)
             return data
         },
         enabled: role === "admin",
@@ -37,7 +38,7 @@ export const useGetStatus = () => {
  * Hook para crear un nuevo status.
  * Se espera recibir un objeto con la siguiente estructura:
  * {
- *    tasks: [ ... ], // Array de tareas (ver ejemplo arriba)
+ *    tasks: [ ... ], // Array de tareas
  *    id: "..."       // Un identificador (puede ser el user_id u otro)
  * }
  *
@@ -55,7 +56,7 @@ export const useCreateStatus = () => {
             if (role !== "admin") {
                 throw new Error("No tienes permisos para crear un status.")
             }
-            // El payload debe tener la estructura requerida (tasks y id)
+            // Realiza la petición para crear el status
             const { data } = await api.post("/status/download", payload)
             return data
         },

@@ -16,7 +16,7 @@ import TasksPage from "./pages/Tasks.jsx"
 import ManagementPage from "./pages/admin/Management.jsx"
 import UsersPage from "./pages/admin/Users.jsx"
 import NotFoundPage from "./pages/NotFound.jsx" // Import a NotFound page
-import { Status } from "./pages/Status.jsx"
+import { Status } from "./pages/admin/Status.jsx"
 
 const queryClient = new QueryClient()
 

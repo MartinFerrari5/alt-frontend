@@ -39,25 +39,28 @@ const Tasks = () => {
                                     <table className="w-full text-left text-sm text-gray-500">
                                         <thead className="sticky top-0 bg-white text-xs uppercase text-gray-600 shadow-md">
                                             <tr>
-                                                <th className="px-6 py-3">
-                                                    Status
+                                                <th className="px-4 py-3">
+                                                    Usuario
                                                 </th>
-                                                <th className="px-6 py-3">
+                                                <th className="px-4 py-3">
                                                     Empresa
                                                 </th>
-                                                <th className="px-6 py-3">
+                                                <th className="px-4 py-3">
                                                     Proyecto
                                                 </th>
-                                                <th className="px-6 py-3">
+                                                <th className="px-4 py-3">
                                                     Fecha
                                                 </th>
-                                                <th className="px-6 py-3">
+                                                <th className="px-4 py-3">
                                                     Hora
                                                 </th>
-                                                <th className="px-6 py-3 text-right">
+                                                <th className="px-4 py-3">
                                                     Tipo de hora
                                                 </th>
-                                                <th className="px-6 py-3 text-right">
+                                                <th className="px-4 py-3">
+                                                    hs trabajadas
+                                                </th>
+                                                <th className="px-4 py-3">
                                                     Acciones
                                                 </th>
                                             </tr>

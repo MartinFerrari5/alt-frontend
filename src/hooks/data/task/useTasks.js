@@ -16,6 +16,7 @@ export const useTasks = () => {
         queryKey: taskQueryKeys.getAll(),
         queryFn: async () => {
             const { data } = await api.get("/tasks")
+            console.log("Task: ", data)
             setTasks(data.tasks)
             return data.tasks
         },
@@ -26,6 +27,7 @@ export const useTasks = () => {
     const addTaskMutation = useMutation({
         mutationKey: taskMutationKeys.add(),
         mutationFn: async (task) => {
+            console.log("Task: ", task)
             const { data } = await api.post("/tasks", task)
             return data
         },
