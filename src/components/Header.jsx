@@ -8,7 +8,7 @@ import AddOptionDialog from "./email/AddOptionDialog"
 import AddTaskDialog from "./Tasks/AddTaskDialog"
 import DownloadExcelButton from "./admin/DownloadExcelButton"
 
-function Header({ subtitle, title, tasks = [] }) {
+function Header({ subtitle, title, tasks }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
 
