@@ -26,8 +26,7 @@ export const addOption = async (table, option) => {
         // Se arma el payload que incluye table y option
         const payload = { table, option }
         const { data } = await api.post(`/options`, payload)
-        console.log("Option: ", data)
-        return data
+        return data.option
     } catch (error) {
         console.error(`Error creando opción en ${table}:`, error)
         throw error

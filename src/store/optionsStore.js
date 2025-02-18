@@ -3,9 +3,9 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import {
     getOptions,
-    addOption,
-    updateOption,
-    deleteOption,
+    addOption as apiAddOption,
+    updateOption as apiUpdateOption,
+    deleteOption as apiDeleteOption,
 } from "../hooks/data/options/options"
 
 export const useOptionsStore = create(
@@ -29,11 +29,14 @@ export const useOptionsStore = create(
             // Acción para agregar una opción y actualizar el estado
             addOption: async (table, option) => {
                 try {
-                    const newOption = await addOption(table, option)
+                    // Se llama a la función de la API que retorna el nuevo elemento con id
+                    const newOption = await apiAddOption(table, option)
+                    // Se actualiza el estado con el nuevo elemento
+                    console.log(newOption)
                     set((state) => ({
                         [table]: state[table]
-                            ? [...state[table], newOption.option]
-                            : [newOption.option],
+                            ? [...state[table], newOption]
+                            : [newOption],
                     }))
                 } catch (error) {
                     console.error(`Error en addOption para ${table}:`, error)
@@ -43,7 +46,7 @@ export const useOptionsStore = create(
             // Acción para actualizar una opción y modificar el estado
             updateOption: async (table, id, updatedData) => {
                 try {
-                    const updatedOption = await updateOption(
+                    const updatedOption = await apiUpdateOption(
                         table,
                         id,
                         updatedData
@@ -61,7 +64,7 @@ export const useOptionsStore = create(
             // Acción para eliminar una opción y limpiar el estado
             deleteOption: async (table, id) => {
                 try {
-                    await deleteOption(table, id)
+                    await apiDeleteOption(table, id)
                     set((state) => ({
                         [table]: state[table].filter((item) => item.id !== id),
                     }))

@@ -263,7 +263,7 @@ const DataTable = ({
                             data.map((item, index = item.id) => {
                                 const name = isEmailTable
                                     ? item.email
-                                    : item.options
+                                    : item.options || item.option
                                 return editingIndex === index ? (
                                     <TableItemEdit
                                         key={item.id}
