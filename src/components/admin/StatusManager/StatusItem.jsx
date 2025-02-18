@@ -34,7 +34,6 @@ const StatusItem = ({ task }) => {
             <td className="px-4 py-5">{task.hour_type}</td>
             <td className="px-4 py-5">{task.lunch_hours}</td>
             <td className="px-4 py-5">{task.status}</td>
-            <td className="px-4 py-5">{task.user_id}</td>
             <td className="px-4 py-5">{formatDate(task.task_date)}</td>
             <td className="px-4 py-5">{task.worked_hours}</td>
             <td className="px-4 py-5">{task.full_name}</td>

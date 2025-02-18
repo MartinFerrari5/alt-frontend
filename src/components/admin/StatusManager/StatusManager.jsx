@@ -8,8 +8,8 @@ const StatusManager = () => {
     useGetStatus()
 
     return (
-        <div>
-            <Header subtitle="Mis Tareas" title="Mis Tareas" />
+        <div className="w-full space-y-6 px-8 py-16">
+            <Header subtitle="Exportados" title="Exportados" />
             <StatusTable />
         </div>
     )
