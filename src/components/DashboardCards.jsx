@@ -9,8 +9,8 @@ const DashboardCards = () => {
 
     // Count tasks based on their status
     const notStartedTasks = tasks.filter((task) => task.status === 0).length // Status 0: Not Started
-    const inProgressTasks = tasks.filter((task) => task.status === 1).length // Status 1: In Progress
-    const completedTasks = tasks.filter((task) => task.status === 2).length // Status 2: Completed
+    const inProgressTasks = tasks.filter((task) => task.status === 0).length // Status 1: In Progress
+    const completedTasks = tasks.filter((task) => task.status === 1).length // Status 2: Completed
 
     return (
         <div className="grid grid-cols-4 gap-9">
@@ -22,11 +22,11 @@ const DashboardCards = () => {
             />
 
             {/* Not Started Tasks */}
-            <DashboardCard
+            {/* <DashboardCard
                 icon={<FaTasks className="text-2xl text-brand-dark-blue" />} // Use FaTasks icon
                 mainText={notStartedTasks}
                 secondaryText="Tareas no iniciadas"
-            />
+            /> */}
 
             {/* In Progress Tasks */}
             <DashboardCard
