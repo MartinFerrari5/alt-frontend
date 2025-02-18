@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { Toaster } from "sonner"
+import { ToastContainer } from "react-toastify"         // Importa ToastContainer de react‑toastify
+import "react-toastify/dist/ReactToastify.css"           // Importa el CSS de react‑toastify
 
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx"
 import PageRegister from "./pages/auth/Register.jsx"
@@ -15,7 +16,7 @@ import TaskDetailsPage from "./pages/TaskDetails.jsx"
 import TasksPage from "./pages/Tasks.jsx"
 import ManagementPage from "./pages/admin/Management.jsx"
 import UsersPage from "./pages/admin/Users.jsx"
-import NotFoundPage from "./pages/NotFound.jsx" // Import a NotFound page
+import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
 
 const queryClient = new QueryClient()
@@ -86,7 +87,18 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <Toaster toastOptions={{ style: { color: "#35383E" } }} />
+            {/* Aquí se agrega el ToastContainer para que las notificaciones se muestren globalmente */}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <RouterProvider router={router} />
         </QueryClientProvider>
     </React.StrictMode>
