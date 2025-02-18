@@ -25,8 +25,8 @@ const DisboardPage = () => {
                             Resumen de las tareas disponibles
                         </span>
                         <div className="relative max-h-[400px] overflow-y-auto shadow-md sm:rounded-lg">
-                            <table className="w-full text-left text-sm text-gray-500 ">
-                                <thead className="sticky top-0 z-10  text-xs uppercase  bg-gray-600 text-gray-400">
+                            <table className="w-full text-left text-sm text-gray-500">
+                                <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                     <tr className="">
                                         <th className="px-6 py-3">Status</th>
                                         <th className="px-6 py-3">Empresa</th>

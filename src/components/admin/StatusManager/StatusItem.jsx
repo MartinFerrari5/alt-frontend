@@ -1,12 +1,11 @@
 // src/components/admin/StatusManager/StatusItem.jsx
 
-// src/components/admin/StatusManager/StatusItem.jsx
 import PropTypes from "prop-types"
 import { useCallback } from "react"
 
 const StatusItem = ({ task }) => {
     console.log("Task:", task)
-    // Definición local de la función formatDate
+    // Función para formatear la fecha
     const formatDate = useCallback((dateString) => {
         if (!dateString) return "Fecha no disponible"
 
@@ -23,6 +22,9 @@ const StatusItem = ({ task }) => {
         }).format(parsedDate)
     }, [])
 
+    // Si task.status es "1" o 1, se muestra "completado"; de lo contrario, "progreso"
+    const displayStatus = task.status === "1" || task.status === 1 ? "completado" : "progreso"
+
     return (
         <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
             <td className="px-4 py-5">{task.company}</td>
@@ -33,7 +35,7 @@ const StatusItem = ({ task }) => {
             <td className="px-4 py-5">{task.exit_time}</td>
             <td className="px-4 py-5">{task.hour_type}</td>
             <td className="px-4 py-5">{task.lunch_hours}</td>
-            <td className="px-4 py-5">{task.status}</td>
+            <td className="px-4 py-5">{displayStatus}</td>
             <td className="px-4 py-5">{formatDate(task.task_date)}</td>
             <td className="px-4 py-5">{task.worked_hours}</td>
             <td className="px-4 py-5">{task.full_name}</td>

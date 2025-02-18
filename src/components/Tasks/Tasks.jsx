@@ -37,7 +37,7 @@ const Tasks = () => {
                             <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                                 <div className="max-h-[500px] overflow-y-auto rounded-lg border">
                                     <table className="w-full text-left text-sm text-gray-500">
-                                        <thead className="sticky top-0 bg-white text-xs uppercase text-gray-600 shadow-md">
+                                        <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                             <tr>
                                                 <th className="px-4 py-3">
                                                     Usuario

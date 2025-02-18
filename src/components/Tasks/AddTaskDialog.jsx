@@ -57,12 +57,12 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             company: "",
             project: "",
             task_type: "Development",
-            task_description: "",
+            task_description: "Tarea de prueba",
             entry_time: "09:00",
             exit_time: "18:00",
             lunch_hours: "1",
             hour_type: "",
-            status: "en progreso",
+            status: "progreso",
         },
     })
 

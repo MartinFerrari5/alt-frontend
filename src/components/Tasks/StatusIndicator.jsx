@@ -7,12 +7,11 @@ import { FaCheck, FaSpinner } from "react-icons/fa"
 const StatusIndicator = ({ status, isLoading, onChange }) => {
     const statusClasses = useMemo(() => {
         switch (status) {
-            case 2: // Completed
+            case 1: // Completed
                 return "bg-brand-custom-green text-brand-custom-green"
-            case 1: // In Progress
+            case 0:
+            default: // In Progress
                 return "bg-brand-process text-brand-process"
-            default:
-                return "bg-brand-dark-blue bg-opacity-5 text-brand-dark-blue"
         }
     }, [status])
 
@@ -22,17 +21,13 @@ const StatusIndicator = ({ status, isLoading, onChange }) => {
         >
             <input
                 type="checkbox"
-                checked={status === 2}
+                checked={status === 1}
                 className="absolute h-full w-full cursor-pointer opacity-0"
                 onChange={onChange}
                 disabled={isLoading}
             />
-            {status === 2 && <FaCheck className="text-white" />}{" "}
-            {/* Completed */}
-            {status === 1 && (
-                <FaSpinner className="animate-spin text-white" />
-            )}{" "}
-            {/* In Progress */}
+            {status === 1 && <FaCheck className="text-white" />}
+            {status === 0 && <FaSpinner className="animate-spin text-white" />}
         </label>
     )
 }
