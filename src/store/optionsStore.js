@@ -32,8 +32,8 @@ export const useOptionsStore = create(
                     const newOption = await addOption(table, option)
                     set((state) => ({
                         [table]: state[table]
-                            ? [...state[table], newOption]
-                            : [newOption],
+                            ? [...state[table], newOption.option]
+                            : [newOption.option],
                     }))
                 } catch (error) {
                     console.error(`Error en addOption para ${table}:`, error)

@@ -1,5 +1,4 @@
 // src/pages/Disboard.jsx
-
 import DashboardCards from "../components/DashboardCards"
 import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
@@ -7,9 +6,11 @@ import TaskItem from "../components/Tasks/TaskItem"
 import { useTasks } from "../hooks/data/task/useTasks"
 
 const DisboardPage = () => {
+    // Ensure that useTasks returns tasks as an array by default.
     const { tasks } = useTasks()
 
-    const validTasks = tasks.filter((task) => task?.id)
+    // Fallback to an empty array if tasks is undefined
+    const validTasks = (tasks || []).filter((task) => task?.id)
     const firstTask = validTasks[0]
 
     return (
@@ -27,7 +28,7 @@ const DisboardPage = () => {
                         <div className="relative max-h-[400px] overflow-y-auto shadow-md sm:rounded-lg">
                             <table className="w-full text-left text-sm text-gray-500">
                                 <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
-                                    <tr className="">
+                                    <tr>
                                         <th className="px-6 py-3">Status</th>
                                         <th className="px-6 py-3">Empresa</th>
                                         <th className="px-6 py-3">Proyecto</th>
@@ -46,7 +47,7 @@ const DisboardPage = () => {
                                     {validTasks.length === 0 ? (
                                         <tr>
                                             <td
-                                                colSpan="6"
+                                                colSpan="8"
                                                 className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                             >
                                                 No hay tareas disponibles.
@@ -65,7 +66,6 @@ const DisboardPage = () => {
                         </div>
                     </div>
                     <div className="block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        {/* Verificar si hay tareas y renderizar el worked_hours de la primera */}
                         <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
                             Horas totales
                         </h4>

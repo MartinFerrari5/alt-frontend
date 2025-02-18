@@ -29,6 +29,7 @@ export const useTasks = () => {
         mutationFn: async (task) => {
             console.log("Task: ", task)
             const { data } = await api.post("/tasks", task)
+            console.log("Task: ", data)
             return data
         },
         onSuccess: (createdTask) => {

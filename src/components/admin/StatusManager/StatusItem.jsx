@@ -23,7 +23,8 @@ const StatusItem = ({ task }) => {
     }, [])
 
     // Si task.status es "1" o 1, se muestra "completado"; de lo contrario, "progreso"
-    const displayStatus = task.status === "1" || task.status === 1 ? "completado" : "progreso"
+    const displayStatus =
+        task.status === "1" || task.status === 1 ? "completado" : "progreso"
 
     return (
         <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
