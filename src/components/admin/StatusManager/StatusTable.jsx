@@ -5,6 +5,7 @@ import useStatusStore from "../../../store/statusStore"
 import TaskFilter from "../../Tasks/TaskFilter"
 import { api } from "../../../lib/axios"
 import useUserStore from "../../../store/userStore"
+import Header from "../../Header"
 
 const StatusTable = () => {
     // Extraemos la data y métodos del store de status
@@ -51,6 +52,7 @@ const StatusTable = () => {
 
     return (
         <div>
+            <Header subtitle="Exportados" title="Exportados" tasks={tasks} />
             <div className="space-y-3 rounded-xl bg-white p-6">
                 {/* Se le pasa la función handleFilter al componente TaskFilter */}
                 <TaskFilter onFilter={handleFilter} />

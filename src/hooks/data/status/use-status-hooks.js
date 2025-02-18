@@ -1,8 +1,8 @@
-// /src/hooks/data/use-status-hooks.js
+// /src/hooks/data/status/use-status-hooks.js
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { api } from "../../lib/axios"
-import useAuthStore from "../../store/authStore"
+import { api } from "../../../lib/axios"
+import useAuthStore from "../../../store/authStore"
 
 // Claves de consulta para React Query relacionadas con "status"
 const statusQueryKeys = {

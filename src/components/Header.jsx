@@ -2,17 +2,13 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useLocation } from "react-router-dom"
-
 import Button from "./Button"
-
-// Importa el ícono de descarga desde react-icons
-import { FiDownload } from "react-icons/fi"
 import { AddIcon } from "../assets/icons"
-
 import AddOptionDialog from "./email/AddOptionDialog"
 import AddTaskDialog from "./Tasks/AddTaskDialog"
+import DownloadExcelButton from "./admin/DownloadExcelButton"
 
-function Header({ subtitle, title }) {
+function Header({ subtitle, title, tasks = [] }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
 
@@ -20,12 +16,6 @@ function Header({ subtitle, title }) {
     const adminPath = location.pathname.startsWith("/admin/")
         ? location.pathname.replace("/admin/", "")
         : ""
-
-    // Función para manejar la descarga
-    const handleDownload = () => {
-        console.log("Descarga iniciada")
-        // Aquí va la lógica para descargar el archivo
-    }
 
     return (
         <div className="flex w-full justify-between">
@@ -38,10 +28,7 @@ function Header({ subtitle, title }) {
 
             <div className="flex items-center gap-3">
                 {location.pathname === "/admin/exported" ? (
-                    <Button onClick={handleDownload}>
-                        <FiDownload />
-                        Descargar
-                    </Button>
+                    <DownloadExcelButton tasks={tasks} />
                 ) : (
                     <>
                         <Button onClick={() => setAddDialogIsOpen(true)}>
