@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { useState, useRef } from "react"
 import { createPortal } from "react-dom"
 import { CSSTransition } from "react-transition-group"
-import { toast } from "sonner"
+import { toast } from "react-toastify" // Se usa react‑toastify
 import Button from "../Button"
 import { useOptionsStore } from "../../store/optionsStore"
 import { useAddEmail } from "../../hooks/data/email/Use-add-email"
@@ -21,7 +21,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
 
     const handleSaveClick = async () => {
         if (!optionValue.trim()) {
-            toast.error("El valor no puede estar vacío")
+            toast.error("El valor no puede estar vacío", { autoClose: 5000 })
             return
         }
 
@@ -33,12 +33,13 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                     onSuccess: () => {
                         handleClose()
                         setOptionValue("")
-                        toast.success("¡Dato agregado con éxito!")
+                        toast.success("¡Dato agregado con éxito!", { autoClose: 3000 })
                     },
                     onError: (error) => {
                         console.error("Error al agregar:", error)
                         toast.error(
-                            `Error: ${error.response?.data?.message || "No se pudo agregar"}`
+                            `Error: ${error.response?.data?.message || "No se pudo agregar"}`,
+                            { autoClose: 5000 }
                         )
                     },
                 }
@@ -49,11 +50,12 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                 await addOptionAction(selectedTable, optionValue)
                 handleClose()
                 setOptionValue("")
-                toast.success("¡Dato agregado con éxito!")
+                toast.success("¡Dato agregado con éxito!", { autoClose: 3000 })
             } catch (error) {
                 console.error("Error al agregar:", error)
                 toast.error(
-                    `Error: ${error.response?.data?.message || "No se pudo agregar"}`
+                    `Error: ${error.response?.data?.message || "No se pudo agregar"}`,
+                    { autoClose: 5000 }
                 )
             }
         }
@@ -80,9 +82,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                             <select
                                 className="mt-2 w-full rounded border p-2"
                                 value={selectedTable}
-                                onChange={(e) =>
-                                    setSelectedTable(e.target.value)
-                                }
+                                onChange={(e) => setSelectedTable(e.target.value)}
                             >
                                 <option value="projects_table">Proyecto</option>
                                 <option value="hour_type_table">
@@ -95,11 +95,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                             </select>
                             <input
                                 className="mt-2 w-full rounded border p-2"
-                                type={
-                                    selectedTable === "emails"
-                                        ? "email"
-                                        : "text"
-                                }
+                                type={selectedTable === "emails" ? "email" : "text"}
                                 placeholder={
                                     selectedTable === "emails"
                                         ? "Ingrese el email"

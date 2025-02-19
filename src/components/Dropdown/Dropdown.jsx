@@ -1,4 +1,7 @@
+// / src\components\Dropdown\Dropdown.jsx
 import PropTypes from "prop-types"
+import { useEffect } from "react"
+import { toast } from "react-toastify" // Importa toast de react‑toastify
 
 const Dropdown = ({
     id,
@@ -11,6 +14,13 @@ const Dropdown = ({
     loadingText,
     errorText,
 }) => {
+    // Muestra una alerta cuando ocurre un error
+    useEffect(() => {
+        if (isError) {
+            toast.error(errorText, { autoClose: 5000 })
+        }
+    }, [isError, errorText])
+
     return (
         <div className="group relative z-0 mb-5 w-full">
             <label htmlFor={id} className="mb-1 block">
