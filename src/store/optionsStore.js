@@ -15,6 +15,7 @@ export const useOptionsStore = create(
             companies: [],
             hourTypes: [],
             projects: [],
+            typesTable: [],
 
             // Acción para obtener opciones y actualizar el estado
             fetchOptions: async (table) => {
@@ -75,7 +76,7 @@ export const useOptionsStore = create(
 
             // Acción para limpiar todas las opciones
             clearOptions: () =>
-                set({ companies: [], hourTypes: [], projects: [] }),
+                set({ companies: [], hourTypes: [], projects: [],  typesTable: [] }),
         }),
         {
             name: "options-storage", // Nombre de la key en localStorage

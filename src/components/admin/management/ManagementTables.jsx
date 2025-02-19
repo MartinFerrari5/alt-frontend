@@ -1,8 +1,6 @@
 // src/components/admin/management/ManagementTables.jsx
 import { useEffect, useState } from "react"
 import { useOptionsStore } from "../../../store/optionsStore"
-// Importa el hook de consulta que actualiza el estado de emails
-
 import Header from "../../Header"
 import TableItemView from "./TableItemView"
 import TableItemEdit from "./TableItemEdit"
@@ -12,7 +10,7 @@ import { useGetEmails } from "../../../hooks/data/email/Use-get-email"
 import { useEmailMutations } from "../../../hooks/data/email/use-email-mutations"
 
 const ManagementTables = () => {
-    const { companies_table, hour_type_table, projects_table, fetchOptions } =
+    const { companies_table, hour_type_table, projects_table, types_table, fetchOptions } =
         useOptionsStore()
 
     // Se obtiene el estado de emails y sus indicadores mediante el hook
@@ -27,6 +25,7 @@ const ManagementTables = () => {
         fetchOptions("companies_table")
         fetchOptions("hour_type_table")
         fetchOptions("projects_table")
+        fetchOptions("types_table")
     }, [fetchOptions])
 
     return (
@@ -36,6 +35,7 @@ const ManagementTables = () => {
                 <DataTable title="Compañías" data={companies_table || []} />
                 <DataTable title="Tipos de Hora" data={hour_type_table || []} />
                 <DataTable title="Proyectos" data={projects_table || []} />
+                <DataTable title="Tipos de Tarea" data={types_table || []} />
                 <DataTable
                     title="Emails"
                     data={emails}
