@@ -5,8 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { ToastContainer } from "react-toastify"         // Importa ToastContainer de react‑toastify
-import "react-toastify/dist/ReactToastify.css"           // Importa el CSS de react‑toastify
+import { ToastContainer } from "react-toastify" // Importa ToastContainer de react‑toastify
+import "react-toastify/dist/ReactToastify.css" // Importa el CSS de react‑toastify
 
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx"
 import PageRegister from "./pages/auth/Register.jsx"

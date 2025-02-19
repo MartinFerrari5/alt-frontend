@@ -33,7 +33,9 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                     onSuccess: () => {
                         handleClose()
                         setOptionValue("")
-                        toast.success("¡Dato agregado con éxito!", { autoClose: 3000 })
+                        toast.success("¡Dato agregado con éxito!", {
+                            autoClose: 3000,
+                        })
                     },
                     onError: (error) => {
                         console.error("Error al agregar:", error)
@@ -82,7 +84,9 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                             <select
                                 className="mt-2 w-full rounded border p-2"
                                 value={selectedTable}
-                                onChange={(e) => setSelectedTable(e.target.value)}
+                                onChange={(e) =>
+                                    setSelectedTable(e.target.value)
+                                }
                             >
                                 <option value="projects_table">Proyecto</option>
                                 <option value="hour_type_table">
@@ -95,7 +99,11 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                             </select>
                             <input
                                 className="mt-2 w-full rounded border p-2"
-                                type={selectedTable === "emails" ? "email" : "text"}
+                                type={
+                                    selectedTable === "emails"
+                                        ? "email"
+                                        : "text"
+                                }
                                 placeholder={
                                     selectedTable === "emails"
                                         ? "Ingrese el email"

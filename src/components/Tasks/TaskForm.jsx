@@ -1,12 +1,17 @@
-// /src/components/Tasks/TaskForm.jsx
-
 import Input from "../Input"
 import DatePicker from "./DatePicker"
 import Button from "../Button"
+import Dropdown from "../Dropdown/Dropdown"
 
+// Mapeo de estados para el select (ajústalo según tu lógica)
 const statusMap = {
     0: "En progreso",
     1: "Completado",
+}
+
+const formatTimeForInput = (timeStr) => {
+    if (!timeStr) return ""
+    return timeStr.length > 5 ? timeStr.slice(0, 5) : timeStr
 }
 
 const TaskForm = ({
@@ -17,76 +22,77 @@ const TaskForm = ({
     taskDate,
     setTaskDate,
     task,
+    // Recibimos las opciones ya cargadas desde el store
     companies,
     projects,
     hourTypes,
 }) => {
     if (!task) return null
 
-    const taskData = task
+    // Indicadores de carga basados en la disponibilidad de las opciones
+    const isLoadingCompanies = companies.length === 0
+    const isLoadingProjects = projects.length === 0
+    const isLoadingHourTypes = hourTypes.length === 0
 
-    const formatTimeForInput = (timeStr) => {
-        if (!timeStr) return ""
-        return timeStr.length > 5 ? timeStr.slice(0, 5) : timeStr
-    }
+    const taskData = task
 
     return (
         <form onSubmit={handleSubmit}>
             <div className="space-y-6 rounded-xl bg-brand-white p-6">
-                {/* Campo Empresa */}
-                <div>
-                    <label
-                        htmlFor="company"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Empresa
-                    </label>
-                    <select
+                {/* Dropdowns para Empresa, Proyecto, Tipo de Hora y Estado */}
+                <div className="grid md:grid-cols-2 md:gap-6">
+                    <Dropdown
                         id="company"
-                        {...register("company")}
-                        defaultValue={taskData.company}
-                        className="form-select mt-1 block w-full"
-                    >
-                        <option value="">Seleccione una empresa</option>
-                        {companies.map((company, index) => (
-                            <option key={index} value={company}>
-                                {company}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.company && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.company.message}
-                        </p>
-                    )}
-                </div>
-
-                {/* Campo Proyecto */}
-                <div>
-                    <label
-                        htmlFor="project"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Proyecto
-                    </label>
-                    <select
+                        label="Empresa"
+                        register={register}
+                        error={errors.company}
+                        isLoading={isLoadingCompanies}
+                        isError={false}
+                        items={companies}
+                        loadingText="Cargando empresas..."
+                        errorText="Error cargando empresas"
+                    />
+                    <Dropdown
                         id="project"
-                        {...register("project")}
-                        defaultValue={taskData.project}
-                        className="form-select mt-1 block w-full"
-                    >
-                        <option value="">Seleccione un proyecto</option>
-                        {projects.map((project, index) => (
-                            <option key={index} value={project}>
-                                {project}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.project && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.project.message}
-                        </p>
-                    )}
+                        label="Proyecto"
+                        register={register}
+                        error={errors.project}
+                        isLoading={isLoadingProjects}
+                        isError={false}
+                        items={projects}
+                        loadingText="Cargando proyectos..."
+                        errorText="Error cargando proyectos"
+                    />
+                    <Dropdown
+                        id="hour_type"
+                        label="Tipo de Hora"
+                        register={register}
+                        error={errors.hour_type}
+                        isLoading={isLoadingHourTypes}
+                        isError={false}
+                        items={hourTypes}
+                        loadingText="Cargando tipos de hora..."
+                        errorText="Error cargando tipos de hora"
+                    />
+                    <div className="group relative z-0 mb-5 w-full">
+                        <label
+                            htmlFor="status"
+                            className="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                            Estado
+                        </label>
+                        <select
+                            id="status"
+                            {...register("status")}
+                            className="form-select"
+                        >
+                            {Object.keys(statusMap).map((key) => (
+                                <option key={key} value={key}>
+                                    {statusMap[key]}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Campo Tipo de Tarea */}
@@ -107,92 +113,49 @@ const TaskForm = ({
                     errorMessage={errors.task_description?.message}
                 />
 
-                {/* Campo Hora de Entrada */}
-                <Input
-                    id="entry_time"
-                    label="Hora de Entrada"
-                    type="time"
-                    {...register("entry_time")}
-                    defaultValue={formatTimeForInput(taskData.entry_time)}
-                    errorMessage={errors.entry_time?.message}
-                />
-
-                {/* Campo Hora de Salida */}
-                <Input
-                    id="exit_time"
-                    label="Hora de Salida"
-                    type="time"
-                    {...register("exit_time")}
-                    defaultValue={formatTimeForInput(taskData.exit_time)}
-                    errorMessage={errors.exit_time?.message}
-                />
-
-                {/* Campo Horas de Almuerzo */}
-                <Input
-                    id="lunch_hours"
-                    label="Horas de Almuerzo"
-                    type="number"
-                    {...register("lunch_hours")}
-                    defaultValue={taskData.lunch_hours?.toString() || "1"}
-                    errorMessage={errors.lunch_hours?.message}
-                />
-
-                {/* Campo Tipo de Hora */}
-                <div>
-                    <label
-                        htmlFor="hour_type"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Tipo de Hora
-                    </label>
-                    <select
-                        id="hour_type"
-                        {...register("hour_type")}
-                        defaultValue={taskData.hour_type}
-                        className="form-select mt-1 block w-full"
-                    >
-                        <option value="">Seleccione un tipo de hora</option>
-                        {hourTypes.map((hourType, index) => (
-                            <option key={index} value={hourType}>
-                                {hourType}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.hour_type && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.hour_type.message}
-                        </p>
-                    )}
-                </div>
-
-                {/* DatePicker para la fecha de la tarea */}
-                <DatePicker value={taskDate} onChange={setTaskDate} />
-
-                {/* Campo Estado */}
-                <div>
-                    <label
-                        htmlFor="status"
-                        className="block text-sm font-medium text-gray-700"
-                    >
-                        Estado
-                    </label>
-                    <select
-                        id="status"
-                        {...register("status")}
-                        defaultValue={taskData.status?.toString()}
-                        className="form-select mt-1 block w-full"
-                    >
-                        {Object.entries(statusMap).map(([value, label]) => (
-                            <option key={value} value={value}>
-                                {label}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.status && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.status.message}
-                        </p>
-                    )}
+                {/* Grid para DatePicker y horarios */}
+                <div className="grid md:grid-cols-2 md:gap-6">
+                    <DatePicker
+                        value={taskDate}
+                        onChange={setTaskDate}
+                        className="group relative z-0 mb-5 w-full"
+                    />
+                    <div className="group relative z-0 mb-5 w-full">
+                        <Input
+                            id="entry_time"
+                            label="Hora de Entrada"
+                            type="time"
+                            {...register("entry_time")}
+                            defaultValue={formatTimeForInput(
+                                taskData.entry_time
+                            )}
+                            errorMessage={errors.entry_time?.message}
+                        />
+                    </div>
+                    <div className="group relative z-0 mb-5 w-full">
+                        <Input
+                            id="exit_time"
+                            label="Hora de Salida"
+                            type="time"
+                            {...register("exit_time")}
+                            defaultValue={formatTimeForInput(
+                                taskData.exit_time
+                            )}
+                            errorMessage={errors.exit_time?.message}
+                        />
+                    </div>
+                    <div className="group relative z-0 mb-5 w-full">
+                        <Input
+                            id="lunch_hours"
+                            label="Horas de Almuerzo"
+                            type="number"
+                            {...register("lunch_hours")}
+                            defaultValue={
+                                taskData.lunch_hours?.toString() || "1"
+                            }
+                            errorMessage={errors.lunch_hours?.message}
+                        />
+                    </div>
                 </div>
             </div>
 

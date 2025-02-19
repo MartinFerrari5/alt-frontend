@@ -1,35 +1,37 @@
 // /src/pages/TaskDetails.jsx
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate, useParams } from "react-router-dom"
-import { toast } from "sonner"
+import { toast } from "react-toastify"
 
 import Sidebar from "../components/Sidebar"
 import TaskHeader from "../components/Tasks/TaskHeader"
 import TaskForm from "../components/Tasks/TaskForm"
 import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
 
-import { useDeleteTask } from "../hooks/data/task/use-delete-task"
-import { useGetTask } from "../hooks/data/task/use-get-task"
-import { useUpdateTask } from "../hooks/data/task/use-update-task"
-
+import { useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
 
-// Hook para opciones (compañías, proyectos, tipos de hora)
+// Obtenemos las opciones desde el store (igual que en AddTaskDialog)
 import { useOptionsStore } from "../store/optionsStore"
 
 const TaskDetailsPage = () => {
-    const { taskId } = useParams()
+    const { taskId } = useParams() // taskId se recibe como cadena (UUID)
     const navigate = useNavigate()
+
+    // Cargar opciones al montar el componente
+    const { companies_table, hour_type_table, projects_table, fetchOptions } =
+        useOptionsStore()
+
+    useEffect(() => {
+        fetchOptions("companies_table")
+        fetchOptions("hour_type_table")
+        fetchOptions("projects_table")
+    }, [fetchOptions])
 
     const [taskDate, setTaskDate] = useState(null)
     const [isEditing, setIsEditing] = useState(false)
-
-    const companies = useOptionsStore((state) => state.companies) || []
-    const hourTypes = useOptionsStore((state) => state.hourTypes) || []
-    const projects = useOptionsStore((state) => state.projects) || []
 
     const {
         register,
@@ -51,50 +53,60 @@ const TaskDetailsPage = () => {
         },
     })
 
+    // Función para formatear la hora para inputs de tipo "time"
     const formatTimeForInput = (timeStr) => {
         if (!timeStr) return ""
         return timeStr.length > 5 ? timeStr.slice(0, 5) : timeStr
     }
 
-    const { mutate: updateTask } = useUpdateTask(taskId)
-    const { mutate: deleteTask } = useDeleteTask(taskId)
+    // Función para formatear la fecha según lo espera el backend
+    const formatDateForBackend = (date) => {
+        if (!date) return null
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+        return `${year}-${month}-${day} 00:00:00`
+    }
 
+    // Utilizamos el hook unificado para las tareas, que ahora expone "useGetTaskById"
+    const { useGetTaskById, updateTaskMutation, deleteTaskMutation } =
+        useTasks()
+
+    // Obtenemos la tarea específica utilizando el hook "useGetTaskById"
     const {
-        data: task,
+        data: currentTask,
         isLoading,
         isError,
-    } = useGetTask({
-        taskId,
-        onSuccess: (task) => {
-            if (task) {
-                const taskDateValue = task.task_date
-                    ? new Date(task.task_date)
-                    : null
-                setTaskDate(taskDateValue)
-
-                reset({
-                    company: task.company || "",
-                    project: task.project || "",
-                    task_type: task.task_type || "",
-                    task_description: task.task_description || "",
-                    entry_time: task.entry_time
-                        ? formatTimeForInput(task.entry_time)
-                        : "09:00",
-                    exit_time: task.exit_time
-                        ? formatTimeForInput(task.exit_time)
-                        : "18:00",
-                    lunch_hours: task.lunch_hours?.toString() || "1",
-                    hour_type: task.hour_type || "",
-                    status: task.status?.toString() || "0",
-                })
-            }
-        },
-        onError: () => {
-            toast.error("Error al cargar los detalles de la tarea.")
-        },
+    } = useGetTaskById({
+        taskId, // Se pasa el taskId sin conversión
     })
 
-    const handleSaveClick = async (data) => {
+    // Cada vez que "currentTask" cambie, reinicializamos el formulario y actualizamos la fecha
+    useEffect(() => {
+        if (currentTask) {
+            const taskDateValue = currentTask.task_date
+                ? new Date(currentTask.task_date)
+                : null
+            setTaskDate(taskDateValue)
+            reset({
+                company: currentTask.company || "",
+                project: currentTask.project || "",
+                task_type: currentTask.task_type || "",
+                task_description: currentTask.task_description || "",
+                entry_time: currentTask.entry_time
+                    ? formatTimeForInput(currentTask.entry_time)
+                    : "09:00",
+                exit_time: currentTask.exit_time
+                    ? formatTimeForInput(currentTask.exit_time)
+                    : "18:00",
+                lunch_hours: currentTask.lunch_hours?.toString() || "1",
+                hour_type: currentTask.hour_type || "",
+                status: currentTask.status?.toString() || "0",
+            })
+        }
+    }, [currentTask, reset])
+
+    const handleSaveClick = (data) => {
         if (data.entry_time >= data.exit_time) {
             toast.error(
                 "La hora de entrada no puede ser mayor o igual a la de salida."
@@ -107,20 +119,25 @@ const TaskDetailsPage = () => {
             lunch_hours: Number(data.lunch_hours),
             status: Number(data.status),
             hour_type: data.hour_type,
-            task_date: taskDate ? taskDate.toISOString() : null,
+            task_date: taskDate ? formatDateForBackend(taskDate) : null,
         }
 
-        updateTask(updateData, {
-            onSuccess: () => {
-                toast.success("¡Tarea guardada con éxito!")
-                setIsEditing(false)
-            },
-            onError: () => toast.error("Ocurrió un error al guardar la tarea."),
-        })
+        updateTaskMutation.mutate(
+            { taskId, task: updateData }, // Se usa taskId sin conversión
+            {
+                onSuccess: () => {
+                    toast.success("¡Tarea actualizada con éxito!")
+                    setIsEditing(false)
+                },
+                onError: () =>
+                    toast.error("Ocurrió un error al actualizar la tarea."),
+            }
+        )
     }
 
-    const handleDeleteClick = async () => {
-        deleteTask(undefined, {
+    const handleDeleteClick = () => {
+        deleteTaskMutation.mutate(taskId, {
+            // Se usa taskId sin conversión
             onSuccess: () => {
                 toast.success("¡Tarea eliminada con éxito!")
                 navigate(-1)
@@ -133,14 +150,14 @@ const TaskDetailsPage = () => {
     if (isLoading) return <p>Cargando...</p>
     if (isError)
         return <p>Error al cargar la tarea. Inténtalo de nuevo más tarde.</p>
-    if (!task) return <p>No se encontraron detalles de la tarea.</p>
+    if (!currentTask) return <p>No se encontraron detalles de la tarea.</p>
 
     return (
         <div className="flex">
             <Sidebar />
             <div className="w-full space-y-6 px-8 py-16">
                 <TaskHeader
-                    task={task}
+                    task={currentTask}
                     onBack={() => navigate(-1)}
                     onDelete={handleDeleteClick}
                     onEdit={() => setIsEditing((prev) => !prev)}
@@ -155,13 +172,14 @@ const TaskDetailsPage = () => {
                         isSubmitting={isSubmitting}
                         taskDate={taskDate}
                         setTaskDate={setTaskDate}
-                        task={task}
-                        companies={companies}
-                        projects={projects}
-                        hourTypes={hourTypes}
+                        task={currentTask}
+                        // Opciones provenientes del store
+                        companies={companies_table}
+                        projects={projects_table}
+                        hourTypes={hour_type_table}
                     />
                 ) : (
-                    <ReadOnlyTaskDetails task={task} />
+                    <ReadOnlyTaskDetails task={currentTask} />
                 )}
             </div>
         </div>
