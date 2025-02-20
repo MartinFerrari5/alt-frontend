@@ -15,7 +15,6 @@ export const useTasks = () => {
         queryKey: taskQueryKeys.getAll(),
         queryFn: async () => {
             const { data } = await api.get("/tasks")
-            console.log("Tareas recibidas:", data)
             setTasks(data.tasks)
             return data.tasks
         },
@@ -28,7 +27,6 @@ export const useTasks = () => {
         mutationFn: async (task) => {
             console.log("Agregando tarea:", task)
             const { data } = await api.post("/tasks", task)
-            console.log("Tarea creada:", data)
             return data
         },
         onSuccess: (createdTask) => {
@@ -58,8 +56,6 @@ export const useTasks = () => {
                 status: task.status,
             }
             // Realizamos la petición PUT usando un endpoint RESTful
-            console.log("Payload para actualizar:", payload)
-            console.log("ID de tarea a actualizar:", taskId)
             const { data } = await api.put(`/tasks?task_id=${taskId}`, payload)
             console.log("Respuesta del servidor:", data)
             // Retornamos el payload para actualizar el store y la caché

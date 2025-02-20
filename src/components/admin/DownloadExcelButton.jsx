@@ -18,7 +18,6 @@ const DownloadExcelButton = ({ tasks, filename = "tareas.xlsx" }) => {
             if (!Array.isArray(tasks) || tasks.length === 0) {
                 throw new Error("No hay tareas para descargar.")
             }
-            console.log("tasks:", tasks)
             // Enviar el objeto { tasks } en lugar del array directamente
             const response = await api.post(
                 "/status/download",

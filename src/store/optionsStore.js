@@ -33,7 +33,6 @@ export const useOptionsStore = create(
                     // Se llama a la función de la API que retorna el nuevo elemento con id
                     const newOption = await apiAddOption(table, option)
                     // Se actualiza el estado con el nuevo elemento
-                    console.log(newOption)
                     set((state) => ({
                         [table]: state[table]
                             ? [...state[table], newOption]

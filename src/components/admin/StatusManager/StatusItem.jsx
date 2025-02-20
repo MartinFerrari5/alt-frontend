@@ -4,7 +4,6 @@ import PropTypes from "prop-types"
 import { useCallback } from "react"
 
 const StatusItem = ({ task }) => {
-    console.log("Task:", task)
     // Función para formatear la fecha
     const formatDate = useCallback((dateString) => {
         if (!dateString) return "Fecha no disponible"
