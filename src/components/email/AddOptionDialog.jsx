@@ -64,11 +64,11 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
             // Definir el objeto de opción según la tabla seleccionada
             let optionData
             if (selectedTable === "projects_table") {
-                optionData = { project: optionValue }
+                optionData = optionValue
             } else if (selectedTable === "hour_type_table") {
-                optionData = { hour_type: optionValue }
+                optionData = optionValue
             } else if (selectedTable === "companies_table") {
-                optionData = { company: optionValue }
+                optionData = optionValue
             } else {
                 optionData = optionValue
             }
