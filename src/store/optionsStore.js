@@ -75,7 +75,12 @@ export const useOptionsStore = create(
 
             // Acción para limpiar todas las opciones
             clearOptions: () =>
-                set({ companies: [], hourTypes: [], projects: [],  typesTable: [] }),
+                set({
+                    companies: [],
+                    hourTypes: [],
+                    projects: [],
+                    typesTable: [],
+                }),
         }),
         {
             name: "options-storage", // Nombre de la key en localStorage

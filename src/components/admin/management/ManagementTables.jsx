@@ -10,8 +10,13 @@ import { useGetEmails } from "../../../hooks/data/email/Use-get-email"
 import { useEmailMutations } from "../../../hooks/data/email/use-email-mutations"
 
 const ManagementTables = () => {
-    const { companies_table, hour_type_table, projects_table, types_table, fetchOptions } =
-        useOptionsStore()
+    const {
+        companies_table,
+        hour_type_table,
+        projects_table,
+        types_table,
+        fetchOptions,
+    } = useOptionsStore()
 
     // Se obtiene el estado de emails y sus indicadores mediante el hook
     const {

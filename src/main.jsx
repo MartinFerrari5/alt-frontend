@@ -55,6 +55,14 @@ const router = createBrowserRouter([
         ),
     },
     {
+        path: "/task/exported",
+        element: (
+            <ProtectedRoute>
+                <Status />
+            </ProtectedRoute>
+        ),
+    },
+    {
         path: "/admin/management",
         element: (
             <ProtectedRoute adminOnly={true}>

@@ -7,8 +7,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CSSTransition } from "react-transition-group"
 import { LoaderIcon } from "../../assets/icons"
-import { useAddTask } from "../../hooks/data/task/use-add-task"
-import useTaskStore from "../../store/taskStore"
 import Button from "../Button"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
@@ -17,10 +15,12 @@ import { schema } from "../../util/validationSchema"
 import Dropdown from "../Dropdown/Dropdown"
 import { useOptionsStore } from "../../store/optionsStore"
 import { toast } from "react-toastify"
+import { useTasks } from "../../hooks/data/task/useTasks"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
   const nodeRef = useRef(null)
-  const { mutate: addTask, isPending: isAddingTask } = useAddTask()
+  const { addTaskMutation } = useTasks()
+  const isAddingTask = addTaskMutation.isLoading
 
   const [taskDate, setTaskDate] = useState(() => {
     const initialDate = new Date()
@@ -28,16 +28,15 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
     return initialDate
   })
 
-  // Obtenemos las opciones desde el store
-  const { 
-    companies_table, 
-    hour_type_table, 
-    projects_table, 
-    types_table, 
-    fetchOptions 
+  // Obtener las opciones del store de opciones
+  const {
+    companies_table,
+    hour_type_table,
+    projects_table,
+    types_table,
+    fetchOptions,
   } = useOptionsStore()
 
-  // Cargar las opciones al montar el componente
   useEffect(() => {
     fetchOptions("companies_table")
     fetchOptions("hour_type_table")
@@ -45,13 +44,11 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
     fetchOptions("types_table")
   }, [fetchOptions])
 
-  // Indicadores de carga
   const isLoadingCompanies = !companies_table || companies_table.length === 0
   const isLoadingHourTypes = !hour_type_table || hour_type_table.length === 0
   const isLoadingProjects = !projects_table || projects_table.length === 0
   const isLoadingTypesTable = !types_table || types_table.length === 0
 
-  // Configuración del formulario con valores por defecto
   const {
     register,
     handleSubmit,
@@ -73,7 +70,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
     },
   })
 
-  // Al cargar las opciones, se asigna el primer elemento de cada lista a su respectivo select
+  // Asignar el primer elemento de cada lista a su respectivo select al cargar las opciones
   useEffect(() => {
     reset({
       ...watch(),
@@ -90,9 +87,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
           ? hour_type_table[0].hour_type
           : "",
       task_type:
-        types_table && types_table.length > 0
-          ? types_table[0].option
-          : "",
+        types_table && types_table.length > 0 ? types_table[0].option : "",
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companies_table, projects_table, hour_type_table, types_table, reset])
@@ -114,20 +109,12 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
       task_date: formattedDate,
     }
 
-    // Agrega la tarea en el estado local inmediatamente
-    useTaskStore.getState().addTask(taskPayload)
-
-    // Realiza la llamada a la API
-    addTask(taskPayload, {
+    // Llamada a la mutación para agregar la tarea (actualización optimista incluida)
+    addTaskMutation.mutate(taskPayload, {
       onSuccess: (createdTask) => {
-        useTaskStore.getState().updateTask(createdTask.name, {
-          status: createdTask.status,
+        toast.success("Tarea guardada. Puedes seguir agregando más tareas.", {
+          autoClose: 3000,
         })
-        toast.success(
-          "Tarea guardada. Puedes seguir agregando más tareas.",
-          { autoClose: 3000 }
-        )
-        // Resetea el formulario para continuar ingresando datos
         reset()
       },
       onError: (error) => {
@@ -197,13 +184,16 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                         errorText="Error cargando tipos de hora"
                       />
                       <div className="group relative z-0 mb-5 w-full">
-                        <label htmlFor="status" className="block mb-2 text-sm font-medium">
+                        <label
+                          htmlFor="status"
+                          className="mb-2 block text-sm font-medium"
+                        >
                           Estado
                         </label>
                         <select
                           id="status"
                           {...register("status")}
-                          className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                          className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
                         >
                           {Object.keys(statusMap).map((status) => (
                             <option key={status} value={status}>
@@ -271,10 +261,17 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                   </div>
 
                   <div className="flex justify-end gap-3">
-                    <Button type="button" color="secondary" onClick={handleClose}>
+                    <Button
+                      type="button"
+                      color="secondary"
+                      onClick={handleClose}
+                    >
                       Cancelar
                     </Button>
-                    <Button type="submit" disabled={isSubmitting || isAddingTask}>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || isAddingTask}
+                    >
                       {(isSubmitting || isAddingTask) && (
                         <LoaderIcon className="mr-2 animate-spin" />
                       )}

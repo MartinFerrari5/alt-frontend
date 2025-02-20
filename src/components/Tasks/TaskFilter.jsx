@@ -1,16 +1,43 @@
-// /src\components\Tasks\TaskFilter.jsx
-
-import { useState } from "react"
+// src/components/Tasks/TaskFilter.jsx
+import { useState, useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 import useAuthStore from "../../store/authStore"
 
 const TaskFilter = ({ onFilter }) => {
     const role = useAuthStore((state) => state.role)
+    const [searchParams, setSearchParams] = useSearchParams()
     const [fullname, setFullname] = useState("")
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
 
+    // Inicializar los campos con los valores de la URL, si existen
+    useEffect(() => {
+        const urlFullname = searchParams.get("fullname") || ""
+        const urlDate = searchParams.get("date") || ""
+        setFullname(urlFullname)
+        if (urlDate) {
+            const dates = urlDate.split(" ")
+            if (dates.length === 2) {
+                setStartDate(dates[0])
+                setEndDate(dates[1])
+            } else {
+                setStartDate(urlDate)
+            }
+        }
+    }, [searchParams])
+
     const handleFilter = () => {
-        const dateRange = startDate && endDate ? `${startDate} ${endDate}` : ""
+        // Construir el rango de fecha según los valores disponibles
+        const dateRange =
+            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
+
+        // Actualizar los parámetros en la URL
+        const params = {}
+        if (fullname) params.fullname = fullname
+        if (dateRange) params.date = dateRange
+        setSearchParams(params)
+
+        // Llamar a la función de filtrado pasada desde Tasks
         onFilter({ fullname, date: dateRange })
     }
 

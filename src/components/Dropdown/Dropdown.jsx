@@ -23,13 +23,13 @@ const Dropdown = ({
 
     return (
         <div className="group relative z-0 mb-5 w-full">
-            <label htmlFor={id} className="block mb-2 text-sm font-medium">
+            <label htmlFor={id} className="mb-2 block text-sm font-medium">
                 {label}
             </label>
             <select
                 id={id}
                 {...register(id)}
-                className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
                 disabled={isLoading}
             >
                 {isLoading ? (
