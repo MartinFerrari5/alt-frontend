@@ -30,11 +30,9 @@ export const useTasks = () => {
     const addTaskMutation = useMutation({
         mutationKey: taskMutationKeys.add(),
         mutationFn: async (newTask) => await createTask(newTask),
-        // Antes de enviar la petición, actualizamos optimísticamente el estado y la caché
         onMutate: async (newTask) => {
             await queryClient.cancelQueries(taskQueryKeys.getAll())
-            const previousTasks =
-                queryClient.getQueryData(taskQueryKeys.getAll()) || []
+            const previousTasks = queryClient.getQueryData(taskQueryKeys.getAll()) || []
             // Asignamos un ID temporal para la tarea optimista
             const optimisticTask = {
                 ...newTask,
@@ -48,16 +46,11 @@ export const useTasks = () => {
             )
             return { previousTasks, optimisticTask }
         },
-        // En caso de error, revertimos los cambios
         onError: (error, newTask, context) => {
-            queryClient.setQueryData(
-                taskQueryKeys.getAll(),
-                context.previousTasks
-            )
+            queryClient.setQueryData(taskQueryKeys.getAll(), context.previousTasks)
             deleteTask(context.optimisticTask.id)
             console.error("Error al agregar la tarea:", error)
         },
-        // Si la petición es exitosa, reemplazamos la tarea optimista por la confirmada
         onSuccess: (createdTask, newTask, context) => {
             queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
                 oldTasks.map((task) =>
@@ -75,8 +68,7 @@ export const useTasks = () => {
     // Mutación para actualizar una tarea
     const updateTaskMutation = useMutation({
         mutationKey: taskMutationKeys.update(),
-        mutationFn: async ({ taskId, task }) =>
-            await updateTaskApi({ taskId, task }),
+        mutationFn: async ({ taskId, task }) => await updateTaskApi({ taskId, task }),
         onSuccess: (updatedTask, { taskId }) => {
             updateTask(taskId, updatedTask)
             queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
@@ -106,13 +98,16 @@ export const useTasks = () => {
         },
     })
 
-    // Hook para filtrar tareas
+    // Hook para filtrar tareas con múltiples opciones y combinaciones
     const useFilterTasks = (filters) => {
-        const { fullname, date } = filters
         return useQuery({
-            queryKey: ["filterTasks", { fullname, date }],
-            queryFn: async () => await filterTasksApi({ fullname, date }),
-            enabled: Boolean(fullname || date),
+            queryKey: ["filterTasks", filters],
+            queryFn: async () => await filterTasksApi(filters),
+            enabled:
+                filters &&
+                Object.values(filters).some(
+                    (value) => value !== undefined && value !== ""
+                ),
         })
     }
 

@@ -33,10 +33,14 @@ export const deleteTaskApi = async (taskId) => {
     return taskId
 }
 
-export const filterTasksApi = async ({ fullname, date }) => {
+export const filterTasksApi = async (filters) => {
     const queryParams = new URLSearchParams()
-    queryParams.append("fullname", fullname || "")
-    queryParams.append("date", date || "")
+    // Se agregan todos los filtros disponibles si tienen valor
+    if (filters.company) queryParams.append("company", filters.company)
+    if (filters.project) queryParams.append("project", filters.project)
+    if (filters.fullname) queryParams.append("fullname", filters.fullname)
+    if (filters.date) queryParams.append("date", filters.date)
+    if (filters.status !== undefined) queryParams.append("status", filters.status)
     const { data } = await api.get(
         `/tasks/filtertasks?${queryParams.toString()}`
     )
