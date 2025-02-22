@@ -1,4 +1,5 @@
 // src/components/Tasks/Tasks.jsx
+import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
 
@@ -7,51 +8,59 @@ import TaskItem from "./TaskItem"
 import TaskFilter from "./TaskFilter"
 
 const Tasks = () => {
-    const { tasks, getTasks, useFilterTasks } = useTasks()
+    const { useFilterTasks } = useTasks()
     const [searchParams, setSearchParams] = useSearchParams()
 
-    // Extraer todos los parámetros de la URL
+    // Si no se ha definido el filtro de estado en la URL, lo establecemos a "0" (pendiente) por defecto
+    useEffect(() => {
+        if (!searchParams.has("status")) {
+            searchParams.set("status", "0")
+            setSearchParams(searchParams)
+        }
+    }, [searchParams, setSearchParams])
+
+    // Extraemos los parámetros de búsqueda de la URL (con default para status)
     const urlFullname = searchParams.get("fullname") || ""
     const urlCompany = searchParams.get("company") || ""
     const urlProject = searchParams.get("project") || ""
     const urlDate = searchParams.get("date") || ""
-    const urlStatus = searchParams.get("status") || ""
-    const filterActive =
-        urlFullname || urlCompany || urlProject || urlDate || urlStatus
+    const urlStatus = searchParams.get("status") || "0" // por defecto pendiente
 
-    // Ejecutamos el hook de filtrado si existen parámetros
-    const {
-        data: filteredTasks,
-        isLoading: filterLoading,
-        isError: filterError,
-    } = useFilterTasks({
+    // Construimos el objeto de filtros (incluyendo el estado pendiente por defecto)
+    const filters = {
         fullname: urlFullname,
         company: urlCompany,
         project: urlProject,
         date: urlDate,
         status: urlStatus,
-    })
-
-    // Determinamos qué listado mostrar
-    const displayTasks = filterActive ? filteredTasks : tasks
-    const loading = filterActive ? filterLoading : getTasks.isLoading
-    const error = filterActive ? filterError : getTasks.isError
-
-    // Actualiza la URL con los parámetros de búsqueda
-    const handleFilter = ({ fullname, company, project, date, status }) => {
-        setSearchParams({ fullname, company, project, date, status })
     }
+
+    // Ejecutamos el hook de filtrado con los filtros definidos
+    const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters)
+
+    // Función para actualizar los parámetros de búsqueda (manteniendo el filtro pendiente si se borra)
+    const handleFilter = ({ fullname, company, project, date, status }) => {
+        setSearchParams({
+            fullname: fullname || "",
+            company: company || "",
+            project: project || "",
+            date: date || "",
+            status: status || "0",
+        })
+    }
+
+    const displayTasks = filteredTasks
 
     return (
         <div className="w-full space-y-6 px-8 py-16">
             <Header subtitle="Mis Tareas" title="Mis Tareas" />
             <div className="space-y-3 rounded-xl bg-white p-6">
                 <TaskFilter onFilter={handleFilter} />
-                {loading ? (
+                {isLoading ? (
                     <p className="text-sm text-brand-text-gray">
                         Cargando tareas...
                     </p>
-                ) : error ? (
+                ) : isError ? (
                     <p className="text-sm text-red-500">
                         Error al cargar las tareas.
                     </p>
@@ -68,19 +77,19 @@ const Tasks = () => {
                                         <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                             <tr>
                                                 <th className="px-4 py-3">
-                                                    Usuario
-                                                </th>
-                                                <th className="px-4 py-3">
-                                                    Empresa
-                                                </th>
-                                                <th className="px-4 py-3">
-                                                    Proyecto
+                                                    Nombre
                                                 </th>
                                                 <th className="px-4 py-3">
                                                     Fecha
                                                 </th>
                                                 <th className="px-4 py-3">
                                                     Hora
+                                                </th>
+                                                <th className="px-4 py-3">
+                                                    Empresa
+                                                </th>
+                                                <th className="px-4 py-3">
+                                                    Proyecto
                                                 </th>
                                                 <th className="px-4 py-3">
                                                     Tipo de hora

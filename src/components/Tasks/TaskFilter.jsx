@@ -87,12 +87,39 @@ const TaskFilter = ({ onFilter }) => {
             className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center"
         >
             {role === "admin" && (
-                <input
-                    type="text"
-                    placeholder="Buscar por nombre"
-                    {...register("fullname")}
-                    className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                <>
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre"
+                        {...register("fullname")}
+                        className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <div className="group relative z-0 mb-5 w-full">
+                        <label
+                            htmlFor="status"
+                            className="mb-2 block text-sm font-medium"
+                        >
+                            Estado
+                        </label>
+                        <select
+                            id="status"
+                            {...register("status")}
+                            className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
+                        >
+                            <option value="">Seleccione un estado</option>
+                            {Object.keys(statusMap).map((key) => (
+                                <option key={key} value={key}>
+                                    {statusMap[key]}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.status && (
+                            <p className="text-sm text-red-500">
+                                {errors.status.message}
+                            </p>
+                        )}
+                    </div>
+                </>
             )}
             <Dropdown
                 id="company"
@@ -116,31 +143,6 @@ const TaskFilter = ({ onFilter }) => {
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
             />
-            <div className="group relative z-0 mb-5 w-full">
-                <label
-                    htmlFor="status"
-                    className="mb-2 block text-sm font-medium"
-                >
-                    Estado
-                </label>
-                <select
-                    id="status"
-                    {...register("status")}
-                    className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
-                >
-                    <option value="">Seleccione un estado</option>
-                    {Object.keys(statusMap).map((key) => (
-                        <option key={key} value={key}>
-                            {statusMap[key]}
-                        </option>
-                    ))}
-                </select>
-                {errors.status && (
-                    <p className="text-sm text-red-500">
-                        {errors.status.message}
-                    </p>
-                )}
-            </div>
             <input
                 type="date"
                 {...register("startDate")}

@@ -29,11 +29,11 @@ const DisboardPage = () => {
                             <table className="w-full text-left text-sm text-gray-500">
                                 <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                     <tr>
-                                        <th className="px-6 py-3">Status</th>
-                                        <th className="px-6 py-3">Empresa</th>
-                                        <th className="px-6 py-3">Proyecto</th>
+                                        <th className="px-6 py-3">Nombre</th>
                                         <th className="px-6 py-3">Fecha</th>
                                         <th className="px-6 py-3">Hora</th>
+                                        <th className="px-6 py-3">Empresa</th>
+                                        <th className="px-6 py-3">Proyecto</th>
                                         <th className="px-6 py-3">
                                             tipo de hora
                                         </th>
