@@ -113,7 +113,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
 
         // Llamada a la mutación para agregar la tarea (actualización optimista incluida)
         addTaskMutation.mutate(taskPayload, {
-            onSuccess: (createdTask) => {
+            onSuccess: () => {
                 toast.success(
                     "Tarea guardada. Puedes seguir agregando más tareas.",
                     {

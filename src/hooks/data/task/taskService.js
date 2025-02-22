@@ -40,7 +40,8 @@ export const filterTasksApi = async (filters) => {
     if (filters.project) queryParams.append("project", filters.project)
     if (filters.fullname) queryParams.append("fullname", filters.fullname)
     if (filters.date) queryParams.append("date", filters.date)
-    if (filters.status !== undefined) queryParams.append("status", filters.status)
+    if (filters.status !== undefined)
+        queryParams.append("status", filters.status)
     const { data } = await api.get(
         `/tasks/filtertasks?${queryParams.toString()}`
     )

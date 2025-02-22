@@ -141,7 +141,7 @@ const Sidebar = () => {
                         {/* Dropdown de Admin (solo para rol admin) */}
                         {role === "admin" && (
                             <div>
-                                <SidebarButton to="/task/exported">
+                                <SidebarButton to="/tasks">
                                     <TasksIcon /> Tareas
                                 </SidebarButton>
                                 <div className="relative">

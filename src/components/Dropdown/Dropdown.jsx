@@ -32,6 +32,7 @@ const Dropdown = ({
                 className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
                 disabled={isLoading}
             >
+                <option value="">Seleccione un {label}</option>
                 {isLoading ? (
                     <option>{loadingText}</option>
                 ) : isError ? (

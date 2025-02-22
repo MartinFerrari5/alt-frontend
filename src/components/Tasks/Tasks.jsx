@@ -10,17 +10,26 @@ const Tasks = () => {
     const { tasks, getTasks, useFilterTasks } = useTasks()
     const [searchParams, setSearchParams] = useSearchParams()
 
-    // Extraemos los parámetros de la URL
+    // Extraer todos los parámetros de la URL
     const urlFullname = searchParams.get("fullname") || ""
+    const urlCompany = searchParams.get("company") || ""
+    const urlProject = searchParams.get("project") || ""
     const urlDate = searchParams.get("date") || ""
-    const filterActive = urlFullname || urlDate
+    const urlStatus = searchParams.get("status") || ""
+    const filterActive = urlFullname || urlCompany || urlProject || urlDate || urlStatus
 
     // Ejecutamos el hook de filtrado si existen parámetros
     const {
         data: filteredTasks,
         isLoading: filterLoading,
         isError: filterError,
-    } = useFilterTasks({ fullname: urlFullname, date: urlDate })
+    } = useFilterTasks({
+        fullname: urlFullname,
+        company: urlCompany,
+        project: urlProject,
+        date: urlDate,
+        status: urlStatus,
+    })
 
     // Determinamos qué listado mostrar
     const displayTasks = filterActive ? filteredTasks : tasks
@@ -28,8 +37,8 @@ const Tasks = () => {
     const error = filterActive ? filterError : getTasks.isError
 
     // Actualiza la URL con los parámetros de búsqueda
-    const handleFilter = ({ fullname, date }) => {
-        setSearchParams({ fullname, date })
+    const handleFilter = ({ fullname, company, project, date, status }) => {
+        setSearchParams({ fullname, company, project, date, status })
     }
 
     return (

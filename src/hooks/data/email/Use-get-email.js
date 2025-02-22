@@ -13,6 +13,7 @@ export const useGetEmails = () => {
         queryKey: emailQueryKeys.getAll(),
         queryFn: async () => {
             const response = await api.get("/emails")
+            console.log("data", response.data)
             return response.data
         },
         onSuccess: (fetchedData) => {
