@@ -16,7 +16,8 @@ const Tasks = () => {
     const urlProject = searchParams.get("project") || ""
     const urlDate = searchParams.get("date") || ""
     const urlStatus = searchParams.get("status") || ""
-    const filterActive = urlFullname || urlCompany || urlProject || urlDate || urlStatus
+    const filterActive =
+        urlFullname || urlCompany || urlProject || urlDate || urlStatus
 
     // Ejecutamos el hook de filtrado si existen parámetros
     const {

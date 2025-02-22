@@ -3,38 +3,38 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 const useTaskStore = create(
-  persist(
-    (set) => ({
-      tasks: [],
+    persist(
+        (set) => ({
+            tasks: [],
 
-      // Agregar una tarea
-      addTask: (newTask) =>
-        set((state) => ({ tasks: [...state.tasks, newTask] })),
+            // Agregar una tarea
+            addTask: (newTask) =>
+                set((state) => ({ tasks: [...state.tasks, newTask] })),
 
-      // Actualizar una tarea
-      updateTask: (taskId, updatedTask) =>
-        set((state) => ({
-          tasks: state.tasks.map((task) =>
-            task.id === taskId ? { ...task, ...updatedTask } : task
-          ),
-        })),
+            // Actualizar una tarea
+            updateTask: (taskId, updatedTask) =>
+                set((state) => ({
+                    tasks: state.tasks.map((task) =>
+                        task.id === taskId ? { ...task, ...updatedTask } : task
+                    ),
+                })),
 
-      // Eliminar una tarea
-      deleteTask: (taskId) =>
-        set((state) => ({
-          tasks: state.tasks.filter((task) => task.id !== taskId),
-        })),
+            // Eliminar una tarea
+            deleteTask: (taskId) =>
+                set((state) => ({
+                    tasks: state.tasks.filter((task) => task.id !== taskId),
+                })),
 
-      // Establecer el listado completo de tareas
-      setTasks: (tasks) => set({ tasks }),
-    }),
-    {
-      name: "task-storage",
-      getStorage: () => localStorage,
-      // Se persiste únicamente el estado serializable
-      partialize: (state) => ({ tasks: state.tasks }),
-    }
-  )
+            // Establecer el listado completo de tareas
+            setTasks: (tasks) => set({ tasks }),
+        }),
+        {
+            name: "task-storage",
+            getStorage: () => localStorage,
+            // Se persiste únicamente el estado serializable
+            partialize: (state) => ({ tasks: state.tasks }),
+        }
+    )
 )
 
 export default useTaskStore

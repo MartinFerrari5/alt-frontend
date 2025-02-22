@@ -10,7 +10,16 @@ import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import { useTasks } from "../../hooks/data/task/useTasks"
+import useAuthStore from "../../store/authStore"
 
+/**
+ * Componente que representa un item de tarea en la tabla de tareas.
+ * Renderiza una fila de la tabla con los datos de la tarea y botones para
+ * editar y eliminar la tarea.
+ *
+ * @param {Object} task - Un objeto que contiene los datos de la tarea.
+ * @returns {ReactElement}
+ */
 const TaskItem = ({ task }) => {
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTaskApi, isLoading: deleteTaskIsLoading } =
@@ -19,7 +28,7 @@ const TaskItem = ({ task }) => {
         updateTaskMutation
 
     const [showConfirm, setShowConfirm] = useState(false)
-
+    const role = useAuthStore((state) => state.role)
     const handleDeleteClick = useCallback(() => {
         setShowConfirm(true)
     }, [])
@@ -112,6 +121,7 @@ const TaskItem = ({ task }) => {
                         <FaEdit className="h-5 w-5" />
                     </Link>
                     <StatusIndicator
+                        role={role}
                         status={task.status}
                         isLoading={updateTaskIsLoading}
                         onChange={handleCheckboxClick}

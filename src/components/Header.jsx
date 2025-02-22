@@ -27,7 +27,8 @@ function Header({ subtitle, title, tasks }) {
             </div>
 
             <div className="flex items-center gap-3">
-                {location.pathname === "/admin/exported" ? (
+                {location.pathname === "/admin/exported" ||
+                location.pathname === "/task/exported" ? (
                     <DownloadExcelButton tasks={tasks} />
                 ) : (
                     <>
