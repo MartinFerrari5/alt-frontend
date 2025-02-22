@@ -7,7 +7,7 @@ import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
 import { statusMap } from "../../util/taskConstants"
 
-const TaskFilter = ({ onFilter }, query) => {
+const TaskFilter = ({ onFilter }) => {
     const role = useAuthStore((state) => state.role)
     const [searchParams, setSearchParams] = useSearchParams()
 
