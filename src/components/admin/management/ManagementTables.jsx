@@ -274,7 +274,7 @@ const DataTable = ({
                                         ? item.email.email
                                         : item.email
                                     : typeof item === "object"
-                                      ? item.option || item.name
+                                      ? item.options || item.name
                                       : item
                                 return editingIndex === index ? (
                                     <TableItemEdit
