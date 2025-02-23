@@ -63,7 +63,6 @@ export const useTasks = () => {
         queryKey: taskQueryKeys.getAll(),
         queryFn: async () => {
             const tasksData = await getAllTasks()
-            console.log("🚀 Tareas obtenidas:", tasksData)
             setTasks(tasksData)
             return tasksData
         },

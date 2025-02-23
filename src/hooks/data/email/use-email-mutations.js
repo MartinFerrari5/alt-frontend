@@ -14,9 +14,7 @@ export const useEmailMutations = () => {
         mutationKey: emailMutationKeys.add(),
         mutationFn: async (email) => {
             try {
-                console.log("email a crear:", email)
                 const data = await api.post("/emails", email)
-                console.log("new email creado: ", data)
                 return data
             } catch (error) {
                 console.error(
