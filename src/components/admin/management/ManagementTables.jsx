@@ -129,7 +129,7 @@ const DataTable = ({
                 toast.error("Error: Tabla no definida.")
                 return
             }
-            const updatedData = { option: editValue }
+            const updatedData = editValue
             const idToUpdate =
                 typeof itemToEdit === "object" && itemToEdit.id
                     ? itemToEdit.id
