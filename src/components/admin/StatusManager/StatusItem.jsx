@@ -27,6 +27,8 @@ const StatusItem = ({ task }) => {
 
     return (
         <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
+            <td className="px-4 py-5">{task.full_name}</td>
+            <td className="px-4 py-5">{formatDate(task.task_date)}</td>
             <td className="px-4 py-5">{task.company}</td>
             <td className="px-4 py-5">{task.project}</td>
             <td className="px-4 py-5">{task.task_type}</td>
@@ -36,9 +38,7 @@ const StatusItem = ({ task }) => {
             <td className="px-4 py-5">{task.hour_type}</td>
             <td className="px-4 py-5">{task.lunch_hours}</td>
             <td className="px-4 py-5">{displayStatus}</td>
-            <td className="px-4 py-5">{formatDate(task.task_date)}</td>
             <td className="px-4 py-5">{task.worked_hours}</td>
-            <td className="px-4 py-5">{task.full_name}</td>
             <td className="px-4 py-5">{task.total}</td>
         </tr>
     )

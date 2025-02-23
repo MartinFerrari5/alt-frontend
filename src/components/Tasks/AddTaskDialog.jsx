@@ -1,4 +1,5 @@
 // src/components/Tasks/AddTaskDialog.jsx
+// src/components/Tasks/AddTaskDialog.jsx
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState, useEffect } from "react"
@@ -60,7 +61,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         defaultValues: {
             company: "",
             project: "",
-            task_type: "",
+            task_type: "", // Se deja vacío para forzar la selección
             hour_type: "",
             task_description: "Tarea de prueba",
             entry_time: "09:00",
@@ -70,7 +71,8 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         },
     })
 
-    // Asignar el primer elemento de cada lista a su respectivo select al cargar las opciones
+    // Al cargar las opciones, se asignan valores por defecto para algunos selects,
+    // excepto para "Tipo de Tarea" para obligar al usuario a elegirlo.
     useEffect(() => {
         reset({
             ...watch(),
@@ -86,13 +88,10 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                 hour_type_table && hour_type_table.length > 0
                     ? hour_type_table[0].hour_type
                     : "",
-            task_type:
-                types_table && types_table.length > 0
-                    ? types_table[0].option
-                    : "",
+            // No se asigna task_type para forzar la selección del usuario
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companies_table, projects_table, hour_type_table, types_table, reset])
+    }, [companies_table, projects_table, hour_type_table, reset])
 
     const formatDateForBackend = (date) => {
         const year = date.getFullYear()
@@ -223,7 +222,14 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             error={errors.task_type?.message}
                                             isLoading={isLoadingTypesTable}
                                             isError={false}
-                                            items={types_table}
+                                            // Se incluye un placeholder para obligar a la selección
+                                            items={[
+                                                {
+                                                    option: "",
+                                                    label: "-- Seleccionar --",
+                                                },
+                                                ...types_table,
+                                            ]}
                                             loadingText="Cargando tipos de Tarea..."
                                             errorText="Error cargando tipos de tarea"
                                         />
@@ -272,6 +278,9 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                     id="lunch_hours"
                                                     label="Horas de Almuerzo"
                                                     type="number"
+                                                    min="0.1"
+                                                    max="4"
+                                                    step="0.1"
                                                     {...register("lunch_hours")}
                                                     errorMessage={
                                                         errors.lunch_hours
