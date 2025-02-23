@@ -10,7 +10,13 @@ import { getFilteredExportedTasks, getStatuses } from "../../../hooks/data/statu
 const StatusTable = () => {
   // Manejo de query params para filtros
   const [searchParams, setSearchParams] = useSearchParams();
-  const [filterParams, setFilterParams] = useState({ fullname: "", date: "" });
+  const [filterParams, setFilterParams] = useState({
+    fullname: "",
+    company: "",
+    project: "",
+    status: "",
+    date: "",
+  });
 
   // Extraemos métodos y data del store
   const { statuses, setStatuses } = useStatusStore();
@@ -18,17 +24,26 @@ const StatusTable = () => {
   // Actualizamos los filtros según los query params
   useEffect(() => {
     const fullname = searchParams.get("fullname") || "";
+    const company = searchParams.get("company") || "";
+    const project = searchParams.get("project") || "";
+    const status = searchParams.get("status") || "";
     const date = searchParams.get("date") || "";
-    setFilterParams({ fullname, date });
+    setFilterParams({ fullname, company, project, status, date });
   }, [searchParams]);
 
   // Efecto para actualizar el store cada vez que se cargue el componente o cambien los filtros
   useEffect(() => {
     const actualizarStatuses = async () => {
       try {
-        // Si se aplican filtros (alguno de los dos valores), se consulta la API filtrada
-        if (filterParams.fullname || filterParams.date) {
-          const filteredTasks = await getFilteredExportedTasks(filterParams.fullname, filterParams.date);
+        // Si se aplican filtros en alguno de los parámetros, se consulta la API filtrada
+        if (
+          filterParams.fullname ||
+          filterParams.company ||
+          filterParams.project ||
+          filterParams.status ||
+          filterParams.date
+        ) {
+          const filteredTasks = await getFilteredExportedTasks(filterParams);
           setStatuses(filteredTasks);
         } else {
           // En caso contrario, se obtienen todos los statuses

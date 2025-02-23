@@ -42,13 +42,15 @@ export const getStatusByTask = async (task_id) => {
 
 /**
  * Filtra tareas exportadas según parámetros.
- * @param {string} fullname
- * @param {string} date
+ * @param {Object} filters - Objeto con filtros: { fullname, company, project, status, date }
  */
-export const getFilteredExportedTasks = async (fullname, date) => {
+export const getFilteredExportedTasks = async (filters) => {
   const params = new URLSearchParams();
-  params.append("fullname", fullname || "");
-  params.append("date", date || "");
+  params.append("company", filters.company || "");
+  params.append("project", filters.project || "");
+  params.append("fullname", filters.fullname || "");
+  params.append("status", filters.status || "");
+  params.append("date", filters.date || "");
   const { data } = await api.get(`/status/filtertasks?${params.toString()}`);
   // Se asume que la respuesta contiene un arreglo en data.tasks
   return data.tasks;
