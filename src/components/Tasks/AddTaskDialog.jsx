@@ -1,5 +1,4 @@
 // src/components/Tasks/AddTaskDialog.jsx
-// src/components/Tasks/AddTaskDialog.jsx
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState, useEffect } from "react"
@@ -222,13 +221,10 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             error={errors.task_type?.message}
                                             isLoading={isLoadingTypesTable}
                                             isError={false}
-                                            // Se incluye un placeholder para obligar a la selección
                                             items={[
-                                                {
-                                                    option: "",
-                                                    label: "-- Seleccionar --",
-                                                },
-                                                ...types_table,
+                                                ...(Array.isArray(types_table)
+                                                    ? types_table
+                                                    : []),
                                             ]}
                                             loadingText="Cargando tipos de Tarea..."
                                             errorText="Error cargando tipos de tarea"

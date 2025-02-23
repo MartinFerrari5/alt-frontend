@@ -112,7 +112,7 @@ const Sidebar = () => {
                                                             " block px-4 py-2"
                                                         }
                                                     >
-                                                        Todas las tareas
+                                                        pendientes
                                                     </NavLink>
                                                 </li>
                                                 <li>
