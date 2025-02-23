@@ -43,7 +43,7 @@ export const updateOption = async (table, id, updatedData) => {
         const payload = { table, option: updatedData }
         const { data } = await api.put(`/options?options_id=${id}`, payload)
         console.log("🟢 Data:", data)
-        return data
+        return data.option
     } catch (error) {
         console.error(`Error actualizando opción en ${table}:`, error)
         throw error
