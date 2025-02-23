@@ -1,86 +1,110 @@
 // src/hooks/data/use-email-mutations.js
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { emailMutationKeys } from "../../../keys/mutations"
 import { emailQueryKeys } from "../../../keys/queries"
-import { api } from "../../../lib/axios"
-import { useEmailStore } from "../../../store/emailStore"
+import {
+    getEmails,
+    getEmail,
+    postEmail,
+    putEmail,
+    deleteEmail,
+} from "./emailServer.js"
+import { useEmailStore } from "../../../store/emailStore.js"
 
+/**
+ * Hook para obtener todos los emails.
+ *
+ * Este hook utiliza React Query para realizar una consulta GET a la API y obtener
+ * la lista de emails. Además, sincroniza los datos obtenidos con el store de Zustand.
+ *
+ * @returns {Object} Objeto que contiene:
+ *  - emails: Arreglo de emails obtenidos.
+ *  - isLoading: Indicador del estado de carga.
+ *  - error: Error en caso de que ocurra alguno durante la consulta.
+ */
+export const useGetEmails = () => {
+    const { emails, setEmails } = useEmailStore()
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: emailQueryKeys.getAll(),
+        queryFn: async () => {
+            return await getEmails()
+        },
+        onSuccess: (fetchedData) => {
+            setEmails(fetchedData)
+        },
+        refetchOnMount: true,
+    })
+
+    return { emails: data || emails, isLoading, error }
+}
+
+/**
+ * Hook para obtener un email por su ID.
+ *
+ * Realiza una consulta GET a la API para obtener un email específico.
+ *
+ * @param {string|number} id - ID del email a obtener.
+ * @returns {Object} Objeto que contiene:
+ *  - email: El email obtenido.
+ *  - isLoading: Indicador del estado de carga.
+ *  - error: Error en caso de fallar la consulta.
+ */
+export const useGetEmail = (id) => {
+    const { data, isLoading, error } = useQuery({
+        queryKey: emailQueryKeys.getById(id),
+        queryFn: async () => {
+            return await getEmail(id)
+        },
+    })
+
+    return { email: data, isLoading, error }
+}
+
+/**
+ * Hook para gestionar las mutaciones de emails: agregar, editar y eliminar.
+ *
+ * Cada función de mutación realiza la llamada correspondiente a la API y,
+ * en caso de éxito, actualiza tanto la caché de React Query como el store de Zustand.
+ *
+ * @returns {Object} Objeto que contiene las mutaciones:
+ *  - add: Función para agregar un nuevo email.
+ *  - edit: Función para editar un email existente.
+ *  - remove: Función para eliminar un email.
+ */
 export const useEmailMutations = () => {
     const queryClient = useQueryClient()
     const { addEmail, updateEmail, removeEmail } = useEmailStore()
 
-    // Agregar email
     const add = useMutation({
         mutationKey: emailMutationKeys.add(),
-        mutationFn: async (email) => {
-            try {
-                const data = await api.post("/emails", email)
-                return data
-            } catch (error) {
-                console.error(
-                    "Error al crear el email:",
-                    error.response?.data || error.message
-                )
-                throw error
-            }
+        mutationFn: async (newEmail) => {
+            return await postEmail(newEmail)
         },
         onSuccess: (createdEmail) => {
-            queryClient.setQueryData(
-                emailQueryKeys.getAll(),
-                (oldEmails = []) => [...oldEmails, createdEmail]
-            )
+            queryClient.invalidateQueries(emailQueryKeys.getAll())
             addEmail(createdEmail)
         },
     })
 
-    // Editar email (requiere agregar la ruta PUT en el backend)
     const edit = useMutation({
         mutationKey: emailMutationKeys.edit(),
-        mutationFn: async (email) => {
-            try {
-                // Se asume que el endpoint para actualizar es /emails/:id
-                const { data } = await api.put(`/emails/${email.id}`, email)
-                return data
-            } catch (error) {
-                console.error(
-                    "Error al editar el email:",
-                    error.response?.data || error.message
-                )
-                throw error
-            }
+        mutationFn: async (emailToUpdate) => {
+            return await putEmail(emailToUpdate.id, emailToUpdate)
         },
         onSuccess: (updatedEmail) => {
-            queryClient.setQueryData(
-                emailQueryKeys.getAll(),
-                (oldEmails = []) =>
-                    oldEmails.map((email) =>
-                        email.id === updatedEmail.id ? updatedEmail : email
-                    )
-            )
+            queryClient.invalidateQueries(emailQueryKeys.getAll())
             updateEmail(updatedEmail)
         },
     })
 
-    // Eliminar email
     const remove = useMutation({
         mutationKey: emailMutationKeys.remove(),
         mutationFn: async (id) => {
-            try {
-                const { data } = await api.delete(`/emails?email_id=${id}`)
-                return data
-            } catch (error) {
-                console.error(
-                    "Error al eliminar el email:",
-                    error.response?.data || error.message
-                )
-                throw error
-            }
+            return await deleteEmail(id)
         },
         onSuccess: (_, id) => {
-            queryClient.setQueryData(
-                emailQueryKeys.getAll(),
-                (oldEmails = []) => oldEmails.filter((email) => email.id !== id)
-            )
+            queryClient.invalidateQueries(emailQueryKeys.getAll())
             removeEmail(id)
         },
     })

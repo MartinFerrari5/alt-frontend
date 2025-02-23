@@ -3,10 +3,10 @@ import PropTypes from "prop-types"
 import { useState, useRef } from "react"
 import { createPortal } from "react-dom"
 import { CSSTransition } from "react-transition-group"
-import { toast } from "react-toastify" // Se usa react‑toastify
+import { toast } from "react-toastify"
 import Button from "../Button"
 import { useOptionsStore } from "../../store/optionsStore"
-import { useAddEmail } from "../../hooks/data/email/Use-add-email"
+import { useEmailMutations } from "../../hooks/data/email/use-email-mutations"
 
 const AddOptionDialog = ({ isOpen, handleClose }) => {
     const nodeRef = useRef()
@@ -14,7 +14,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
     // Acción del store para agregar opciones (no emails)
     const addOptionAction = useOptionsStore((state) => state.addOption)
     // Para emails se usa el hook especializado
-    const { mutate: addEmails } = useAddEmail()
+    const { add: addEmails } = useEmailMutations()
 
     const [selectedTable, setSelectedTable] = useState("projects_table")
     const [optionValue, setOptionValue] = useState("")
@@ -40,8 +40,8 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
         }
 
         if (selectedTable === "emails") {
-            // Para emails se envía { email: optionValue }
-            addEmails(
+            // Se debe usar addEmails.mutate en lugar de addEmails()
+            addEmails.mutate(
                 { email: optionValue },
                 {
                     onSuccess: () => {
@@ -62,16 +62,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
             )
         } else {
             // Definir el objeto de opción según la tabla seleccionada
-            let optionData
-            if (selectedTable === "projects_table") {
-                optionData = optionValue
-            } else if (selectedTable === "hour_type_table") {
-                optionData = optionValue
-            } else if (selectedTable === "companies_table") {
-                optionData = optionValue
-            } else {
-                optionData = optionValue
-            }
+            let optionData = optionValue
 
             try {
                 await addOptionAction(selectedTable, optionData)

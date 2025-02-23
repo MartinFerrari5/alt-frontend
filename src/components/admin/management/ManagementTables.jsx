@@ -6,8 +6,10 @@ import TableItemView from "./TableItemView"
 import TableItemEdit from "./TableItemEdit"
 import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
 import { toast } from "react-toastify"
-import { useGetEmails } from "../../../hooks/data/email/Use-get-email"
-import { useEmailMutations } from "../../../hooks/data/email/use-email-mutations"
+import {
+    useEmailMutations,
+    useGetEmails,
+} from "../../../hooks/data/email/use-email-mutations"
 
 const ManagementTables = () => {
     const {

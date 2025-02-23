@@ -6,6 +6,8 @@ export const useEmailStore = create(
     persist(
         (set) => ({
             emails: [],
+            isLoading: false,
+            error: null,
             setEmails: (emails) => set({ emails }),
             addEmail: (email) =>
                 set((state) => ({ emails: [...state.emails, email] })),
@@ -20,6 +22,9 @@ export const useEmailStore = create(
                     emails: state.emails.filter((email) => email.id !== id),
                 })),
             clearEmails: () => set({ emails: [] }),
+            setLoading: (isLoading) => set({ isLoading }),
+            setError: (error) => set({ error }),
+            clearError: () => set({ error: null }),
         }),
         {
             name: "email-storage",
