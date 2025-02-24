@@ -154,12 +154,14 @@ const SignIn = () => {
                                         </label>
                                     </div>
                                 </div>
-                                <a
-                                    href="#"
-                                    className="text-primary-600 text-sm font-medium hover:underline"
-                                >
-                                    ¿Olvidaste la contraseña?
-                                </a>
+                                <div>
+                                    <a
+                                        href="#"
+                                        className="text-primary-600 text-sm font-medium hover:underline"
+                                    >
+                                        ¿Olvidaste la contraseña?
+                                    </a>
+                                </div>
                             </div>
                             <button
                                 type="submit"
@@ -185,18 +187,18 @@ const SignIn = () => {
                                     {message.text}
                                 </p>
                             )}
-                            <p className="text-sm font-light text-gray-500">
-                                ¿No tienes cuenta?{" "}
-                                <Link
-                                    href="/register"
-                                    className="text-primary-600 font-medium hover:underline"
-                                >
-                                    Regístrate
-                                </Link>
-                            </p>
                         </form>
                     </div>
                 </div>
+                <p className="text-sm font-light text-gray-500">
+                    ¿No tienes cuenta?{" "}
+                    <Link
+                        to="/register"
+                        className="text-primary-600 font-medium hover:underline"
+                    >
+                        Regístrate
+                    </Link>
+                </p>
             </div>
         </section>
     )
