@@ -39,8 +39,8 @@ const Dropdown = ({
                     <option className="text-red-500">{errorText}</option>
                 ) : (
                     items.map((item) => (
-                        <option key={item.id} value={item.options}>
-                            {item.options}
+                        <option key={item.id} value={item.option}>
+                            {item.option}
                         </option>
                     ))
                 )}

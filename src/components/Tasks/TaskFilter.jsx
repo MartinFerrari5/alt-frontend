@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import useAuthStore from "../../store/authStore"
 import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
-import { statusMap } from "../../util/taskConstants"
+// import { statusMap } from "../../util/taskConstants"
 
 const TaskFilter = ({ onFilter }) => {
     const role = useAuthStore((state) => state.role)
@@ -94,7 +94,7 @@ const TaskFilter = ({ onFilter }) => {
                         {...register("fullname")}
                         className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <div className="group relative z-0 mb-5 w-full">
+                    {/* <div className="group relative z-0 mb-5 w-full">
                         <label
                             htmlFor="status"
                             className="mb-2 block text-sm font-medium"
@@ -118,7 +118,7 @@ const TaskFilter = ({ onFilter }) => {
                                 {errors.status.message}
                             </p>
                         )}
-                    </div>
+                    </div> */}
                 </>
             )}
             <Dropdown

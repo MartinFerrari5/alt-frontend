@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
 import { api } from "../../lib/axios"
 
+// Esquema de validación con Zod
 const schema = z
     .object({
         firstName: z.string().min(2, "El nombre es obligatorio"),
@@ -20,15 +21,41 @@ const schema = z
         path: ["confirmPassword"],
     })
 
+// Componente auxiliar para renderizar campos de formulario
+const FormField = ({
+    id,
+    label,
+    type = "text",
+    placeholder,
+    inputProps,
+    error,
+}) => (
+    <div className="mb-4">
+        <label
+            htmlFor={id}
+            className="mb-2 block text-sm font-medium text-gray-500"
+        >
+            {label}
+        </label>
+        <input
+            id={id}
+            type={type}
+            placeholder={placeholder}
+            {...inputProps}
+            className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
+                error ? "border-red-500" : ""
+            }`}
+        />
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+    </div>
+)
+
 const PageRegister = () => {
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm({
-        resolver: zodResolver(schema),
-    })
-
+    } = useForm({ resolver: zodResolver(schema) })
     const navigate = useNavigate()
     const [message, setMessage] = useState(null)
 
@@ -42,9 +69,7 @@ const PageRegister = () => {
         try {
             const response = await fetch(`${api}/users`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formattedData),
             })
 
@@ -60,7 +85,7 @@ const PageRegister = () => {
     }
 
     return (
-        <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white antialiased">
+        <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white p-10 antialiased">
             <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
                 <a
                     href="#"
@@ -80,65 +105,48 @@ const PageRegister = () => {
                         </h1>
                         <form
                             onSubmit={handleSubmit(onSubmit)}
-                            className="mx-auto max-w-md space-y-4 rounded-xl p-10"
+                            className="mx-auto max-w-md space-y-4 rounded-xl"
                         >
-                            <input
-                                {...register("firstName")}
-                                placeholder="Nombre"
-                                className="w-full rounded-xl border p-2"
-                            />
-                            {errors.firstName && (
-                                <p className="text-red-500">
-                                    {errors.firstName.message}
-                                </p>
-                            )}
-
-                            <input
-                                {...register("lastName")}
-                                placeholder="Apellido"
-                                className="w-full rounded-xl border p-2"
-                            />
-                            {errors.lastName && (
-                                <p className="text-red-500">
-                                    {errors.lastName.message}
-                                </p>
-                            )}
-
-                            <input
-                                {...register("email")}
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    id="firstName"
+                                    label="Nombre"
+                                    placeholder="Nombre"
+                                    inputProps={register("firstName")}
+                                    error={errors.firstName?.message}
+                                />
+                                <FormField
+                                    id="lastName"
+                                    label="Apellido"
+                                    placeholder="Apellido"
+                                    inputProps={register("lastName")}
+                                    error={errors.lastName?.message}
+                                />
+                            </div>
+                            <FormField
+                                id="email"
+                                label="Correo"
+                                type="email"
                                 placeholder="Correo"
-                                className="w-full rounded-xl border p-2"
+                                inputProps={register("email")}
+                                error={errors.email?.message}
                             />
-                            {errors.email && (
-                                <p className="text-red-500">
-                                    {errors.email.message}
-                                </p>
-                            )}
-
-                            <input
-                                {...register("password")}
+                            <FormField
+                                id="password"
+                                label="Contraseña"
                                 type="password"
                                 placeholder="Contraseña"
-                                className="w-full rounded-xl border p-2"
+                                inputProps={register("password")}
+                                error={errors.password?.message}
                             />
-                            {errors.password && (
-                                <p className="text-red-500">
-                                    {errors.password.message}
-                                </p>
-                            )}
-
-                            <input
-                                {...register("confirmPassword")}
+                            <FormField
+                                id="confirmPassword"
+                                label="Confirmar contraseña"
                                 type="password"
                                 placeholder="Confirmar contraseña"
-                                className="w-full rounded-xl border p-2"
+                                inputProps={register("confirmPassword")}
+                                error={errors.confirmPassword?.message}
                             />
-                            {errors.confirmPassword && (
-                                <p className="text-red-500">
-                                    {errors.confirmPassword.message}
-                                </p>
-                            )}
-
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
@@ -156,14 +164,9 @@ const PageRegister = () => {
                                         ? "Error en el registro"
                                         : "Registrar"}
                             </button>
-
                             {message && (
                                 <p
-                                    className={`mt-2 text-sm ${
-                                        message.type === "error"
-                                            ? "text-red-500"
-                                            : "text-green-500"
-                                    }`}
+                                    className={`mt-2 text-sm ${message.type === "error" ? "text-red-500" : "text-green-500"}`}
                                 >
                                     {message.text}
                                 </p>

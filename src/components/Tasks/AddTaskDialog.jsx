@@ -60,7 +60,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         defaultValues: {
             company: "",
             project: "",
-            task_type: "", // Se deja vacío para forzar la selección
+            task_type: "",
             hour_type: "",
             task_description: "Tarea de prueba",
             entry_time: "09:00",
@@ -87,7 +87,10 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                 hour_type_table && hour_type_table.length > 0
                     ? hour_type_table[0].hour_type
                     : "",
-            // No se asigna task_type para forzar la selección del usuario
+            task_type:
+                types_table && types_table.length > 0
+                    ? types_table[0].type
+                    : "",
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [companies_table, projects_table, hour_type_table, reset])
@@ -199,16 +202,16 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                     {...register("status")}
                                                     className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
                                                 >
-                                                    {Object.keys(statusMap).map(
-                                                        (status) => (
-                                                            <option
-                                                                key={status}
-                                                                value={status}
-                                                            >
-                                                                {status}
-                                                            </option>
-                                                        )
-                                                    )}
+                                                    {Object.entries(
+                                                        statusMap
+                                                    ).map(([key, label]) => (
+                                                        <option
+                                                            key={key}
+                                                            value={key}
+                                                        >
+                                                            {label}
+                                                        </option>
+                                                    ))}
                                                 </select>
                                             </div>
                                         </div>
