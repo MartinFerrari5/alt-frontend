@@ -122,6 +122,7 @@ const DataTable = ({
                 "Tipos de Hora": "hour_type_table",
                 Proyectos: "projects_table",
                 Emails: "emails",
+                "Tipos de Tarea": "types_table",
             }
             const table = tableMap[title]
             if (!table) {
@@ -183,6 +184,7 @@ const DataTable = ({
                 "Tipos de Hora": "hour_type_table",
                 Proyectos: "projects_table",
                 Emails: "emails",
+                "Tipos de Tarea": "types_table",
             }
             const table = tableMap[title]
             if (!table) {
@@ -248,6 +250,7 @@ const DataTable = ({
             <h2 className="mb-4 text-lg font-semibold text-gray-700">
                 {title}
             </h2>
+            <div className="flex justify-end"></div>
             <div className="relative max-h-[400px] overflow-y-auto">
                 <table className="w-full text-left text-sm text-gray-500">
                     <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-600">

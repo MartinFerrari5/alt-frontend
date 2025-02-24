@@ -4,7 +4,6 @@ import { FaSave, FaTimes, FaTrash } from "react-icons/fa"
 
 const TableItemEdit = ({
     id,
-    name,
     editValue,
     onEditChange,
     onSaveEdit,
@@ -17,7 +16,7 @@ const TableItemEdit = ({
             <td className="px-6 py-4">
                 <input
                     type="text"
-                    value={editValue || name}
+                    value={editValue}
                     onChange={onEditChange}
                     className="w-full max-w-[200px] rounded-md border border-gray-300 p-1"
                     autoFocus
