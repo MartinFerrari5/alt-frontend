@@ -1,16 +1,15 @@
 // src/components/Sidebar.jsx
 import { useState } from "react"
 import { NavLink } from "react-router-dom"
-import { HomeIcon, TasksIcon } from "../assets/icons"
 import LogoutButton from "./auth/LogoutButton"
 import HamburgerButton from "./HamburgerButton"
 import { tv } from "tailwind-variants"
 import useAuthStore from "../store/authStore"
+import { FaHome, FaTasks, FaUndoAlt } from "react-icons/fa"
 
 const Sidebar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [isTasksDropdownOpen, setIsTasksDropdownOpen] = useState(false)
     const role = useAuthStore((state) => state.role)
 
     const toggleSidebar = () => {
@@ -19,10 +18,6 @@ const Sidebar = () => {
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen)
-    }
-
-    const toggleTasksDropdown = () => {
-        setIsTasksDropdownOpen(!isTasksDropdownOpen)
     }
 
     const sidebar = tv({
@@ -57,92 +52,18 @@ const Sidebar = () => {
                         </p>
                     </div>
                     <div className="flex flex-col gap-2 p-2">
-                        <SidebarButton to="/">
-                            <HomeIcon /> Inicio
+                        <SidebarButton to="/history">
+                            <FaUndoAlt /> Historial
                         </SidebarButton>
-                        {/* Dropdown para Tareas */}
-                        <div>
-                            {role === "user" && (
-                                <div className="relative">
-                                    <button
-                                        onClick={toggleTasksDropdown}
-                                        className={
-                                            sidebar({
-                                                color: isTasksDropdownOpen
-                                                    ? "selected"
-                                                    : "unselected",
-                                            }) + " w-full justify-between"
-                                        }
-                                    >
-                                        <TasksIcon /> Tareas
-                                        <svg
-                                            className={`ms-3 h-2.5 w-2.5 transition-transform ${
-                                                isTasksDropdownOpen
-                                                    ? "rotate-180"
-                                                    : ""
-                                            }`}
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 6 10"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="m1 9 4-4-4-4"
-                                            />
-                                        </svg>
-                                    </button>
-                                    {isTasksDropdownOpen && (
-                                        <div className="absolute left-full top-0 z-10 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow-sm">
-                                            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                                                <li>
-                                                    <NavLink
-                                                        to="/tasks"
-                                                        className={({
-                                                            isActive,
-                                                        }) =>
-                                                            sidebar({
-                                                                color: isActive
-                                                                    ? "selected"
-                                                                    : "unselected",
-                                                            }) +
-                                                            " block px-4 py-2"
-                                                        }
-                                                    >
-                                                        pendientes
-                                                    </NavLink>
-                                                </li>
-                                                <li>
-                                                    <NavLink
-                                                        to="/task/exported"
-                                                        className={({
-                                                            isActive,
-                                                        }) =>
-                                                            sidebar({
-                                                                color: isActive
-                                                                    ? "selected"
-                                                                    : "unselected",
-                                                            }) +
-                                                            " block px-4 py-2"
-                                                        }
-                                                    >
-                                                        Exportadas
-                                                    </NavLink>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
+
+                        <SidebarButton to="/">
+                            <FaHome /> Inicio
+                        </SidebarButton>
                         {/* Dropdown de Admin (solo para rol admin) */}
                         {role === "admin" && (
                             <div>
                                 <SidebarButton to="/tasks">
-                                    <TasksIcon /> Tareas
+                                    <FaTasks /> Tareas
                                 </SidebarButton>
                                 <div className="relative">
                                     <button

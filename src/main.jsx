@@ -34,15 +34,15 @@ const router = createBrowserRouter([
         path: "/",
         element: (
             <ProtectedRoute>
-                <DisboardPage />
+                <TasksPage />
             </ProtectedRoute>
         ),
     },
     {
-        path: "/tasks",
+        path: "/history",
         element: (
             <ProtectedRoute>
-                <TasksPage />
+                <DisboardPage />
             </ProtectedRoute>
         ),
     },
