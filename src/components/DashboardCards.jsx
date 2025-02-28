@@ -5,14 +5,42 @@ import DashboardCard from "./DashboardCard"
 import { useGetKpiReport } from "../hooks/data/reportes/use-kpi-hooks"
 
 const DashboardCards = () => {
-  // Obtener las tareas desde el store global
-  const tasks = useTaskStore((state) => state.tasks)
+  // Ahora se obtiene el estado de tareas desde la API
+  const {
+    data: statusKpiData,
+    isLoading: loadingStatusKpi,
+    error: errorStatusKpi,
+  } = useGetKpiReport("status")
 
-  // Conteo de tareas según su estado
-  const inProgressTasks = tasks.filter((task) => task.status === 0).length // Tareas en progreso
-  const completedTasks = tasks.filter((task) => task.status === 1).length // Tareas completadas
+  // Función para transformar los datos de "status" a un formato amigable
+  const transformStatusStats = (data) => {
+    if (!data) return []
+    return data.map((item) => {
+      let label
+      switch (item.status) {
+        case 0:
+          label = "No iniciadas"
+          break
+        case 1:
+          label = "En progreso"
+          break
+        case 2:
+          label = "Completadas"
+          break
+        default:
+          label = item.status
+      }
+      return { label, value: item.cantidad }
+    })
+  }
 
-  // Llamadas al hook para cada KPI report (se ejecutan si el usuario es admin)
+  const statusStats = loadingStatusKpi
+    ? [{ label: "Cargando...", value: "" }]
+    : errorStatusKpi
+    ? [{ label: "Error", value: "" }]
+    : transformStatusStats(statusKpiData)
+
+  // Los otros KPI siguen consultándose de la misma forma
   const {
     data: taskKpiData,
     isLoading: loadingTaskKpi,
@@ -34,7 +62,7 @@ const DashboardCards = () => {
     error: errorCompanyKpi,
   } = useGetKpiReport("company")
 
-  // Función auxiliar para transformar los datos del API al formato que DashboardCard espera
+  // Función auxiliar para transformar la data de los otros KPI
   const transformStats = (data, groupKey) => {
     if (!data) return []
     return data.map((item) => ({
@@ -50,38 +78,26 @@ const DashboardCards = () => {
 
   return (
     <div>
-      {/* Sección de tarjetas de tareas */}
+      {/* Sección de Estado de Tareas (obtenido desde API) */}
       <div className="grid grid-cols-4 gap-9">
-        {/* Tareas totales */}
-        <DashboardCard
+        {/* <DashboardCard
           icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
-          mainText={tasks.length}
-          secondaryText="Tareas totales"
-        />
-
-        {/* Tareas en progreso */}
-        <DashboardCard
-          icon={<FaSpinner className="animate-spin text-2xl text-brand-process" />}
-          mainText={inProgressTasks}
-          secondaryText="Tareas en progreso"
-        />
-
-        {/* Tareas completadas */}
-        <DashboardCard
-          icon={<FaCheckCircle className="text-2xl text-brand-custom-green" />}
-          mainText={completedTasks}
-          secondaryText="Tareas completadas"
-        />
-
-        {/* Se puede agregar una tarjeta resumen adicional si se requiere */}
+          title="Estado de Tareas"
+          stats={statusStats}
+        /> */}
       </div>
 
-      {/* Sección de reportes KPI */}
+      {/* Sección de reportes KPI para otros grupos */}
       <div className="mt-8 grid grid-cols-4 gap-9">
+        <DashboardCard
+          icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
+          title="Estado de Tareas"
+          stats={statusStats}
+        />
         {/* KPI Report para Task Type */}
         <DashboardCard
           icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
-          title="KPI - Task Type"
+          title="Tipo de Tarea"
           stats={
             loadingTaskKpi
               ? [{ label: "Cargando...", value: "" }]
@@ -94,7 +110,7 @@ const DashboardCards = () => {
         {/* KPI Report para Hour Type */}
         <DashboardCard
           icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
-          title="KPI - Hour Type"
+          title="Tipo de Hora"
           stats={
             loadingHourKpi
               ? [{ label: "Cargando...", value: "" }]
@@ -105,7 +121,7 @@ const DashboardCards = () => {
         />
 
         {/* KPI Report para Project */}
-        <DashboardCard
+        {/* <DashboardCard
           icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
           title="KPI - Project"
           stats={
@@ -115,10 +131,10 @@ const DashboardCards = () => {
               ? [{ label: "Error", value: "" }]
               : projectKpiStats
           }
-        />
+        /> */}
 
         {/* KPI Report para Company */}
-        <DashboardCard
+        {/* <DashboardCard
           icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
           title="KPI - Company"
           stats={
@@ -128,7 +144,7 @@ const DashboardCards = () => {
               ? [{ label: "Error", value: "" }]
               : companyKpiStats
           }
-        />
+        /> */}
       </div>
     </div>
   )

@@ -1,14 +1,14 @@
 // /src/components/DashboardCard.jsx
 const DashboardCard = ({ icon, title, stats, onStatClick }) => {
     return (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-lg bg-white p-4 shadow">
+        <div className="items-center justify-center gap-2 rounded-lg bg-white p-4 shadow">
             {title && (
                 <h3 className="text-lg font-bold text-brand-dark-blue">
+                    {/* <span className="text-2xl">{icon}</span> */}
                     {title}
                 </h3>
             )}
-            <div className="flex items-center gap-2">
-                <span className="text-2xl">{icon}</span>
+            <div className="items-center gap-2">
                 <div className="flex flex-col">
                     {stats &&
                         stats.map((stat, index) => (
