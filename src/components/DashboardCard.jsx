@@ -1,3 +1,4 @@
+// /src/components/DashboardCard.jsx
 const DashboardCard = ({ icon, title, stats, onStatClick }) => {
     return (
         <div className="flex flex-col items-center justify-center gap-2 rounded-lg bg-white p-4 shadow">
