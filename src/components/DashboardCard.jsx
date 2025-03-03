@@ -1,5 +1,10 @@
 // /src/components/DashboardCard.jsx
-const DashboardCard = ({ icon, title, stats, onStatClick }) => {
+const DashboardCard = ({
+    // icon,
+    title,
+    stats,
+    onStatClick,
+}) => {
     return (
         <div className="items-center justify-center gap-2 rounded-lg bg-white p-4 shadow">
             {title && (

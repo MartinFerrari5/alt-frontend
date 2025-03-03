@@ -83,7 +83,10 @@ const Tasks = () => {
                                                     Fecha
                                                 </th>
                                                 <th className="px-4 py-3">
-                                                    Hora
+                                                    HE
+                                                </th>
+                                                <th className="px-4 py-3">
+                                                    HS
                                                 </th>
                                                 <th className="px-4 py-3">
                                                     Empresa
@@ -92,13 +95,16 @@ const Tasks = () => {
                                                     Proyecto
                                                 </th>
                                                 <th className="px-4 py-3">
-                                                    Tipo de hora
+                                                    TH
                                                 </th>
                                                 <th className="px-4 py-3">
-                                                    hs trabajadas
+                                                    HD
                                                 </th>
                                                 <th className="px-4 py-3">
-                                                    Acciones
+                                                    HT
+                                                </th>
+                                                <th className="px-4 py-3">
+                                                    Estado
                                                 </th>
                                             </tr>
                                         </thead>

@@ -1,14 +1,11 @@
 // src/components/Tasks/TaskItem.jsx
 import PropTypes from "prop-types"
 import { useState, useCallback } from "react"
-import { Link } from "react-router-dom"
 import { toast } from "sonner"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
-import Button from "../Button"
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
-import { FaEdit, FaTrash } from "react-icons/fa"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import useAuthStore from "../../store/authStore"
 
@@ -86,28 +83,14 @@ const TaskItem = ({ task }) => {
             <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
                 <td className="px-4 py-5">{task.full_name || "Sin nombre"}</td>
                 <td className="px-4 py-5">{formatDate(task.task_date)}</td>
-                <td className="px-4 py-5">
-                    {task.entry_time} - {task.exit_time}
-                </td>
+                <td className="px-4 py-5">{task.entry_time}</td>
+                <td className="px-4 py-5">{task.exit_time}</td>
                 <td className="px-4 py-5">{task.company}</td>
                 <td className="px-4 py-5">{task.project}</td>
                 <td className="px-4 py-5">{task.hour_type}</td>
+                <td className="px-4 py-5">{task.break_time || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
                 <td className="flex gap-2 px-4 py-5 text-right">
-                    <Button
-                        color="ghost"
-                        onClick={handleDeleteClick}
-                        disabled={deleteTaskIsLoading}
-                    >
-                        {deleteTaskIsLoading ? (
-                            <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
-                        ) : (
-                            <FaTrash className="h-5 w-5" />
-                        )}
-                    </Button>
-                    <Link to={`/task/${task.id}`}>
-                        <FaEdit className="h-5 w-5" />
-                    </Link>
                     <StatusIndicator
                         role={role}
                         status={task.status}
@@ -136,6 +119,7 @@ TaskItem.propTypes = {
         entry_time: PropTypes.string.isRequired,
         exit_time: PropTypes.string.isRequired,
         hour_type: PropTypes.string.isRequired,
+        break_time: PropTypes.string,
         worked_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
             .isRequired,
         status: PropTypes.number.isRequired,
