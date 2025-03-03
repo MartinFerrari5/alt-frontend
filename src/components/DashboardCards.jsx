@@ -18,13 +18,13 @@ const DashboardCards = () => {
     return data.map((item) => {
       let label
       switch (item.status) {
-        case 0:
+        case 2:
           label = "No iniciadas"
           break
-        case 1:
+        case 0:
           label = "En progreso"
           break
-        case 2:
+        case 1:
           label = "Completadas"
           break
         default:
