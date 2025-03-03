@@ -18,6 +18,7 @@ import ManagementPage from "./pages/admin/Management.jsx"
 import UsersPage from "./pages/admin/Users.jsx"
 import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
+import 'flowbite';
 
 const queryClient = new QueryClient()
 

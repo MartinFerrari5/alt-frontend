@@ -6,8 +6,9 @@ import HamburgerButton from "./HamburgerButton";
 import { tv } from "tailwind-variants";
 import useAuthStore from "../store/authStore";
 import { FaHome, FaUndoAlt } from "react-icons/fa";
+import useSidebarStore from "../store/sidebarStore";
 
-// Definición de estilos reutilizables
+// Estilos reutilizables para los botones de la sidebar
 const sidebarStyle = tv({
   base: "flex items-center gap-2 rounded-lg px-6 py-3",
   variants: {
@@ -29,89 +30,85 @@ const SidebarButton = ({ children, to }) => (
   </NavLink>
 );
 
-const AdminDropdown = ({ isOpen, toggleDropdown }) => (
-  <div className="relative">
-    <button
-      onClick={toggleDropdown}
-      className={`${sidebarStyle({
-        color: isOpen ? "selected" : "unselected",
-      })} w-full justify-between`}
-    >
-      Admin
-      <svg
-        className={`ms-3 h-2.5 w-2.5 transition-transform ${
-          isOpen ? "rotate-180" : ""
-        }`}
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 6 10"
+// Componente para el menú desplegable de Admin usando Zustand para el estado
+const AdminDropdown = () => {
+  const { adminDropdownOpen, toggleAdminDropdown } = useSidebarStore ();
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={toggleAdminDropdown}
+        className={`${sidebarStyle({ color: "unselected" })} w-full justify-between`}
       >
-        <path
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="m1 9 4-4-4-4"
-        />
-      </svg>
-    </button>
-    {isOpen && (
-      <div className="absolute left-full top-0 z-10 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow-sm">
-        <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-          <li>
-            <NavLink
-              to="/admin/management"
-              className={({ isActive }) =>
-                sidebarStyle({
-                  color: isActive ? "selected" : "unselected",
-                }) + " block px-4 py-2"
-              }
-            >
-              Gestión
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/admin/users"
-              className={({ isActive }) =>
-                sidebarStyle({
-                  color: isActive ? "selected" : "unselected",
-                }) + " block px-4 py-2"
-              }
-            >
-              Usuarios
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/admin/exported"
-              className={({ isActive }) =>
-                sidebarStyle({
-                  color: isActive ? "selected" : "unselected",
-                }) + " block px-4 py-2"
-              }
-            >
-              Exportados
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    )}
-  </div>
-);
+        Admin
+        <svg
+          className={`ms-3 h-2.5 w-2.5 transition-transform ${
+            adminDropdownOpen ? "rotate-180" : ""
+          }`}
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 6 10"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 9 4-4-4-4"
+          />
+        </svg>
+      </button>
+      <ul
+        className={`${
+          adminDropdownOpen ? "block" : "hidden"
+        } absolute left-full top-0 z-10 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow-sm`}
+      >
+        <li>
+          <NavLink
+            to="/admin/management"
+            className={({ isActive }) =>
+              sidebarStyle({ color: isActive ? "selected" : "unselected" }) +
+              " block px-4 py-2"
+            }
+          >
+            Gestión
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              sidebarStyle({ color: isActive ? "selected" : "unselected" }) +
+              " block px-4 py-2"
+            }
+          >
+            Usuarios
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/exported"
+            className={({ isActive }) =>
+              sidebarStyle({ color: isActive ? "selected" : "unselected" }) +
+              " block px-4 py-2"
+            }
+          >
+            Exportados
+          </NavLink>
+        </li>
+      </ul>
+    </div>
+  );
+};
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const role = useAuthStore((state) => state.role);
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
-  }, []);
-
-  const toggleDropdown = useCallback(() => {
-    setIsDropdownOpen((prev) => !prev);
   }, []);
 
   return (
@@ -128,7 +125,10 @@ const Sidebar = () => {
             </h1>
             <p>
               Un simple{" "}
-              <span className="text-brand-custom-green">organizador de tareas</span>.
+              <span className="text-brand-custom-green">
+                organizador de tareas
+              </span>
+              .
             </p>
           </div>
           <div className="flex flex-col gap-2 p-2">
@@ -138,9 +138,7 @@ const Sidebar = () => {
             <SidebarButton to="/">
               <FaHome /> Inicio
             </SidebarButton>
-            {role === "admin" && (
-              <AdminDropdown isOpen={isDropdownOpen} toggleDropdown={toggleDropdown} />
-            )}
+            {role === "admin" && <AdminDropdown />}
           </div>
         </div>
         <div className="p-4">
@@ -155,7 +153,7 @@ const Sidebar = () => {
           isSidebarOpen ? "pointer-events-none opacity-50" : "opacity-100"
         }`}
         onClick={() => isSidebarOpen && setIsSidebarOpen(false)}
-      />
+      ></div>
     </div>
   );
 };
