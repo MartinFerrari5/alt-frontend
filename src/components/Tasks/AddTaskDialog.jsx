@@ -190,7 +190,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                 loadingText="Cargando tipos de hora..."
                                                 errorText="Error cargando tipos de hora"
                                             />
-                                            <div className="group relative z-0 mb-5 w-full">
+                                            {/* <div className="group relative z-0 mb-5 w-full">
                                                 <label
                                                     htmlFor="status"
                                                     className="mb-2 block text-sm font-medium"
@@ -213,7 +213,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                         </option>
                                                     ))}
                                                 </select>
-                                            </div>
+                                            </div> */}
                                         </div>
 
                                         {/* Sección para Tipo de Tarea */}
