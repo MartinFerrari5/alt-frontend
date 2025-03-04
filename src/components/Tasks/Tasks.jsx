@@ -1,26 +1,26 @@
 // src/components/Tasks/Tasks.jsx
-import { useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useTasks } from "../../hooks/data/task/useTasks";
+import { useEffect, useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
+import { useTasks } from "../../hooks/data/task/useTasks"
 
-import Header from "../Header";
-import TaskItem from "./TaskItem";
-import TaskFilter from "./TaskFilter";
+import Header from "../Header"
+import TaskItem from "./TaskItem"
+import TaskFilter from "./TaskFilter"
 
 const Tasks = () => {
-    const { useFilterTasks } = useTasks();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const { useFilterTasks } = useTasks()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     // Si "status" no está definido, lo establecemos a "0" (pendiente)
     useEffect(() => {
         if (!searchParams.get("status")) {
             setSearchParams((prev) => {
-                const params = new URLSearchParams(prev);
-                params.set("status", "0");
-                return params;
-            });
+                const params = new URLSearchParams(prev)
+                params.set("status", "0")
+                return params
+            })
         }
-    }, [searchParams, setSearchParams]);
+    }, [searchParams, setSearchParams])
 
     // Memoriza los filtros basados en los searchParams
     const filters = useMemo(
@@ -32,29 +32,29 @@ const Tasks = () => {
             status: searchParams.get("status") || "0",
         }),
         [searchParams]
-    );
+    )
 
-    const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters);
+    const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters)
 
     // Función para actualizar los parámetros de búsqueda
     const handleFilter = (filterData) => {
         const { fullname, company, project, status, startDate, endDate } =
-            filterData;
+            filterData
         const dateRange =
-            startDate && endDate ? `${startDate} ${endDate}` : startDate || "";
+            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
         setSearchParams({
             fullname: fullname || "",
             company: company || "",
             project: project || "",
             date: dateRange,
             status: status || "0",
-        });
-    };
+        })
+    }
 
     return (
         // Se agrega lg:ml-72 para desplazar el contenido y evitar que quede detrás de la sidebar,
         // además se fija el layout sin scroll global
-        <div className="w-full lg:ml-72 space-y-6 px-8 py-16 overflow-hidden">
+        <div className="space-y-6 overflow-hidden px-8 py-9">
             <Header subtitle="Mis Tareas" title="Mis Tareas" />
             <div className="space-y-3 rounded-xl bg-white p-6">
                 <TaskFilter onFilter={handleFilter} />
@@ -72,17 +72,15 @@ const Tasks = () => {
                     </p>
                 ) : (
                     <div className="overflow-x-auto">
-                        <div className="min-w-full py-2">
-                            <div className="max-h-[500px] overflow-y-auto rounded-lg border">
+                        <div className="min-w-full">
+                            <div className="max-h-[400px] overflow-y-auto rounded-lg border">
                                 <table className="w-full text-left text-sm text-gray-500">
                                     <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                         <tr>
                                             <th className="px-4 py-3">
                                                 Nombre
                                             </th>
-                                            <th className="px-4 py-3">
-                                                Fecha
-                                            </th>
+                                            <th className="px-4 py-3">Fecha</th>
                                             <th className="px-4 py-3">HE</th>
                                             <th className="px-4 py-3">HS</th>
                                             <th className="px-4 py-3">
@@ -101,7 +99,10 @@ const Tasks = () => {
                                     </thead>
                                     <tbody>
                                         {filteredTasks.map((task) => (
-                                            <TaskItem key={task.id} task={task} />
+                                            <TaskItem
+                                                key={task.id}
+                                                task={task}
+                                            />
                                         ))}
                                     </tbody>
                                 </table>
@@ -111,7 +112,7 @@ const Tasks = () => {
                 )}
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Tasks;
+export default Tasks

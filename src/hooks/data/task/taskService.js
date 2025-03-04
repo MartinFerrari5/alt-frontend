@@ -1,10 +1,10 @@
 /**
  * Hook principal para la gestión de tareas.
  * Permite obtener la lista de tareas, y gestionar las mutaciones (agregar, actualizar y eliminar).
- * 
- * Puedes pasar el parámetro opcional { all: true } para que se utilice la ruta /tasks/all, 
+ *
+ * Puedes pasar el parámetro opcional { all: true } para que se utilice la ruta /tasks/all,
  * la cual retorna un conjunto mayor de datos que /tasks.
-*/
+ */
 
 // src/services/taskService.js
 import { api } from "../../../lib/axios"
