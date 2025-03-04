@@ -1,8 +1,30 @@
+/**
+ * Hook principal para la gestión de tareas.
+ * Permite obtener la lista de tareas, y gestionar las mutaciones (agregar, actualizar y eliminar).
+ * 
+ * Puedes pasar el parámetro opcional { all: true } para que se utilice la ruta /tasks/all, 
+ * la cual retorna un conjunto mayor de datos que /tasks.
+*/
+
 // src/services/taskService.js
 import { api } from "../../../lib/axios"
 
 export const getAllTasks = async () => {
     const { data } = await api.get("/tasks")
+    return data.tasks
+}
+
+/**
+ * Obtiene todas las tareas desde /tasks/all
+ *
+ * @returns {Promise<{tasks: Task[]}>} Objeto que contiene la lista de tareas.
+ * @throws {Error} En caso de que la consulta falle.
+ */
+export const getAllTasksAll = async () => {
+    const { data } = await api.get("/tasks/all")
+    // Si necesitas ambos valores (tasks e id), puedes retornarlos así:
+    // return data;
+    // Si solo te interesa la lista de tareas:
     return data.tasks
 }
 

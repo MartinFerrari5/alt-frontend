@@ -1,10 +1,10 @@
 // src/store/sidebarStore.js
-import { create } from 'zustand';
+import { create } from "zustand"
 
 const useSidebarStore = create((set) => ({
-  adminDropdownOpen: false,
-  toggleAdminDropdown: () =>
-    set((state) => ({ adminDropdownOpen: !state.adminDropdownOpen })),
-}));
+    adminDropdownOpen: false,
+    toggleAdminDropdown: () =>
+        set((state) => ({ adminDropdownOpen: !state.adminDropdownOpen })),
+}))
 
-export default useSidebarStore;
+export default useSidebarStore

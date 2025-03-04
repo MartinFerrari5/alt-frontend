@@ -1,11 +1,17 @@
-import StatusManager from "../../components/admin/StatusManager/StatusManager"
-import Sidebar from "../../components/Sidebar"
+import StatusTable from "../../components/admin/StatusManager/StatusTable";
+import Sidebar from "../../components/Sidebar";
+import { useGetStatus } from "../../hooks/data/status/use-status-hooks";
 
 export const Status = () => {
+       useGetStatus();
     return (
-        <div className="flex">
+        // Se fija la altura de la pantalla y se desactiva el scroll global
+        <div className="flex h-screen overflow-hidden">
             <Sidebar />
-            <StatusManager />
+            {/* Se aplica margen izquierdo en pantallas grandes para evitar que el contenido quede detrás de la sidebar */}
+        <div className="w-full lg:ml-72">
+            <StatusTable />
         </div>
-    )
-}
+        </div>
+    );
+};

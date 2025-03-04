@@ -65,7 +65,7 @@ const DashboardCards = () => {
     const hourKpiStats = transformStats(hourKpiData, "hour_type")
 
     return (
-        <div>
+        <>
             {/* Sección de Estado de Tareas (obtenido desde API) */}
             <div className="grid grid-cols-4 gap-9">
                 {/* <DashboardCard
@@ -76,7 +76,7 @@ const DashboardCards = () => {
             </div>
 
             {/* Sección de reportes KPI para otros grupos */}
-            <div className="mt-8 grid grid-cols-4 gap-9">
+            <div className="grid grid-cols-4 gap-9">
                 <DashboardCard
                     icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
                     title="Estado de Tareas"
@@ -138,7 +138,7 @@ const DashboardCards = () => {
           }
         /> */}
             </div>
-        </div>
+        </>
     )
 }
 

@@ -1,15 +1,15 @@
 // src/components/admin/management/ManagementTables.jsx
-import { useEffect, useState } from "react"
-import { useOptionsStore } from "../../../store/optionsStore"
-import Header from "../../Header"
-import TableItemView from "./TableItemView"
-import TableItemEdit from "./TableItemEdit"
-import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
-import { toast } from "react-toastify"
+import { useEffect, useState } from "react";
+import { useOptionsStore } from "../../../store/optionsStore";
+import Header from "../../Header";
+import TableItemView from "./TableItemView";
+import TableItemEdit from "./TableItemEdit";
+import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal";
+import { toast } from "react-toastify";
 import {
     useEmailMutations,
     useGetEmails,
-} from "../../../hooks/data/email/use-email-mutations"
+} from "../../../hooks/data/email/use-email-mutations";
 
 const ManagementTables = () => {
     const {
@@ -18,25 +18,25 @@ const ManagementTables = () => {
         projects_table,
         types_table,
         fetchOptions,
-    } = useOptionsStore()
+    } = useOptionsStore();
 
     // Se obtiene el estado de emails y sus indicadores mediante el hook
     const {
         emails,
         isLoading: emailsLoading,
         error: emailsError,
-    } = useGetEmails()
-    const emailMutations = useEmailMutations()
+    } = useGetEmails();
+    const emailMutations = useEmailMutations();
 
     useEffect(() => {
-        fetchOptions("companies_table")
-        fetchOptions("hour_type_table")
-        fetchOptions("projects_table")
-        fetchOptions("types_table")
-    }, [fetchOptions])
+        fetchOptions("companies_table");
+        fetchOptions("hour_type_table");
+        fetchOptions("projects_table");
+        fetchOptions("types_table");
+    }, [fetchOptions]);
 
     return (
-        <div className="w-full space-y-6 px-8 py-16">
+        <div className="w-full space-y-6">
             <Header subtitle="Gestión de Datos" title="Administración" />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <DataTable title="Compañías" data={companies_table || []} />
@@ -53,8 +53,8 @@ const ManagementTables = () => {
                 />
             </div>
         </div>
-    )
-}
+    );
+};
 
 const DataTable = ({
     title,
@@ -64,58 +64,54 @@ const DataTable = ({
     loading,
     error,
 }) => {
-    const [showConfirm, setShowConfirm] = useState(false)
-    const [selectedItem, setSelectedItem] = useState(null) // Para eliminación
-    const [editingIndex, setEditingIndex] = useState(null) // Índice de la fila en edición
-    const [editValue, setEditValue] = useState("")
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null); // Para eliminación
+    const [editingIndex, setEditingIndex] = useState(null); // Índice de la fila en edición
+    const [editValue, setEditValue] = useState("");
 
     // Funciones para las tablas de opciones (no-email)
-    const { updateOption, deleteOption } = useOptionsStore()
+    const { updateOption, deleteOption } = useOptionsStore();
 
-    // Maneja el click para eliminar, guardando el índice
     const handleDeleteClick = (item, index) => {
         setSelectedItem(
             typeof item === "object"
                 ? { ...item, index }
                 : { value: item, index }
-        )
-        setShowConfirm(true)
-    }
+        );
+        setShowConfirm(true);
+    };
 
-    // Maneja el click para editar y asigna el valor inicial
     const handleEditClick = (item, index) => {
-        setEditingIndex(index)
+        setEditingIndex(index);
         const initialValue = isEmailTable
-            ? // Si el email viene como objeto, extraemos la propiedad 'email'
-              typeof item.email === "object"
+            ? typeof item.email === "object"
                 ? item.email.email
                 : item.email
             : typeof item === "object"
               ? item.option || item.name
-              : item
-        setEditValue(initialValue)
-    }
+              : item;
+        setEditValue(initialValue);
+    };
 
-    // Guarda la edición usando la mutación o el updateOption
     const handleSaveEdit = () => {
         if (editingIndex === null || !editValue.trim()) {
-            toast.error("El valor no puede estar vacío.")
-            return
+            toast.error("El valor no puede estar vacío.");
+            return;
         }
-        const itemToEdit = data[editingIndex]
+        const itemToEdit = data[editingIndex];
         if (isEmailTable) {
-            const updatedEmail = { ...itemToEdit, email: editValue }
+            const updatedEmail = { ...itemToEdit, email: editValue };
             emailMutations.edit.mutate(updatedEmail, {
                 onSuccess: () => {
-                    toast.success("¡Elemento actualizado exitosamente!")
-                    setEditingIndex(null)
-                    setEditValue("")
+                    toast.success("¡Elemento actualizado exitosamente!");
+                    setEditingIndex(null);
+                    setEditValue("");
                 },
                 onError: (error) => {
-                    console.error("🔴 Error al actualizar:", error)
-                    toast.error("Error al actualizar. Inténtalo de nuevo.")
+                    console.error("🔴 Error al actualizar:", error);
+                    toast.error("Error al actualizar. Inténtalo de nuevo.");
                 },
-            })
+            });
         } else {
             const tableMap = {
                 Compañías: "companies_table",
@@ -123,61 +119,60 @@ const DataTable = ({
                 Proyectos: "projects_table",
                 Emails: "emails",
                 "Tipos de Tarea": "types_table",
-            }
-            const table = tableMap[title]
+            };
+            const table = tableMap[title];
             if (!table) {
-                console.error("🔴 Error: Tabla no definida")
-                toast.error("Error: Tabla no definida.")
-                return
+                console.error("🔴 Error: Tabla no definida");
+                toast.error("Error: Tabla no definida.");
+                return;
             }
-            const updatedData = editValue
+            const updatedData = editValue;
             const idToUpdate =
                 typeof itemToEdit === "object" && itemToEdit.id
                     ? itemToEdit.id
-                    : editingIndex
+                    : editingIndex;
             updateOption(table, idToUpdate, updatedData)
                 .then(() => {
-                    toast.success("¡Elemento actualizado exitosamente!")
-                    setEditingIndex(null)
-                    setEditValue("")
+                    toast.success("¡Elemento actualizado exitosamente!");
+                    setEditingIndex(null);
+                    setEditValue("");
                 })
                 .catch((error) => {
-                    console.error("🔴 Error al actualizar:", error)
-                    toast.error("Error al actualizar. Inténtalo de nuevo.")
-                })
+                    console.error("🔴 Error al actualizar:", error);
+                    toast.error("Error al actualizar. Inténtalo de nuevo.");
+                });
         }
-    }
+    };
 
     const handleCancelEdit = () => {
-        setEditingIndex(null)
-        setEditValue("")
-    }
+        setEditingIndex(null);
+        setEditValue("");
+    };
 
-    // Confirma la eliminación del elemento
     const confirmDelete = () => {
         if (isEmailTable) {
             const idToDelete =
-                selectedItem && (selectedItem.id || selectedItem.email)
+                selectedItem && (selectedItem.id || selectedItem.email);
             if (idToDelete === undefined) {
                 console.error(
                     "🔴 Error: No se pudo identificar el elemento a eliminar."
-                )
+                );
                 toast.error(
                     "Error: No se pudo identificar el elemento a eliminar."
-                )
-                return
+                );
+                return;
             }
             emailMutations.remove.mutate(idToDelete, {
                 onSuccess: () => {
-                    toast.success("¡Elemento eliminado exitosamente!")
-                    setShowConfirm(false)
-                    setSelectedItem(null)
+                    toast.success("¡Elemento eliminado exitosamente!");
+                    setShowConfirm(false);
+                    setSelectedItem(null);
                 },
                 onError: (error) => {
-                    console.error("🔴 Error al eliminar:", error)
-                    toast.error("Error al eliminar. Inténtalo de nuevo.")
+                    console.error("🔴 Error al eliminar:", error);
+                    toast.error("Error al eliminar. Inténtalo de nuevo.");
                 },
-            })
+            });
         } else {
             const tableMap = {
                 Compañías: "companies_table",
@@ -185,42 +180,41 @@ const DataTable = ({
                 Proyectos: "projects_table",
                 Emails: "emails",
                 "Tipos de Tarea": "types_table",
-            }
-            const table = tableMap[title]
+            };
+            const table = tableMap[title];
             if (!table) {
-                console.error("🔴 Error: Tabla no definida")
-                toast.error("Error: Tabla no definida.")
-                return
+                console.error("🔴 Error: Tabla no definida");
+                toast.error("Error: Tabla no definida.");
+                return;
             }
-            const idToDelete = selectedItem.id
+            const idToDelete = selectedItem.id;
             if (idToDelete === undefined) {
                 console.error(
                     "🔴 Error: No se pudo identificar el elemento a eliminar."
-                )
+                );
                 toast.error(
                     "Error: No se pudo identificar el elemento a eliminar."
-                )
-                return
+                );
+                return;
             }
             deleteOption(table, idToDelete)
                 .then(() => {
-                    toast.success("¡Elemento eliminado exitosamente!")
-                    setShowConfirm(false)
-                    setSelectedItem(null)
+                    toast.success("¡Elemento eliminado exitosamente!");
+                    setShowConfirm(false);
+                    setSelectedItem(null);
                 })
                 .catch((error) => {
-                    console.error("🔴 Error al eliminar:", error)
-                    toast.error("Error al eliminar. Inténtalo de nuevo.")
-                })
+                    console.error("🔴 Error al eliminar:", error);
+                    toast.error("Error al eliminar. Inténtalo de nuevo.");
+                });
         }
-    }
+    };
 
     const cancelDelete = () => {
-        setShowConfirm(false)
-        setSelectedItem(null)
-    }
+        setShowConfirm(false);
+        setSelectedItem(null);
+    };
 
-    // Si es la tabla de emails, se muestran mensajes de carga o error
     if (isEmailTable && loading) {
         return (
             <div className="rounded-xl bg-white p-6 shadow-md">
@@ -229,7 +223,7 @@ const DataTable = ({
                 </h2>
                 <div className="p-4 text-center">Cargando emails...</div>
             </div>
-        )
+        );
     }
 
     if (isEmailTable && error) {
@@ -242,7 +236,7 @@ const DataTable = ({
                     Error al cargar emails
                 </div>
             </div>
-        )
+        );
     }
 
     return (
@@ -250,7 +244,6 @@ const DataTable = ({
             <h2 className="mb-4 text-lg font-semibold text-gray-700">
                 {title}
             </h2>
-            <div className="flex justify-end"></div>
             <div className="relative max-h-[400px] overflow-y-auto">
                 <table className="w-full text-left text-sm text-gray-500">
                     <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-600">
@@ -278,7 +271,7 @@ const DataTable = ({
                                         : item.email
                                     : typeof item === "object"
                                       ? item.option || item.name
-                                      : item
+                                      : item;
                                 return editingIndex === index ? (
                                     <TableItemEdit
                                         key={item.id}
@@ -306,7 +299,7 @@ const DataTable = ({
                                             handleDeleteClick(item, index)
                                         }
                                     />
-                                )
+                                );
                             })
                         )}
                     </tbody>
@@ -319,7 +312,7 @@ const DataTable = ({
                 />
             )}
         </div>
-    )
-}
+    );
+};
 
-export default ManagementTables
+export default ManagementTables;

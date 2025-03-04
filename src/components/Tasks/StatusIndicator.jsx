@@ -1,13 +1,18 @@
 // src/components/Tasks/StatusIndicator.jsx
 import PropTypes from "prop-types"
-import { FaCheck, FaSpinner, FaMoneyBillWave, FaHourglassHalf } from "react-icons/fa"
+import {
+    FaCheck,
+    FaSpinner,
+    FaMoneyBillWave,
+    FaHourglassHalf,
+} from "react-icons/fa"
 
 const StatusIndicator = ({ status, isLoading, onChange, role }) => {
     // Mapeo de clases según el estado
     const statusClassesMap = {
-        0: "bg-brand-process",             // En progreso
-        1: "bg-brand-custom-green",        // Enviado a admin (finalizado)
-        2: "bg-brand-custom-blue",         // Facturado (asumida clase azul)
+        0: "bg-brand-process", // En progreso
+        1: "bg-brand-custom-green", // Enviado a admin (finalizado)
+        2: "bg-brand-custom-blue", // Facturado (asumida clase azul)
     }
     const statusClasses = statusClassesMap[status] || "bg-gray-500"
 

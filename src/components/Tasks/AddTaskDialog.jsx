@@ -65,7 +65,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             task_description: "Tarea de prueba",
             entry_time: "09:00",
             exit_time: "18:00",
-            lunch_hours: "1",
+            lunch_hours: "2",
             status: "progreso",
         },
     })

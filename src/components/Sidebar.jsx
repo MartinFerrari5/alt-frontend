@@ -13,7 +13,8 @@ const sidebarStyle = tv({
   base: "flex items-center gap-2 rounded-lg px-6 py-3",
   variants: {
     color: {
-      selected: "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
+      selected:
+        "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
       unselected: "text-brand-dark-blue",
     },
   },
@@ -32,7 +33,7 @@ const SidebarButton = ({ children, to }) => (
 
 // Componente para el menú desplegable de Admin usando Zustand para el estado
 const AdminDropdown = () => {
-  const { adminDropdownOpen, toggleAdminDropdown } = useSidebarStore ();
+  const { adminDropdownOpen, toggleAdminDropdown } = useSidebarStore();
 
   return (
     <div className="relative">
@@ -113,10 +114,11 @@ const Sidebar = () => {
 
   return (
     <div className="relative flex h-screen">
+      {/* Cambiamos absolute por fixed para que la sidebar esté fija en la pantalla */}
       <div
-        className={`absolute z-50 flex h-full w-72 min-w-72 transform flex-col justify-between bg-white transition-transform lg:relative lg:translate-x-0 ${
+        className={`fixed top-0 left-0 z-50 flex h-full w-72 min-w-72 transform flex-col justify-between bg-white transition-transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } lg:translate-x-0`}
       >
         <div>
           <div className="space-y-4 px-8 py-6">
@@ -150,7 +152,9 @@ const Sidebar = () => {
       </div>
       <div
         className={`flex-1 transition-opacity ${
-          isSidebarOpen ? "pointer-events-none opacity-50" : "opacity-100"
+          isSidebarOpen
+            ? "pointer-events-none opacity-50"
+            : "opacity-100"
         }`}
         onClick={() => isSidebarOpen && setIsSidebarOpen(false)}
       ></div>

@@ -24,7 +24,7 @@ const TABLE_HEADERS = [
 const DisboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Si "status" no está definido, lo establecemos a "0" (pendiente)
+  // Si "status" no está definido, se establece por defecto a "0" (pendiente)
   useEffect(() => {
     if (!searchParams.get("status")) {
       setSearchParams((prev) => {
@@ -35,7 +35,7 @@ const DisboardPage = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  // Memoriza los filtros basados en los parámetros de la URL
+  // Se obtienen los filtros desde la URL
   const filters = useMemo(
     () => ({
       fullname: searchParams.get("fullname") || "",
@@ -47,21 +47,34 @@ const DisboardPage = () => {
     [searchParams]
   );
 
-  // Utiliza el hook de filtrado
-  const { useFilterTasks } = useTasks();
-  const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters);
+  // Determina si se aplicó algún filtro (se ignora el valor "0" por defecto en status)
+  const isFilterActive = useMemo(() => {
+    return (
+      filters.fullname !== "" ||
+      filters.company !== "" ||
+      filters.project !== "" ||
+      filters.date !== "" ||
+      filters.status !== "0"
+    );
+  }, [filters]);
 
-  // Filtra las tareas válidas (que tengan un id)
+  const { getTasks, useFilterTasks } = useTasks({ all: true });
+  const filterQuery = useFilterTasks(filters);
+
+  const displayedTasks = isFilterActive ? filterQuery.data : getTasks.data;
+  const isLoading = isFilterActive ? filterQuery.isLoading : getTasks.isLoading;
+  const isError = isFilterActive ? filterQuery.isError : getTasks.isError;
+
   const validTasks = useMemo(
-    () => (filteredTasks || []).filter((task) => task?.id),
-    [filteredTasks]
+    () => (displayedTasks || []).filter((task) => task?.id),
+    [displayedTasks]
   );
   const firstTask = validTasks[0];
 
-  // Callback para actualizar los parámetros de búsqueda desde el filtro
   const handleFilter = useCallback(
     (filterData) => {
-      const { fullname, company, project, status, startDate, endDate } = filterData;
+      const { fullname, company, project, status, startDate, endDate } =
+        filterData;
       const dateRange =
         startDate && endDate ? `${startDate} ${endDate}` : startDate || "";
       setSearchParams({
@@ -76,91 +89,73 @@ const DisboardPage = () => {
   );
 
   return (
-    <div className="flex">
+    // Se agrega h-screen y overflow-hidden para fijar el layout sin scroll
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <div className="w-full space-y-6 px-8 py-16">
+      <div className="w-full lg:ml-72 space-y-6 px-8 py-10 overflow-hidden">
         <Header subtitle="Panel" title="Panel" />
         <DashboardCards />
-        {/* Sección de filtros */}
-        <div className="space-y-3 rounded-xl bg-white p-6">
-            <h3 className="text-xl font-semibold">Tareas</h3>
-                        {firstTask ? (
-              <span className="text-sm text-brand-dark-gray">
-                 Horas totales {firstTask.total}
-              </span>
-            ) : (
-              <p className="text-sm text-brand-dark-gray">
-                No hay tareas disponibles.
-              </p>
-            )}
+        <div className="space-y-3 rounded-xl bg-white p-1">
+          {/* {firstTask ? (
+          <h3 className="text-sm font-semibold text-brand-dark-gray">Horas totales {firstTask.total}</h3>
 
-        <div className="overflow-x-auto">
-          <div className="min-w-full py-2">
-        <TaskFilter onFilter={handleFilter} />
-           <div className="max-h-[500px] overflow-y-auto rounded-lg border">
-              <table className="w-full text-left text-sm text-gray-500">
-                 <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
-                  <tr>
-                    {TABLE_HEADERS.map((header) => (
-                      <th key={header} className="px-4 py-3">
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
+          ) : (
+            <p className="text-sm text-brand-dark-gray">
+              No hay tareas disponibles.
+            </p>
+          )} */}
+          <div className="overflow-x-auto">
+            <div className="min-w-full py-2">
+              <TaskFilter onFilter={handleFilter} />
+              <div className="max-h-[500px] overflow-y-auto rounded-lg border">
+                <table className="w-full text-left text-sm text-gray-500">
+                  <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                     <tr>
-                      <td
-                        colSpan={TABLE_HEADERS.length}
-                        className="px-6 py-5 text-center text-sm text-brand-text-gray"
-                      >
-                        Cargando tareas...
-                      </td>
+                      {TABLE_HEADERS.map((header) => (
+                        <th key={header} className="px-4 py-3">
+                          {header}
+                        </th>
+                      ))}
                     </tr>
-                  ) : isError ? (
-                    <tr>
-                      <td
-                        colSpan={TABLE_HEADERS.length}
-                        className="px-6 py-5 text-center text-sm text-red-500"
-                      >
-                        Error al cargar las tareas.
-                      </td>
-                    </tr>
-                  ) : validTasks.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={TABLE_HEADERS.length}
-                        className="px-6 py-5 text-center text-sm text-brand-text-gray"
-                      >
-                        No hay tareas disponibles.
-                      </td>
-                    </tr>
-                  ) : (
-                    validTasks.map((task) => (
-                      <TaskItem key={task.id} task={task} />
-                    ))
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {isLoading ? (
+                      <tr>
+                        <td
+                          colSpan={TABLE_HEADERS.length}
+                          className="px-6 py-5 text-center text-sm text-brand-text-gray"
+                        >
+                          Cargando tareas...
+                        </td>
+                      </tr>
+                    ) : isError ? (
+                      <tr>
+                        <td
+                          colSpan={TABLE_HEADERS.length}
+                          className="px-6 py-5 text-center text-sm text-red-500"
+                        >
+                          Error al cargar las tareas.
+                        </td>
+                      </tr>
+                    ) : validTasks.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={TABLE_HEADERS.length}
+                          className="px-6 py-5 text-center text-sm text-brand-text-gray"
+                        >
+                          No hay tareas disponibles.
+                        </td>
+                      </tr>
+                    ) : (
+                      validTasks.map((task) => (
+                        <TaskItem key={task.id} task={task} />
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-          {/* Resumen de horas totales */}
-          {/* <div className="block max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h4 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
-              Horas totales
-            </h4>
-            {firstTask ? (
-              <span className="font-normal text-gray-700">
-                {firstTask.total}
-              </span>
-            ) : (
-              <p className="font-normal text-gray-700">
-                No hay tareas disponibles.
-              </p>
-            )}
-          </div> */}
-        </div>
         </div>
       </div>
     </div>

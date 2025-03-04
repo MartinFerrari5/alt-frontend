@@ -3,6 +3,8 @@
 export const taskQueryKeys = {
     getAll: () => ["tasks"],
     getOne: (taskId) => ["task", taskId],
+    // Nueva clave para la ruta /tasks/all
+    getAllAll: () => ["allTasks"],
 }
 
 export const userQueryKeys = {
@@ -11,7 +13,7 @@ export const userQueryKeys = {
 }
 
 export const emailQueryKeys = {
-    getAll: () => ["emails"], // Define una clave para obtener todos los emails
+    getAll: () => ["emails"], // Clave para obtener todos los emails
     getById: (emailId) => ["emails", "getById", emailId], // Para obtener un email específico
 }
 

@@ -1,7 +1,9 @@
 // src/hooks/data/task/useTasks.js
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
     getAllTasks,
+    getAllTasksAll,
     createTask,
     updateTaskApi,
     deleteTaskApi,
@@ -9,13 +11,14 @@ import {
     getTaskByIdApi,
 } from "./taskService"
 import useTaskStore from "../../../store/taskStore"
-import { taskQueryKeys } from "../../../keys/queries"
+
 import { taskMutationKeys } from "../../../keys/mutations"
+import { taskQueryKeys } from "../../../keys/queries"
 
 /**
  * Hook para obtener una tarea por ID.
- * Este hook primero intenta obtener la tarea del store; si no existe,
- * consulta la API. Además, acepta un callback onSuccess opcional.
+ * Primero intenta obtenerla del store; si no existe, consulta la API.
+ * Acepta un callback onSuccess opcional.
  */
 export const useGetTask = (taskId, onSuccess) => {
     const { tasks } = useTaskStore()
@@ -51,18 +54,18 @@ export const useGetTask = (taskId, onSuccess) => {
 
 /**
  * Hook principal para la gestión de tareas.
- * Incluye la consulta para obtener todas las tareas, mutaciones para agregar,
- * actualizar y eliminar tareas, y un hook para filtrar tareas.
+ * Permite obtener la lista de tareas y gestionar las mutaciones (agregar, actualizar y eliminar).
+ * Puedes pasar el parámetro opcional { all: true } para usar la ruta /tasks/all, que trae un conjunto mayor de datos.
  */
-export const useTasks = () => {
+export const useTasks = ({ all = false } = {}) => {
     const queryClient = useQueryClient()
     const { tasks, addTask, deleteTask, updateTask, setTasks } = useTaskStore()
 
-    // Consulta para obtener todas las tareas
+    // Consulta para obtener todas las tareas, utilizando el endpoint adecuado según el flag "all"
     const getTasks = useQuery({
-        queryKey: taskQueryKeys.getAll(),
+        queryKey: all ? taskQueryKeys.getAllAll() : taskQueryKeys.getAll(),
         queryFn: async () => {
-            const tasksData = await getAllTasks()
+            const tasksData = all ? await getAllTasksAll() : await getAllTasks()
             setTasks(tasksData)
             return tasksData
         },
