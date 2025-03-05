@@ -26,13 +26,13 @@ const formatDate = (dateString) => {
 }
 
 const TaskItem = ({ task }) => {
+    const role = useAuthStore((state) => state.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
         deleteTaskMutation
     const { mutate: updateTask, isLoading: updateTaskIsLoading } =
         updateTaskMutation
     const [showConfirm, setShowConfirm] = useState(false)
-    const role = useAuthStore((state) => state.role)
 
     // Muestra el modal de confirmación de eliminación
     const handleDeleteClick = useCallback(() => setShowConfirm(true), [])
@@ -78,7 +78,9 @@ const TaskItem = ({ task }) => {
     return (
         <>
             <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
-                <td className="px-4 py-5">{task.full_name || "Sin nombre"}</td>
+                {role === "admin" && (
+                    <td className="px-4 py-5">{task.full_name || "Sin nombre"}</td>
+                )}
                 <td className="px-4 py-5">{formatDate(task.task_date)}</td>
                 <td className="px-4 py-5">{task.entry_time}</td>
                 <td className="px-4 py-5">{task.exit_time}</td>

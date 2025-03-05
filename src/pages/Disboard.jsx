@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar"
 import TaskItem from "../components/Tasks/TaskItem"
 import TaskFilter from "../components/Tasks/TaskFilter"
 import { useTasks } from "../hooks/data/task/useTasks"
+import useAuthStore from "../store/authStore"
 
 const TABLE_HEADERS = [
     "Nombre",
@@ -23,6 +24,7 @@ const TABLE_HEADERS = [
 
 const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
+    const role = useAuthStore((state) => state.role)
 
     // Si "status" no está definido, se establece por defecto a "0" (pendiente)
     useEffect(() => {
@@ -92,6 +94,11 @@ const DisboardPage = () => {
         [setSearchParams]
     )
 
+    // Se filtran los encabezados para usuarios que no sean admin (se omite "Nombre")
+    const tableHeaders = useMemo(() => {
+        return role === "admin" ? TABLE_HEADERS : TABLE_HEADERS.filter(header => header !== "Nombre")
+    }, [role])
+
     return (
         <div className="flex h-screen">
             <Sidebar />
@@ -114,7 +121,7 @@ const DisboardPage = () => {
                                 <table className="w-full text-left text-sm text-gray-500">
                                     <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                                         <tr>
-                                            {TABLE_HEADERS.map((header) => (
+                                            {tableHeaders.map((header) => (
                                                 <th
                                                     key={header}
                                                     className="px-4 py-3"
@@ -128,9 +135,7 @@ const DisboardPage = () => {
                                         {isLoading ? (
                                             <tr>
                                                 <td
-                                                    colSpan={
-                                                        TABLE_HEADERS.length
-                                                    }
+                                                    colSpan={tableHeaders.length}
                                                     className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                                 >
                                                     Cargando tareas...
@@ -139,9 +144,7 @@ const DisboardPage = () => {
                                         ) : isError ? (
                                             <tr>
                                                 <td
-                                                    colSpan={
-                                                        TABLE_HEADERS.length
-                                                    }
+                                                    colSpan={tableHeaders.length}
                                                     className="px-6 py-5 text-center text-sm text-red-500"
                                                 >
                                                     Error al cargar las tareas.
@@ -150,9 +153,7 @@ const DisboardPage = () => {
                                         ) : validTasks.length === 0 ? (
                                             <tr>
                                                 <td
-                                                    colSpan={
-                                                        TABLE_HEADERS.length
-                                                    }
+                                                    colSpan={tableHeaders.length}
                                                     className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                                 >
                                                     No hay tareas disponibles.

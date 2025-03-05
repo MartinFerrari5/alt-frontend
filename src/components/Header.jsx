@@ -1,7 +1,7 @@
 // src/components/Header.jsx
 import PropTypes from "prop-types"
 import { useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useSearchParams } from "react-router-dom"
 import Button from "./Button"
 import { AddIcon } from "../assets/icons"
 import AddOptionDialog from "./email/AddOptionDialog"
@@ -13,21 +13,30 @@ import useAuthStore from "../store/authStore"
 function Header({ subtitle, title, tasks }) {
   const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
   const location = useLocation()
-
-  // Obtener información del usuario desde el store
-  const user = useAuthStore((state) => state.user)
+  const [searchParams] = useSearchParams()
   
-  // Extraer lo que sigue a "/admin/"
+  // Obtener información del usuario desde el store
+const fullNameFromStore = useAuthStore((state) => state.fullName)
+
+  // Extraer la parte que sigue a "/admin/" para usarla como fallback en fullname.
   const adminPath = location.pathname.startsWith("/admin/")
     ? location.pathname.replace("/admin/", "")
     : ""
 
-  // Usamos la información del usuario para los queryParams
+  // Extraer los valores de la URL y aplicar trim() para evitar espacios en blanco.
+  const queryCompany = searchParams.get("company")?.trim() || ""
+  const queryProject = searchParams.get("project")?.trim() || ""
+  const queryFullname = searchParams.get("fullname")?.trim() || ""
+  const queryDate = searchParams.get("date")?.trim() || ""
+
+  // Definir los queryParams usando los valores de la URL.
+  // Si fullname viene vacío, se utiliza user?.full_name o adminPath como fallback.
+  console.log("Name: ", fullNameFromStore)
   const queryParams = {
-    company: "facebook", // o el valor que corresponda
-    project: "reportes", // o el valor que corresponda
-    fullname: user?.full_name || "", // obtenemos el nombre completo del usuario
-    date: "2025-02-20 2025-03-18", // o bien, un valor dinámico
+    company: queryCompany,
+    project: queryProject,
+    fullname: queryFullname || fullNameFromStore,
+    date: queryDate,
   }
 
   return (
@@ -62,7 +71,7 @@ function Header({ subtitle, title, tasks }) {
               />
             )}
 
-            {/* Botón para enviar tareas a RRHH, usando los queryParams que incluyen la info del usuario */}
+            {/* Botón para enviar tareas a RRHH, pasando los queryParams obtenidos de la URL */}
             <SendToRRHHButton queryParams={queryParams} tasks={tasks} />
           </>
         )}
