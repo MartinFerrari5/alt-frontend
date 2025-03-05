@@ -55,3 +55,14 @@ export const getFilteredExportedTasks = async (filters) => {
     // Se asume que la respuesta contiene un arreglo en data.tasks
     return data.tasks
 }
+
+/**
+ * Envía tareas a Recursos Humanos.
+ * @param {Object} queryParams - Parámetros de consulta: company, project, fullname, date.
+ * @param {Object} payload - Body de la petición, por ejemplo: { tasks: [...] }.
+ */
+export const postStatusRRHH = async (queryParams, payload) => {
+    console.log("Query Params: ", queryParams)
+    const { data } = await api.post("/status/rrhh", payload, { params: queryParams })
+    return data
+}

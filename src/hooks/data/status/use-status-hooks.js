@@ -8,6 +8,7 @@ import {
     putStatus,
     getStatusByTask,
     getFilteredExportedTasks,
+    postStatusRRHH, // Importamos la nueva función
 } from "./statusServer.js"
 
 // Claves de consulta para React Query relacionadas con "status"
@@ -100,8 +101,30 @@ export const useFilterExportedTasks = (filters) => {
     return useQuery({
         queryKey: ["filterTasks", { fullname, date }],
         queryFn: async () => {
-            return await getFilteredExportedTasks(fullname, date)
+            return await getFilteredExportedTasks(filters)
         },
         enabled: Boolean(fullname || date),
+    })
+}
+
+/**
+ * Hook para enviar tareas a Recursos Humanos (RRHH).
+ * Utiliza la función postStatusRRHH para realizar la petición POST a la ruta /status/rrhh.
+ * Se pueden enviar parámetros de consulta (queryParams) y un body (payload) que incluya las tareas.
+ */
+export const useSendStatusToRRHH = () => {
+    const role = useAuthStore((state) => state.role)
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({ queryParams, payload }) => {
+            if (role !== "admin" && role !== "user") {
+                throw new Error("No tienes permisos para enviar tareas a RRHH.")
+            }
+            return await postStatusRRHH(queryParams, payload)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(statusQueryKeys.all())
+        },
     })
 }
