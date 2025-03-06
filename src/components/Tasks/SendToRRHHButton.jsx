@@ -13,7 +13,7 @@ const SendToRRHHButton = ({ tasks, queryParams }) => {
         }
 
         // Definimos los campos obligatorios
-        const requiredFields = ["company", "project", "fullname", "date"]
+        const requiredFields = ["fullname", "date"]
         // Filtramos cuáles campos vienen vacíos o no están definidos
         const missingFields = requiredFields.filter(
             (field) => !queryParams[field] || queryParams[field].trim() === ""
