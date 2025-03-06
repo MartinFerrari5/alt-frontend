@@ -57,12 +57,25 @@ export const getFilteredExportedTasks = async (filters) => {
 }
 
 /**
- * Envía tareas a Recursos Humanos.
- * @param {Object} queryParams - Parámetros de consulta: company, project, fullname, date.
- * @param {Object} payload - Body de la petición, por ejemplo: { tasks: [...] }.
+ * Envía tareas a RRHH con parámetros de consulta.
+ * @param {Object} queryParams - Parámetros de consulta para la solicitud.
+ * @param {Object} payload - Datos del payload a enviar.
+ * @returns {Promise<Object>} - Promesa que resuelve con los datos de la respuesta.
+ * @throws {Error} - Si ocurre un error al enviar las tareas.
  */
 export const postStatusRRHH = async (queryParams, payload) => {
-    console.log("Query Params: ", queryParams)
-    const { data } = await api.post("/status/rrhh", payload, { params: queryParams })
-    return data
+    try {
+        console.log("Query Params: ", queryParams)
+        // Realiza una solicitud POST al endpoint de RRHH con el payload y los parámetros de consulta
+        const { data } = await api.post("/status/rrhh", payload, {
+            params: queryParams,
+        })
+        return data
+    } catch (error) {
+        console.error("Error en postStatusRRHH:", error)
+        // Lanza un error con el mensaje del backend o un mensaje genérico en caso de fallo
+        throw new Error(
+            error.response?.data?.message || "Error al enviar tareas a RRHH"
+        )
+    }
 }

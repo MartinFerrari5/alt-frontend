@@ -96,7 +96,9 @@ const DisboardPage = () => {
 
     // Se filtran los encabezados para usuarios que no sean admin (se omite "Nombre")
     const tableHeaders = useMemo(() => {
-        return role === "admin" ? TABLE_HEADERS : TABLE_HEADERS.filter(header => header !== "Nombre")
+        return role === "admin"
+            ? TABLE_HEADERS
+            : TABLE_HEADERS.filter((header) => header !== "Nombre")
     }, [role])
 
     return (
@@ -135,7 +137,9 @@ const DisboardPage = () => {
                                         {isLoading ? (
                                             <tr>
                                                 <td
-                                                    colSpan={tableHeaders.length}
+                                                    colSpan={
+                                                        tableHeaders.length
+                                                    }
                                                     className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                                 >
                                                     Cargando tareas...
@@ -144,7 +148,9 @@ const DisboardPage = () => {
                                         ) : isError ? (
                                             <tr>
                                                 <td
-                                                    colSpan={tableHeaders.length}
+                                                    colSpan={
+                                                        tableHeaders.length
+                                                    }
                                                     className="px-6 py-5 text-center text-sm text-red-500"
                                                 >
                                                     Error al cargar las tareas.
@@ -153,7 +159,9 @@ const DisboardPage = () => {
                                         ) : validTasks.length === 0 ? (
                                             <tr>
                                                 <td
-                                                    colSpan={tableHeaders.length}
+                                                    colSpan={
+                                                        tableHeaders.length
+                                                    }
                                                     className="px-6 py-5 text-center text-sm text-brand-text-gray"
                                                 >
                                                     No hay tareas disponibles.

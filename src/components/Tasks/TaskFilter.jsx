@@ -8,7 +8,7 @@ import Dropdown from "../Dropdown/Dropdown"
 
 const TaskFilter = ({ onFilter }) => {
     const role = useAuthStore((state) => state.role)
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams] = useSearchParams()
 
     const {
         register,
@@ -36,7 +36,7 @@ const TaskFilter = ({ onFilter }) => {
     const isLoadingCompanies = !companies_table || companies_table.length === 0
     const isLoadingProjects = !projects_table || projects_table.length === 0
 
-    // Extrae los valores de filtro desde la URL
+    // Extrae los valores de filtro desde la URL para sincronizar el formulario
     const getUrlFilterValues = useCallback(() => {
         const fullname = searchParams.get("fullname") || ""
         const company = searchParams.get("company") || ""
@@ -57,7 +57,7 @@ const TaskFilter = ({ onFilter }) => {
         return { fullname, company, project, status, startDate, endDate }
     }, [searchParams])
 
-    // Sincroniza los valores del formulario con los parámetros de la URL
+    // Sincroniza los valores del formulario con la URL
     useEffect(() => {
         const filters = getUrlFilterValues()
         Object.entries(filters).forEach(([key, value]) => {
@@ -69,14 +69,7 @@ const TaskFilter = ({ onFilter }) => {
         const { fullname, company, project, status, startDate, endDate } = data
         const dateRange =
             startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
-        const params = {
-            ...(fullname && { fullname }),
-            ...(company && { company }),
-            ...(project && { project }),
-            ...(status && { status }),
-            ...(dateRange && { date: dateRange }),
-        }
-        setSearchParams(params)
+        // Solo se envían los datos filtrados sin actualizar la URL aquí
         onFilter({ fullname, company, project, date: dateRange, status })
     }
 

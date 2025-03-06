@@ -79,7 +79,9 @@ const TaskItem = ({ task }) => {
         <>
             <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
                 {role === "admin" && (
-                    <td className="px-4 py-5">{task.full_name || "Sin nombre"}</td>
+                    <td className="px-4 py-5">
+                        {task.full_name || "Sin nombre"}
+                    </td>
                 )}
                 <td className="px-4 py-5">{formatDate(task.task_date)}</td>
                 <td className="px-4 py-5">{task.entry_time}</td>
