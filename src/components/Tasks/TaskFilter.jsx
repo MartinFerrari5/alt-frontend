@@ -9,6 +9,7 @@ import Dropdown from "../Dropdown/Dropdown"
 const TaskFilter = ({ onFilter }) => {
     const role = useAuthStore((state) => state.role)
     const [searchParams] = useSearchParams()
+    const currentPath = window.location.pathname
 
     const {
         register,
@@ -32,9 +33,6 @@ const TaskFilter = ({ onFilter }) => {
         fetchOptions("companies_table")
         fetchOptions("projects_table")
     }, [fetchOptions])
-
-    const isLoadingCompanies = !companies_table || companies_table.length === 0
-    const isLoadingProjects = !projects_table || projects_table.length === 0
 
     // Extrae los valores de filtro desde la URL para sincronizar el formulario
     const getUrlFilterValues = useCallback(() => {
@@ -69,7 +67,7 @@ const TaskFilter = ({ onFilter }) => {
         const { fullname, company, project, status, startDate, endDate } = data
         const dateRange =
             startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
-        // Solo se envían los datos filtrados sin actualizar la URL aquí
+        // Enviamos el filtro actualizado sin forzar ningún valor en status
         onFilter({ fullname, company, project, date: dateRange, status })
     }
 
@@ -91,7 +89,7 @@ const TaskFilter = ({ onFilter }) => {
                 label="Empresa"
                 register={register}
                 error={errors.company}
-                isLoading={isLoadingCompanies}
+                isLoading={!companies_table || companies_table.length === 0}
                 isError={false}
                 items={companies_table}
                 loadingText="Cargando empresas..."
@@ -102,12 +100,28 @@ const TaskFilter = ({ onFilter }) => {
                 label="Proyecto"
                 register={register}
                 error={errors.project}
-                isLoading={isLoadingProjects}
+                isLoading={!projects_table || projects_table.length === 0}
                 isError={false}
                 items={projects_table}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
             />
+
+                        {/* Si estamos en la pantalla history, agregamos un input oculto para que el estatus sea siempre "0" */}
+            {currentPath === "/history" && (
+
+            <select
+                {...register("status")}
+                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <option value="">Seleccionar estado</option>
+                <option value="0">progreso</option>
+                <option value="1">finalizado</option>
+                <option value="2">facturado</option>
+            </select>
+            )}
+
+
             <input
                 type="date"
                 {...register("startDate")}
@@ -118,6 +132,7 @@ const TaskFilter = ({ onFilter }) => {
                 {...register("endDate")}
                 className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
             <button
                 type="submit"
                 className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"

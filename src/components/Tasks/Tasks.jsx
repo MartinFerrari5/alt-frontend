@@ -1,5 +1,5 @@
 // src/components/Tasks/Tasks.jsx
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import Header from "../Header"
@@ -12,32 +12,21 @@ const Tasks = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const role = useAuthStore((state) => state.role)
 
-    // Si "status" no está definido, se establece por defecto a "0"
-    useEffect(() => {
-        if (!searchParams.get("status")) {
-            setSearchParams((prev) => {
-                const params = new URLSearchParams(prev)
-                params.set("status", "0")
-                return params
-            })
-        }
-    }, [searchParams, setSearchParams])
-
-    // Obtiene los filtros desde los parámetros de la URL
+    // Se obtienen los filtros desde los parámetros de la URL sin forzar status a "0"
     const filters = useMemo(
         () => ({
             fullname: searchParams.get("fullname") || "",
             company: searchParams.get("company") || "",
             project: searchParams.get("project") || "",
             date: searchParams.get("date") || "",
-            status: searchParams.get("status") || "0",
+            status: searchParams.get("status") || "",
         }),
         [searchParams]
     )
 
     const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters)
 
-    // Función para actualizar la URL con los datos del filtro
+    // Actualiza la URL con los datos del filtro
     const handleFilter = (filterData) => {
         const { fullname, company, project, status, date } = filterData
         setSearchParams({
@@ -45,7 +34,7 @@ const Tasks = () => {
             company: company || "",
             project: project || "",
             date: date || "",
-            status: status || "0",
+            status: status || "",
         })
     }
 
@@ -85,18 +74,12 @@ const Tasks = () => {
                                             <th className="px-4 py-3">Fecha</th>
                                             <th className="px-4 py-3">HE</th>
                                             <th className="px-4 py-3">HS</th>
-                                            <th className="px-4 py-3">
-                                                Empresa
-                                            </th>
-                                            <th className="px-4 py-3">
-                                                Proyecto
-                                            </th>
+                                            <th className="px-4 py-3">Empresa</th>
+                                            <th className="px-4 py-3">Proyecto</th>
                                             <th className="px-4 py-3">TH</th>
                                             <th className="px-4 py-3">HD</th>
                                             <th className="px-4 py-3">HT</th>
-                                            <th className="px-4 py-3">
-                                                Estado
-                                            </th>
+                                            <th className="px-4 py-3">Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
