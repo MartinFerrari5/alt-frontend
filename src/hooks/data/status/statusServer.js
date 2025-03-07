@@ -67,9 +67,11 @@ export const postStatusRRHH = async (queryParams, payload) => {
     try {
         console.log("Query Params: ", queryParams)
         // Realiza una solicitud POST al endpoint de RRHH con el payload y los parámetros de consulta
+        console.log("URL: ", "/status/rrhh", payload)
         const { data } = await api.post("/status/rrhh", payload, {
             params: queryParams,
         })
+        console.log("Respuesta de RRHH: ", data)
         return data
     } catch (error) {
         console.error("Error en postStatusRRHH:", error)
