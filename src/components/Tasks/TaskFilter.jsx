@@ -107,20 +107,14 @@ const TaskFilter = ({ onFilter }) => {
                 errorText="Error cargando proyectos"
             />
 
-                        {/* Si estamos en la pantalla history, agregamos un input oculto para que el estatus sea siempre "0" */}
-            {currentPath === "/history" && (
-
-            <select
-                {...register("status")}
-                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-                <option value="">Seleccionar estado</option>
-                <option value="0">progreso</option>
-                <option value="1">finalizado</option>
-                <option value="2">facturado</option>
-            </select>
+            {/* Si estamos en la raíz ("/"), agregamos un input oculto para que el estatus sea siempre "0" */}
+            {currentPath === "/" && (
+                <input
+                    type="hidden"
+                    {...register("status")}
+                    value="0"
+                />
             )}
-
 
             <input
                 type="date"
