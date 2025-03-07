@@ -26,16 +26,6 @@ const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const role = useAuthStore((state) => state.role)
 
-    // Si "status" no está definido, se establece por defecto a "0" (pendiente)
-    useEffect(() => {
-        if (!searchParams.get("status")) {
-            setSearchParams((prev) => {
-                const params = new URLSearchParams(prev)
-                params.set("status", "0")
-                return params
-            })
-        }
-    }, [searchParams, setSearchParams])
 
     // Se obtienen los filtros desde la URL
     const filters = useMemo(
@@ -44,7 +34,7 @@ const DisboardPage = () => {
             company: searchParams.get("company") || "",
             project: searchParams.get("project") || "",
             date: searchParams.get("date") || "",
-            status: searchParams.get("status") || "0",
+            status: searchParams.get("status") || "",
         }),
         [searchParams]
     )
@@ -56,7 +46,7 @@ const DisboardPage = () => {
             filters.company !== "" ||
             filters.project !== "" ||
             filters.date !== "" ||
-            filters.status !== "0"
+            filters.status !== ""
         )
     }, [filters])
 
@@ -88,7 +78,7 @@ const DisboardPage = () => {
                 company: company || "",
                 project: project || "",
                 date: dateRange,
-                status: status || "0",
+                status: status || "",
             })
         },
         [setSearchParams]
