@@ -2,9 +2,11 @@
 import PropTypes from "prop-types"
 import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom" // Se importa useNavigate
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
-import { FaEdit, FaTrash } from "react-icons/fa"
+import { FaTrash } from "react-icons/fa"
+// Si deseas eliminar el botón de editar, no es necesario importar FaEdit
+// import { FaEdit } from "react-icons/fa"
 
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
@@ -36,6 +38,8 @@ const TaskItem = ({ task }) => {
   const [showConfirm, setShowConfirm] = useState(false)
   const [showStatusModal, setShowStatusModal] = useState(false)
   const [newStatus, setNewStatus] = useState(task.status)
+
+  const navigate = useNavigate() // Se crea el hook de navegación
 
   // Actualiza el estado inicial del modal al cambiar la tarea
   useEffect(() => {
@@ -91,9 +95,28 @@ const TaskItem = ({ task }) => {
     )
   }, [updateTask, task, newStatus])
 
+  // Navega al detalle de la tarea cuando se hace click en la fila
+  const handleRowClick = () => {
+    navigate(`/task/${task.id}`)
+  }
+
+  // Previene la propagación del evento para que no se dispare la navegación
+  const handleDeleteButtonClick = (e) => {
+    e.stopPropagation()
+    handleDeleteClick()
+  }
+
+  const handleStatusIndicatorClick = (e) => {
+    e.stopPropagation()
+    openStatusModal()
+  }
+
   return (
     <>
-      <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
+      <tr
+        onClick={handleRowClick}
+        className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
+      >
         {role === "admin" && (
           <td className="px-4 py-5">{task.full_name || "Sin nombre"}</td>
         )}
@@ -108,7 +131,7 @@ const TaskItem = ({ task }) => {
         <td className="flex gap-2 px-4 py-5 text-right">
           <Button
             color="ghost"
-            onClick={handleDeleteClick}
+            onClick={handleDeleteButtonClick}
             disabled={deleteTaskIsLoading}
           >
             {deleteTaskIsLoading ? (
@@ -117,12 +140,13 @@ const TaskItem = ({ task }) => {
               <FaTrash className="h-5 w-5" />
             )}
           </Button>
-          <Link to={`/task/${task.id}`}>
-            <FaEdit className="h-5 w-5" />
-          </Link>
+          {/*
+            Se eliminó el botón de editar para que la navegación se realice al presionar el item completo.
+            Si se requiere mantenerlo, habría que también aplicar e.stopPropagation() en su onClick.
+          */}
           {role === "admin" ? (
-            // Se envuelve el StatusIndicator en un div con onClick para disparar openStatusModal
-            <div onClick={openStatusModal}>
+            // Se envuelve el StatusIndicator en un div para disparar el modal y se previene la propagación.
+            <div onClick={handleStatusIndicatorClick}>
               <StatusIndicator
                 status={task.status}
                 isLoading={updateTaskIsLoading}
