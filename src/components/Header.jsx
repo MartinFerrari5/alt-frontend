@@ -11,81 +11,84 @@ import SendToRRHHButton from "./Tasks/SendToRRHHButton"
 import useAuthStore from "../store/authStore"
 
 function Header({ subtitle, title, tasks }) {
-  const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
-  const location = useLocation()
-  const [searchParams] = useSearchParams()
-  const role = useAuthStore((state) => state.role)
-  const fullNameFromStore = useAuthStore((state) => state.fullName)
+    const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
+    const location = useLocation()
+    const [searchParams] = useSearchParams()
+    const role = useAuthStore((state) => state.role)
+    const fullNameFromStore = useAuthStore((state) => state.fullName)
 
-  // Determina el path en caso de estar en la ruta de administración
-  const adminPath = location.pathname.startsWith("/admin/")
-    ? location.pathname.replace("/admin/", "")
-    : ""
+    // Determina el path en caso de estar en la ruta de administración
+    const adminPath = location.pathname.startsWith("/admin/")
+        ? location.pathname.replace("/admin/", "")
+        : ""
 
-  // Extrae y limpia los parámetros de búsqueda
-  const queryCompany = searchParams.get("company")?.trim() || ""
-  const queryProject = searchParams.get("project")?.trim() || ""
-  const queryFullname = searchParams.get("fullname")?.trim() || ""
-  const queryDate = searchParams.get("date")?.trim() || ""
+    // Extrae y limpia los parámetros de búsqueda
+    const queryCompany = searchParams.get("company")?.trim() || ""
+    const queryProject = searchParams.get("project")?.trim() || ""
+    const queryFullname = searchParams.get("fullname")?.trim() || ""
+    const queryDate = searchParams.get("date")?.trim() || ""
 
-  const queryParams = {
-    company: queryCompany,
-    project: queryProject,
-    fullname: queryFullname || fullNameFromStore,
-    date: queryDate,
-  }
+    const queryParams = {
+        company: queryCompany,
+        project: queryProject,
+        fullname: queryFullname || fullNameFromStore,
+        date: queryDate,
+    }
 
-  return (
-    <div className="flex w-full justify-between">
-      <div>
-        <span className="text-xs font-semibold text-brand-custom-green">
-          {subtitle}
-        </span>
-        <h2 className="text-xl font-semibold">{title}</h2>
-      </div>
+    return (
+        <div className="flex w-full justify-between">
+            <div>
+                <span className="text-xs font-semibold text-brand-custom-green">
+                    {subtitle}
+                </span>
+                <h2 className="text-xl font-semibold">{title}</h2>
+            </div>
 
-      <div className="flex items-center gap-3">
-        {location.pathname === "/admin/exported" ||
-        location.pathname === "/task/exported" ? (
-          <DownloadExcelButton tasks={tasks} />
-        ) : (
-          <>
-            <Button onClick={() => setAddDialogIsOpen(true)}>
-              <AddIcon />
-              {adminPath ? "" : "Nueva tarea"}
-            </Button>
+            <div className="flex items-center gap-3">
+                {location.pathname === "/admin/exported" ||
+                location.pathname === "/task/exported" ? (
+                    <DownloadExcelButton tasks={tasks} />
+                ) : (
+                    <>
+                        <Button onClick={() => setAddDialogIsOpen(true)}>
+                            <AddIcon />
+                            {adminPath ? "" : "Nueva tarea"}
+                        </Button>
 
-            {adminPath ? (
-              <AddOptionDialog
-                isOpen={addDialogIsOpen}
-                handleClose={() => setAddDialogIsOpen(false)}
-              />
-            ) : (
-              <AddTaskDialog
-                isOpen={addDialogIsOpen}
-                handleClose={() => setAddDialogIsOpen(false)}
-              />
-            )}
+                        {adminPath ? (
+                            <AddOptionDialog
+                                isOpen={addDialogIsOpen}
+                                handleClose={() => setAddDialogIsOpen(false)}
+                            />
+                        ) : (
+                            <AddTaskDialog
+                                isOpen={addDialogIsOpen}
+                                handleClose={() => setAddDialogIsOpen(false)}
+                            />
+                        )}
 
-            {role === "user" && (
-              <>
-                <DownloadExcelButton tasks={tasks} />
-                {location.pathname === "/" && (
-                  <SendToRRHHButton queryParams={queryParams} tasks={tasks} />
+                        {role === "user" && (
+                            <>
+                                <DownloadExcelButton tasks={tasks} />
+                                {location.pathname === "/" && (
+                                    <SendToRRHHButton
+                                        queryParams={queryParams}
+                                        tasks={tasks}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </>
                 )}
-              </>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
+            </div>
+        </div>
+    )
 }
 
 Header.propTypes = {
-  subtitle: PropTypes.string,
-  title: PropTypes.string,
-  tasks: PropTypes.array,
+    subtitle: PropTypes.string,
+    title: PropTypes.string,
+    tasks: PropTypes.array,
 }
 
 export default Header

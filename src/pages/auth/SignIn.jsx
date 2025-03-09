@@ -1,213 +1,225 @@
 // src/pages/auth/SignIn.jsx
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { z } from "zod";
-import useAuthStore from "../../store/authStore";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
+import { z } from "zod"
+import useAuthStore from "../../store/authStore"
 
 // Esquema de validación usando zod
 const schema = z.object({
-  email: z
-    .string()
-    .email("Formato de correo electrónico inválido")
-    .nonempty("El correo electrónico es obligatorio"),
-  password: z
-    .string()
-    .min(6, "La contraseña debe tener al menos 6 caracteres")
-    .nonempty("La contraseña es obligatoria"),
-});
+    email: z
+        .string()
+        .email("Formato de correo electrónico inválido")
+        .nonempty("El correo electrónico es obligatorio"),
+    password: z
+        .string()
+        .min(6, "La contraseña debe tener al menos 6 caracteres")
+        .nonempty("La contraseña es obligatoria"),
+})
 
 const SignIn = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(schema),
-  });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: zodResolver(schema),
+    })
 
-  const login = useAuthStore((state) => state.login);
-  const navigate = useNavigate();
-  const [message, setMessage] = useState(null);
+    const login = useAuthStore((state) => state.login)
+    const navigate = useNavigate()
+    const [message, setMessage] = useState(null)
 
-  const onSubmit = async (data) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (!response.ok) {
-        let errorMsg = "Error al iniciar sesión. Intenta nuevamente.";
+    const onSubmit = async (data) => {
         try {
-          const errorData = await response.json();
-          if (errorData?.message) {
-            // Mensaje personalizado según el código de estado
-            if (response.status === 401) {
-              errorMsg = "Credenciales incorrectas. Verifica tu correo y contraseña.";
-            } else {
-              errorMsg = errorData.message;
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/login`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                }
+            )
+
+            if (!response.ok) {
+                let errorMsg = "Error al iniciar sesión. Intenta nuevamente."
+                try {
+                    const errorData = await response.json()
+                    if (errorData?.message) {
+                        // Mensaje personalizado según el código de estado
+                        if (response.status === 401) {
+                            errorMsg =
+                                "Credenciales incorrectas. Verifica tu correo y contraseña."
+                        } else {
+                            errorMsg = errorData.message
+                        }
+                    }
+                } catch (parseError) {
+                    console.error(
+                        "Error al parsear la respuesta de error:",
+                        parseError
+                    )
+                }
+                setMessage({ type: "error", text: errorMsg })
+                return
             }
-          }
-        } catch (parseError) {
-          console.error("Error al parsear la respuesta de error:", parseError);
+
+            const { token, refreshToken } = await response.json()
+            login({ token, refreshToken })
+            setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
+
+            setTimeout(() => {
+                navigate("/")
+            }, 1000)
+        } catch (error) {
+            console.error("Error de red o inesperado:", error)
+            let errorText = "Ocurrió un error inesperado. Intenta nuevamente."
+            if (
+                error.message === "Failed to fetch" ||
+                error instanceof TypeError
+            ) {
+                errorText = "Error de red. Revisa tu conexión a internet."
+            }
+            setMessage({ type: "error", text: errorText })
         }
-        setMessage({ type: "error", text: errorMsg });
-        return;
-      }
-
-      const { token, refreshToken } = await response.json();
-      login({ token, refreshToken });
-      setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" });
-
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-    } catch (error) {
-      console.error("Error de red o inesperado:", error);
-      let errorText = "Ocurrió un error inesperado. Intenta nuevamente.";
-      if (error.message === "Failed to fetch" || error instanceof TypeError) {
-        errorText = "Error de red. Revisa tu conexión a internet.";
-      }
-      setMessage({ type: "error", text: errorText });
     }
-  };
 
-  return (
-    <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white antialiased">
-      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-gray-600"
-        >
-          <img
-            className="w-18 mr-2 h-8"
-            src="/src/assets/icons/Alt_Logo.png"
-            alt="logo"
-          />
-          Tarea
-        </a>
-        <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
-          <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-800 md:text-2xl">
-              Inicia sesión en tu cuenta
-            </h1>
-            <form
-              className="space-y-4 md:space-y-6"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-gray-500"
-                >
-                  Tu correo electrónico
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  {...register("email")}
-                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
-                    errors.email ? "border-red-500" : ""
-                  }`}
-                  placeholder="nombre@empresa.com"
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-gray-500"
-                >
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  {...register("password")}
-                  placeholder="••••••••"
-                  className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
-                    errors.password ? "border-red-500" : ""
-                  }`}
-                />
-                {errors.password && (
-                  <p className="text-sm text-red-500">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-start">
-                  <div className="flex h-5 items-center">
-                    <input
-                      id="remember"
-                      type="checkbox"
-                      className="focus:ring-3 focus:ring-primary-300 h-4 w-4 rounded border border-gray-300 bg-gray-50"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500">
-                      Recuérdame
-                    </label>
-                  </div>
-                </div>
-                <div>
-                  <a
+    return (
+        <section className="flex h-screen items-center justify-center bg-gradient-to-br from-green-200 to-white antialiased">
+            <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+                <a
                     href="#"
-                    className="text-primary-600 text-sm font-medium hover:underline"
-                  >
-                    ¿Olvidaste la contraseña?
-                  </a>
-                </div>
-              </div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full rounded-lg py-4 text-green-100 ${
-                  isSubmitting
-                    ? "cursor-not-allowed bg-green-400"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-              >
-                {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
-              </button>
-              {message && (
-                <p
-                  className={`mt-2 text-sm ${
-                    message.type === "error"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
+                    className="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-gray-600"
                 >
-                  {message.text}
+                    <img
+                        className="w-18 mr-2 h-8"
+                        src="/src/assets/icons/Alt_Logo.png"
+                        alt="logo"
+                    />
+                    Tarea
+                </a>
+                <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
+                    <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-800 md:text-2xl">
+                            Inicia sesión en tu cuenta
+                        </h1>
+                        <form
+                            className="space-y-4 md:space-y-6"
+                            onSubmit={handleSubmit(onSubmit)}
+                        >
+                            <div>
+                                <label
+                                    htmlFor="email"
+                                    className="mb-2 block text-sm font-medium text-gray-500"
+                                >
+                                    Tu correo electrónico
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    {...register("email")}
+                                    className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
+                                        errors.email ? "border-red-500" : ""
+                                    }`}
+                                    placeholder="nombre@empresa.com"
+                                />
+                                {errors.email && (
+                                    <p className="text-sm text-red-500">
+                                        {errors.email.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="password"
+                                    className="mb-2 block text-sm font-medium text-gray-500"
+                                >
+                                    Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    {...register("password")}
+                                    placeholder="••••••••"
+                                    className={`focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 ${
+                                        errors.password ? "border-red-500" : ""
+                                    }`}
+                                />
+                                {errors.password && (
+                                    <p className="text-sm text-red-500">
+                                        {errors.password.message}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-start">
+                                    <div className="flex h-5 items-center">
+                                        <input
+                                            id="remember"
+                                            type="checkbox"
+                                            className="focus:ring-3 focus:ring-primary-300 h-4 w-4 rounded border border-gray-300 bg-gray-50"
+                                        />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label
+                                            htmlFor="remember"
+                                            className="text-gray-500"
+                                        >
+                                            Recuérdame
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a
+                                        href="#"
+                                        className="text-primary-600 text-sm font-medium hover:underline"
+                                    >
+                                        ¿Olvidaste la contraseña?
+                                    </a>
+                                </div>
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`w-full rounded-lg py-4 text-green-100 ${
+                                    isSubmitting
+                                        ? "cursor-not-allowed bg-green-400"
+                                        : "bg-green-600 hover:bg-green-700"
+                                }`}
+                            >
+                                {isSubmitting
+                                    ? "Iniciando sesión..."
+                                    : "Iniciar sesión"}
+                            </button>
+                            {message && (
+                                <p
+                                    className={`mt-2 text-sm ${
+                                        message.type === "error"
+                                            ? "text-red-500"
+                                            : "text-green-500"
+                                    }`}
+                                >
+                                    {message.text}
+                                </p>
+                            )}
+                        </form>
+                    </div>
+                </div>
+                <p className="text-sm font-light text-gray-500">
+                    ¿No tienes cuenta?{" "}
+                    <Link
+                        to="/register"
+                        className="text-primary-600 font-medium hover:underline"
+                    >
+                        Regístrate
+                    </Link>
                 </p>
-              )}
-            </form>
-          </div>
-        </div>
-        <p className="text-sm font-light text-gray-500">
-          ¿No tienes cuenta?{" "}
-          <Link
-            to="/register"
-            className="text-primary-600 font-medium hover:underline"
-          >
-            Regístrate
-          </Link>
-        </p>
-      </div>
-    </section>
-  );
-};
+            </div>
+        </section>
+    )
+}
 
-export default SignIn;
+export default SignIn

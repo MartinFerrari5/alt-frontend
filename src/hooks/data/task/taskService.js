@@ -48,7 +48,7 @@ export const updateTaskApi = async ({ taskId, task }) => {
         status: task.status,
     }
     await api.put(`/tasks?task_id=${taskId}`, payload)
-    
+
     return payload
 }
 

@@ -1,144 +1,125 @@
 // /src/components/DashboardCards.jsx
 import { FaTasks, FaChartBar } from "react-icons/fa"
-// import useTaskStore from "../store/taskStore"
 import DashboardCard from "./DashboardCard"
 import { useGetKpiReport } from "../hooks/data/reportes/use-kpi-hooks"
 
 const DashboardCards = () => {
-    // Ahora se obtiene el estado de tareas desde la API
+    // Consultas a la API para cada grupo
     const {
         data: statusKpiData,
-        isLoading: loadingStatusKpi,
-        error: errorStatusKpi,
+        isLoading: isLoadingStatus,
+        error: statusError,
     } = useGetKpiReport("status")
-
-    // Función para transformar los datos de "status" a un formato amigable
-    const transformStatusStats = (data) => {
-        if (!data) return []
-        return data.map((item) => {
-            let label
-            switch (item.status) {
-                case 0:
-                    label = "En progreso"
-                    break
-                case 1:
-                    label = "finalizado"
-                    break
-                case 2:
-                    label = "facturado"
-                    break
-                default:
-                    label = item.status
-            }
-            return { label, value: item.cantidad }
-        })
-    }
-
-    const statusStats = loadingStatusKpi
-        ? [{ label: "Cargando...", value: "" }]
-        : errorStatusKpi
-          ? [{ label: "Error", value: "" }]
-          : transformStatusStats(statusKpiData)
-
-    // Los otros KPI siguen consultándose de la misma forma
     const {
         data: taskKpiData,
-        isLoading: loadingTaskKpi,
-        error: errorTaskKpi,
+        isLoading: isLoadingTask,
+        error: taskError,
     } = useGetKpiReport("task_type")
     const {
         data: hourKpiData,
-        isLoading: loadingHourKpi,
-        error: errorHourKpi,
+        isLoading: isLoadingHour,
+        error: hourError,
     } = useGetKpiReport("hour_type")
 
-    // Función auxiliar para transformar la data de los otros KPI
-    const transformStats = (data, groupKey) => {
-        if (!data) return []
-        return data.map((item) => ({
-            label: item[groupKey] || item[Object.keys(item)[0]],
+    // Función para transformar datos numéricos (status, task_type)
+    const transformNumericStats = (data, key, labelFormatter) => {
+        if (!data) return { stats: [], total: null }
+        const totalValue = data.reduce(
+            (sum, item) => sum + Number(item.cantidad),
+            0
+        )
+        const stats = data.map((item) => ({
+            label: labelFormatter ? labelFormatter(item[key]) : item[key],
             value: item.cantidad,
         }))
+        return { stats, total: String(totalValue) }
     }
 
-    const taskKpiStats = transformStats(taskKpiData, "task_type")
-    const hourKpiStats = transformStats(hourKpiData, "hour_type")
+    // Función para transformar datos de horas (hour_type)
+    const transformHourStats = (data, key, labelFormatter) => {
+        if (!data) return { stats: [], total: null }
+        const totalSeconds = data.reduce((acc, item) => {
+            const [hours, minutes, seconds] = item.cantidad
+                .split(":")
+                .map(Number)
+            return acc + hours * 3600 + minutes * 60 + seconds
+        }, 0)
+        const hours = Math.floor(totalSeconds / 3600)
+        const minutes = Math.floor((totalSeconds % 3600) / 60)
+        const seconds = totalSeconds % 60
+        const formattedTotal = `${hours.toString().padStart(2, "0")}:${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+        const stats = data.map((item) => ({
+            label: labelFormatter ? labelFormatter(item[key]) : item[key],
+            value: item.cantidad,
+        }))
+        return { stats, total: formattedTotal }
+    }
+
+    // Formateador para las etiquetas de status
+    const formatStatusLabel = (statusValue) => {
+        switch (statusValue) {
+            case 0:
+                return "En progreso"
+            case 1:
+                return "Finalizado"
+            case 2:
+                return "Facturado"
+            default:
+                return statusValue
+        }
+    }
+
+    // Generación de datos para cada grupo
+    const statusData = isLoadingStatus
+        ? { stats: [{ label: "Cargando...", value: "" }], total: null }
+        : statusError
+          ? { stats: [{ label: "Error", value: "" }], total: null }
+          : transformNumericStats(statusKpiData, "status", formatStatusLabel)
+
+    const taskData = isLoadingTask
+        ? { stats: [{ label: "Cargando...", value: "" }], total: null }
+        : taskError
+          ? { stats: [{ label: "Error", value: "" }], total: null }
+          : transformNumericStats(taskKpiData, "task_type")
+
+    const hourData = isLoadingHour
+        ? { stats: [{ label: "Cargando...", value: "" }], total: null }
+        : hourError
+          ? { stats: [{ label: "Error", value: "" }], total: null }
+          : transformHourStats(hourKpiData, "hour_type")
 
     return (
-        <>
-            {/* Sección de Estado de Tareas (obtenido desde API) */}
-            <div className="grid grid-cols-4 gap-9">
-                {/* <DashboardCard
-          icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
-          title="Estado de Tareas"
-          stats={statusStats}
-        /> */}
-            </div>
-
-            {/* Sección de reportes KPI para otros grupos */}
-            <div className="grid grid-cols-4 gap-9">
+        <main>
+            <section className="grid grid-cols-4 gap-9">
+                {/* Sección opcional, se pueden agregar elementos adicionales aquí */}
+            </section>
+            <section className="grid grid-cols-4 gap-9">
                 <DashboardCard
                     icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
                     title="Estado de Tareas"
-                    stats={statusStats}
+                    stats={statusData.stats}
+                    total={statusData.total}
                 />
-                {/* KPI Report para Task Type */}
                 <DashboardCard
                     icon={
                         <FaChartBar className="text-2xl text-brand-dark-blue" />
                     }
                     title="Tipo de Tarea"
-                    stats={
-                        loadingTaskKpi
-                            ? [{ label: "Cargando...", value: "" }]
-                            : errorTaskKpi
-                              ? [{ label: "Error", value: "" }]
-                              : taskKpiStats
-                    }
+                    stats={taskData.stats}
+                    total={taskData.total}
                 />
-
-                {/* KPI Report para Hour Type */}
                 <DashboardCard
                     icon={
                         <FaChartBar className="text-2xl text-brand-dark-blue" />
                     }
                     title="Tipo de Hora"
-                    stats={
-                        loadingHourKpi
-                            ? [{ label: "Cargando...", value: "" }]
-                            : errorHourKpi
-                              ? [{ label: "Error", value: "" }]
-                              : hourKpiStats
-                    }
+                    stats={hourData.stats}
+                    total={hourData.total}
                 />
-
-                {/* KPI Report para Project */}
-                {/* <DashboardCard
-          icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
-          title="KPI - Project"
-          stats={
-            loadingProjectKpi
-              ? [{ label: "Cargando...", value: "" }]
-              : errorProjectKpi
-              ? [{ label: "Error", value: "" }]
-              : projectKpiStats
-          }
-        /> */}
-
-                {/* KPI Report para Company */}
-                {/* <DashboardCard
-          icon={<FaChartBar className="text-2xl text-brand-dark-blue" />}
-          title="KPI - Company"
-          stats={
-            loadingCompanyKpi
-              ? [{ label: "Cargando...", value: "" }]
-              : errorCompanyKpi
-              ? [{ label: "Error", value: "" }]
-              : companyKpiStats
-          }
-        /> */}
-            </div>
-        </>
+            </section>
+        </main>
     )
 }
 

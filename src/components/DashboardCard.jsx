@@ -1,37 +1,62 @@
 // /src/components/DashboardCard.jsx
-const DashboardCard = ({
-    // icon,
-    title,
-    stats,
-    onStatClick,
-}) => {
+import PropTypes from "prop-types"
+
+const DashboardCard = ({ title, stats, total, onStatClick }) => {
     return (
-        <div className="items-center justify-center gap-2 rounded-lg bg-white p-4 shadow">
+        <article className="rounded-lg bg-white p-4 shadow">
             {title && (
-                <h3 className="text-lg font-bold text-brand-dark-blue">
-                    {/* <span className="text-2xl">{icon}</span> */}
-                    {title}
-                </h3>
+                <header className="mb-2">
+                    <h3 className="text-lg font-bold text-brand-dark-blue">
+                        {title}
+                    </h3>
+                </header>
             )}
-            <div className="items-center gap-2">
-                <div className="flex flex-col">
-                    {stats &&
-                        stats.map((stat, index) => (
-                            <p
-                                key={index}
-                                className="cursor-pointer text-sm text-brand-dark-blue"
-                                onClick={() => onStatClick && onStatClick(stat)}
-                            >
-                                <span className="font-semibold">
-                                    {stat.label}:
-                                </span>{" "}
-                                {stat.value}
-                            </p>
+
+            {total && (
+                <section className="mb-2">
+                    <p className="text-sm text-gray-500">
+                        <strong>Total:</strong> {total}
+                    </p>
+                </section>
+            )}
+
+            {stats && stats.length > 0 && (
+                <section>
+                    <ul className="flex flex-col gap-1">
+                        {stats.map((stat, index) => (
+                            <li key={index}>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        onStatClick && onStatClick(stat)
+                                    }
+                                    className="w-full cursor-pointer text-left text-sm text-brand-dark-blue focus:outline-none"
+                                >
+                                    <strong className="font-semibold">
+                                        {stat.label}:
+                                    </strong>{" "}
+                                    {stat.value}
+                                </button>
+                            </li>
                         ))}
-                </div>
-            </div>
-        </div>
+                    </ul>
+                </section>
+            )}
+        </article>
     )
+}
+
+DashboardCard.propTypes = {
+    title: PropTypes.string,
+    stats: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+                .isRequired,
+        })
+    ),
+    total: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onStatClick: PropTypes.func,
 }
 
 export default DashboardCard
