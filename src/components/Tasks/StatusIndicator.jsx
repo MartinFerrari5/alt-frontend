@@ -22,7 +22,7 @@ const StatusIndicator = ({ status, isLoading, onChange }) => {
                 break
             case 2: // facturado
                 icon = <FaDollarSign className="text-white" />
-                statusClasses = "bg-purple-600" // Puedes reemplazar con una clase personalizada si la tienes definida
+                statusClasses = "bg-purple-600"
                 break
             default:
                 icon = <FaSpinner className="animate-spin text-white" />

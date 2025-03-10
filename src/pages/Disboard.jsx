@@ -26,24 +26,25 @@ const DisboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const role = useAuthStore((state) => state.role);
 
-  // Extrae los filtros desde la URL y reemplaza el '+' por un espacio
+  // Extraemos los filtros desde la URL y convertimos status a número para comparar correctamente
   const filters = useMemo(() => {
     const dateParam = searchParams.get("date") || "";
+    const rawStatus = searchParams.get("status");
+    const status =
+      rawStatus !== null && rawStatus !== "" ? Number(rawStatus) : "";
     return {
       fullname: searchParams.get("fullname") || "",
       company: searchParams.get("company") || "",
       project: searchParams.get("project") || "",
       date: dateParam.replace(/\+/g, " "),
-      status: searchParams.get("status") || "",
+      status,
     };
   }, [searchParams]);
-
-  console.log("date: ", filters.date);
 
   const { getTasks, useFilterTasks } = useTasks({ all: true });
   const filterQuery = useFilterTasks(filters);
 
-  // Selecciona las tareas a mostrar según si hay filtro activo o no
+  // Si existe algún filtro activo, usamos los datos filtrados, de lo contrario los datos completos
   const displayedTasks = Object.values(filters).some((value) => value !== "")
     ? filterQuery.data
     : getTasks.data;
@@ -59,9 +60,9 @@ const DisboardPage = () => {
     [displayedTasks]
   );
 
-  console.log("validTasks: ", validTasks);
+  console.log("Tareas filtradas:", validTasks);
 
-  // Función updateFilter (sin modificaciones)
+  // Función updateFilter sin modificaciones
   const updateFilter = useCallback(
     (filterData) => {
       const { fullname, company, project, status, startDate, endDate } = filterData;
@@ -78,8 +79,8 @@ const DisboardPage = () => {
     [setSearchParams]
   );
 
-  // Wrapper que adapta el objeto que envía TaskFilter (con propiedad "date")
-  // y lo transforma en el formato que espera updateFilter (startDate y endDate)
+  // Wrapper que adapta el objeto recibido desde TaskFilter (que trae la propiedad "date")
+  // y convierte filterData.status a número (luego a cadena para la URL) para que coincida con los datos de la tarea
   const handleFilter = useCallback(
     (filterData) => {
       let startDate = "";
@@ -93,11 +94,14 @@ const DisboardPage = () => {
           startDate = filterData.date;
         }
       }
+      // Convertir el status a número y luego a cadena (para que updateFilter lo asigne correctamente)
+      const status =
+        filterData.status !== "" ? Number(filterData.status).toString() : "";
       updateFilter({
         fullname: filterData.fullname,
         company: filterData.company,
         project: filterData.project,
-        status: filterData.status,
+        status,
         startDate,
         endDate,
       });
@@ -162,7 +166,6 @@ const DisboardPage = () => {
         <div className="space-y-3 rounded-xl bg-white p-1">
           <div className="overflow-x-auto">
             <div className="min-w-full py-2">
-              {/* Se pasa el wrapper en lugar de updateFilter directamente */}
               <TaskFilter onFilter={handleFilter} />
               <div className="max-h-[500px] overflow-y-auto rounded-lg border">
                 <table className="w-full text-left text-sm text-gray-500">
