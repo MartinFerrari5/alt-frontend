@@ -7,6 +7,7 @@ import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
 
 const TaskFilter = ({ onFilter }) => {
+    console.log("TaskFilter render", onFilter)
     const role = useAuthStore((state) => state.role)
     const [searchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation() // Utilizamos useLocation

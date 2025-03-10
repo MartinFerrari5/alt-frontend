@@ -6,6 +6,5 @@ import { api } from "../../../lib/axios"
  */
 export const getKpiReport = async (group = "task_type") => {
     const { data } = await api.get(`/kpi?group=${group}`)
-    console.log("KPI Report: ", data)
     return data
 }
