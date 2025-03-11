@@ -135,7 +135,7 @@ const TaskItem = ({ task }) => {
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-               {location.pathname === "/history" && ( // Conditional rendering
+                {location.pathname === "/history" && ( // Conditional rendering
                     <td className="px-4 py-5">
                         {task.task_description.length > 10
                             ? `${task.task_description.substring(0, 10)}...`
