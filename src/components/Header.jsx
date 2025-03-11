@@ -17,9 +17,12 @@ function Header({ subtitle, title, tasks }) {
     const role = useAuthStore((state) => state.role)
     const fullNameFromStore = useAuthStore((state) => state.fullName)
 
-    // Determina el path en caso de estar en la ruta de administración
-    const adminPath = location.pathname.startsWith("/admin/")
-        ? location.pathname.replace("/admin/", "")
+    // Extraemos el path actual
+    const currentPath = location.pathname
+
+    // Determina si estamos en una ruta de administración
+    const adminPath = currentPath.startsWith("/admin/")
+        ? currentPath.replace("/admin/", "")
         : ""
 
     // Extrae y limpia los parámetros de búsqueda
@@ -35,6 +38,9 @@ function Header({ subtitle, title, tasks }) {
         date: queryDate,
     }
 
+    // Se muestra el botón de descarga solo en "/" y "/history"
+    const showDownloadExcel = currentPath === "/" || currentPath === "/history"
+
     return (
         <div className="flex w-full justify-between">
             <div>
@@ -45,40 +51,27 @@ function Header({ subtitle, title, tasks }) {
             </div>
 
             <div className="flex items-center gap-3">
-                {location.pathname === "/admin/exported" ||
-                location.pathname === "/task/exported" ? (
-                    <DownloadExcelButton tasks={tasks} />
+                {showDownloadExcel && <DownloadExcelButton tasks={tasks} />}
+
+                <Button onClick={() => setAddDialogIsOpen(true)}>
+                    <AddIcon />
+                    {adminPath ? "" : "Nueva tarea"}
+                </Button>
+
+                {adminPath ? (
+                    <AddOptionDialog
+                        isOpen={addDialogIsOpen}
+                        handleClose={() => setAddDialogIsOpen(false)}
+                    />
                 ) : (
-                    <>
-                        <Button onClick={() => setAddDialogIsOpen(true)}>
-                            <AddIcon />
-                            {adminPath ? "" : "Nueva tarea"}
-                        </Button>
+                    <AddTaskDialog
+                        isOpen={addDialogIsOpen}
+                        handleClose={() => setAddDialogIsOpen(false)}
+                    />
+                )}
 
-                        {adminPath ? (
-                            <AddOptionDialog
-                                isOpen={addDialogIsOpen}
-                                handleClose={() => setAddDialogIsOpen(false)}
-                            />
-                        ) : (
-                            <AddTaskDialog
-                                isOpen={addDialogIsOpen}
-                                handleClose={() => setAddDialogIsOpen(false)}
-                            />
-                        )}
-
-                        {role === "user" && (
-                            <>
-                                <DownloadExcelButton tasks={tasks} />
-                                {location.pathname === "/" && (
-                                    <SendToRRHHButton
-                                        queryParams={queryParams}
-                                        tasks={tasks}
-                                    />
-                                )}
-                            </>
-                        )}
-                    </>
+                {role === "user" && currentPath === "/" && (
+                    <SendToRRHHButton queryParams={queryParams} tasks={tasks} />
                 )}
             </div>
         </div>

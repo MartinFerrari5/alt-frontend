@@ -34,7 +34,6 @@ export const createTask = async (task) => {
 }
 
 export const updateTaskApi = async ({ taskId, task }) => {
-    console.log("🚀 ~ file: taskService.js:43 ~ updateTaskApi ~ task:", task)
     const payload = {
         company: task.company?.trim(),
         project: task.project?.trim(),
@@ -53,7 +52,12 @@ export const updateTaskApi = async ({ taskId, task }) => {
 }
 
 export const deleteTaskApi = async (taskId) => {
+    console.log(
+        "🚀 ~ file: taskService.js:66 ~ deleteTaskApi ~ taskId:",
+        taskId
+    )
     await api.delete("/tasks", { params: { task_id: taskId } })
+
     return taskId
 }
 

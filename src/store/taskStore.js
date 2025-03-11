@@ -11,18 +11,22 @@ const useTaskStore = create(
             addTask: (newTask) =>
                 set((state) => ({ tasks: [...state.tasks, newTask] })),
 
-            // Actualizar una tarea
+            // Actualizar una tarea (convertimos IDs a string para evitar discrepancias)
             updateTask: (taskId, updatedTask) =>
                 set((state) => ({
                     tasks: state.tasks.map((task) =>
-                        task.id === taskId ? { ...task, ...updatedTask } : task
+                        task.id.toString() === taskId.toString()
+                            ? { ...task, ...updatedTask }
+                            : task
                     ),
                 })),
 
-            // Eliminar una tarea
+            // Eliminar una tarea (comparando los IDs convertidos a string)
             deleteTask: (taskId) =>
                 set((state) => ({
-                    tasks: state.tasks.filter((task) => task.id !== taskId),
+                    tasks: state.tasks.filter(
+                        (task) => task.id.toString() !== taskId.toString()
+                    ),
                 })),
 
             // Establecer el listado completo de tareas
@@ -31,7 +35,6 @@ const useTaskStore = create(
         {
             name: "task-storage",
             getStorage: () => localStorage,
-            // Se persiste únicamente el estado serializable
             partialize: (state) => ({ tasks: state.tasks }),
         }
     )

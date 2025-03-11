@@ -1,5 +1,4 @@
 // src/hooks/data/task/useTasks.js
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
     getAllTasks,
@@ -17,15 +16,15 @@ import { taskQueryKeys } from "../../../keys/queries"
 
 /**
  * Hook para obtener una tarea por ID.
- * Primero intenta obtenerla del store; si no existe, consulta la API.
- * Acepta un callback onSuccess opcional.
  */
 export const useGetTask = (taskId, onSuccess) => {
     const { tasks } = useTaskStore()
     return useQuery({
         queryKey: taskQueryKeys.getOne(taskId),
         queryFn: async () => {
-            const existingTask = tasks.find((task) => task.id === taskId)
+            const existingTask = tasks.find(
+                (task) => task.id.toString() === taskId.toString()
+            )
             if (existingTask) {
                 if (onSuccess) onSuccess(existingTask)
                 return existingTask
@@ -54,14 +53,11 @@ export const useGetTask = (taskId, onSuccess) => {
 
 /**
  * Hook principal para la gestión de tareas.
- * Permite obtener la lista de tareas y gestionar las mutaciones (agregar, actualizar y eliminar).
- * Puedes pasar el parámetro opcional { all: true } para usar la ruta /tasks/all, que trae un conjunto mayor de datos.
  */
 export const useTasks = ({ all = false } = {}) => {
     const queryClient = useQueryClient()
     const { tasks, addTask, deleteTask, updateTask, setTasks } = useTaskStore()
 
-    // Consulta para obtener todas las tareas, utilizando el endpoint adecuado según el flag "all"
     const getTasks = useQuery({
         queryKey: all ? taskQueryKeys.getAllAll() : taskQueryKeys.getAll(),
         queryFn: async () => {
@@ -71,7 +67,7 @@ export const useTasks = ({ all = false } = {}) => {
         },
     })
 
-    // Mutación para agregar una tarea con actualización optimista
+    // Mutación para agregar una tarea (actualización optimista)
     const addTaskMutation = useMutation({
         mutationKey: taskMutationKeys.add(),
         mutationFn: async (newTask) => await createTask(newTask),
@@ -79,7 +75,6 @@ export const useTasks = ({ all = false } = {}) => {
             await queryClient.cancelQueries(taskQueryKeys.getAll())
             const previousTasks =
                 queryClient.getQueryData(taskQueryKeys.getAll()) || []
-            // Asignamos un ID temporal para la tarea optimista
             const optimisticTask = {
                 ...newTask,
                 id: Date.now(),
@@ -114,7 +109,7 @@ export const useTasks = ({ all = false } = {}) => {
         },
     })
 
-    // Mutación para actualizar una tarea con actualización optimista
+    // Mutación para actualizar una tarea (actualización optimista)
     const updateTaskMutation = useMutation({
         mutationKey: taskMutationKeys.update(),
         mutationFn: async ({ taskId, task }) =>
@@ -124,11 +119,13 @@ export const useTasks = ({ all = false } = {}) => {
             const previousTasks = queryClient.getQueryData(
                 taskQueryKeys.getAll()
             )
-            // Actualización optimista en la caché de react-query
             queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
-                oldTasks.map((t) => (t.id === taskId ? { ...t, ...task } : t))
+                oldTasks.map((t) =>
+                    t.id.toString() === taskId.toString()
+                        ? { ...t, ...task }
+                        : t
+                )
             )
-            // Actualización optimista en el store de Zustand
             updateTask(taskId, task)
             return { previousTasks }
         },
@@ -140,12 +137,12 @@ export const useTasks = ({ all = false } = {}) => {
             console.error("Error al actualizar la tarea:", error)
         },
         onSuccess: (updatedTask, { taskId }) => {
-            // Reemplazamos el cambio optimista por la respuesta definitiva
             queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
-                oldTasks.map((t) => (t.id === taskId ? updatedTask : t))
+                oldTasks.map((t) =>
+                    t.id.toString() === taskId.toString() ? updatedTask : t
+                )
             )
             queryClient.setQueryData(taskQueryKeys.getOne(taskId), updatedTask)
-            // Actualizamos el store con la respuesta de la API
             updateTask(taskId, updatedTask)
         },
         onSettled: () => {
@@ -158,15 +155,36 @@ export const useTasks = ({ all = false } = {}) => {
     const deleteTaskMutation = useMutation({
         mutationKey: taskMutationKeys.delete(),
         mutationFn: async (taskId) => await deleteTaskApi(taskId),
+        onMutate: async () => {
+            await queryClient.cancelQueries(taskQueryKeys.getAll())
+            const previousTasks = queryClient.getQueryData(
+                taskQueryKeys.getAll()
+            )
+            return { previousTasks }
+        },
         onSuccess: (taskId) => {
+            // Actualizamos el store y la caché utilizando conversiones a string
             deleteTask(taskId)
             queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks) =>
-                oldTasks ? oldTasks.filter((task) => task.id !== taskId) : []
+                oldTasks
+                    ? oldTasks.filter(
+                          (task) => task.id.toString() !== taskId.toString()
+                      )
+                    : []
             )
+        },
+        onError: (error, taskId, context) => {
+            queryClient.setQueryData(
+                taskQueryKeys.getAll(),
+                context.previousTasks
+            )
+            console.error("Error al eliminar tarea:", error)
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries(taskQueryKeys.getAll())
         },
     })
 
-    // Hook para filtrar tareas con múltiples opciones y combinaciones
     const useFilterTasks = (filters) => {
         return useQuery({
             queryKey: ["filterTasks", filters],

@@ -90,7 +90,7 @@ const AdminDropdown = () => {
                         Usuarios
                     </NavLink>
                 </li>
-                <li>
+                {/* <li>
                     <NavLink
                         to="/admin/exported"
                         className={({ isActive }) =>
@@ -101,7 +101,7 @@ const AdminDropdown = () => {
                     >
                         Exportados
                     </NavLink>
-                </li>
+                </li> */}
             </ul>
         </div>
     )
