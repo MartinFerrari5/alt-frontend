@@ -1,19 +1,19 @@
 // src/components/Users/UsersItem.jsx
 import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { TrashIcon, DetailsIcon, LoaderIcon } from "../../../assets/icons"
-import { useDeleteUser } from "../../../hooks/data/use-delete-user"
-
+import { TrashIcon, LoaderIcon } from "../../../assets/icons"
+import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
 import Button from "../../Button"
 import useAuthStore from "../../../store/authStore"
 
 const UsersItem = ({ user }) => {
+    const navigate = useNavigate()
     const role = useAuthStore((state) => state.role)
-    const { mutate: deleteUser, isPending: deleteUserIsLoading } =
-        useDeleteUser(user.id)
+    const { mutate: deleteUser, isPending: deleteUserIsLoading } = useDeleteUser(user.id)
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = (e) => {
+        e.stopPropagation() // Evita que se dispare la navegación al hacer click en el botón
         deleteUser(undefined, {
             onSuccess: () => toast.success("¡Usuario eliminado exitosamente!"),
             onError: (error) => {
@@ -23,12 +23,16 @@ const UsersItem = ({ user }) => {
         })
     }
 
+    const handleRowClick = () => {
+        navigate(`/admin/users/${user.id}`)
+    }
+
     return (
-        <tr className="border-b bg-white">
-            <td className="px-6 py-4">{user.full_name}</td>
-            <td className="px-6 py-4">{user.email}</td>
-            <td className="px-6 py-4">{user.role}</td>
-            <td className="flex items-center gap-2 px-6 py-4">
+        <tr onClick={handleRowClick} className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50">
+            <td className="px-4 py-5">{user.full_name}</td>
+            <td className="px-4 py-5">{user.email}</td>
+            <td className="px-4 py-5">{user.role}</td>
+            <td className="flex gap-2 px-4 py-5 text-right">
                 {role === "admin" && (
                     <Button
                         color="ghost"
@@ -42,9 +46,6 @@ const UsersItem = ({ user }) => {
                         )}
                     </Button>
                 )}
-                <Link to={`/user/${user.id}`}>
-                    <DetailsIcon />
-                </Link>
             </td>
         </tr>
     )

@@ -17,14 +17,12 @@ const TaskForm = ({
     taskDate,
     setTaskDate,
     task,
-    // Recibimos las opciones ya cargadas desde el store
     companies,
     projects,
     hourTypes,
 }) => {
     if (!task) return null
 
-    // Indicadores de carga basados en la disponibilidad de las opciones
     const isLoadingCompanies = companies.length === 0
     const isLoadingProjects = projects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
@@ -35,7 +33,7 @@ const TaskForm = ({
         <form onSubmit={handleSubmit}>
             <div className="space-y-6 rounded-xl bg-brand-white p-6">
                 {/* Dropdowns para Empresa, Proyecto y Tipo de Hora */}
-                <div className="grid md:grid-cols-2 md:gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <Dropdown
                         id="company"
                         label="Empresa"
@@ -90,7 +88,7 @@ const TaskForm = ({
                 />
 
                 {/* Grid para DatePicker y horarios */}
-                <div className="grid md:grid-cols-2 md:gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <DatePicker
                         value={taskDate}
                         onChange={setTaskDate}
@@ -133,18 +131,19 @@ const TaskForm = ({
                         />
                     </div>
                 </div>
-            </div>
-
-            <div className="mt-4 flex w-full justify-end gap-3">
-                <Button
-                    size="large"
-                    color="primary"
-                    disabled={isSubmitting}
-                    type="submit"
-                >
-                    {isSubmitting && <span className="animate-spin">⏳</span>}{" "}
-                    Actualizar
-                </Button>
+                <div className="mt-4 flex w-full justify-end gap-3">
+                    <Button
+                        size="large"
+                        color="primary"
+                        disabled={isSubmitting}
+                        type="submit"
+                    >
+                        {isSubmitting && (
+                            <span className="animate-spin">⏳</span>
+                        )}{" "}
+                        Guardar
+                    </Button>
+                </div>
             </div>
         </form>
     )

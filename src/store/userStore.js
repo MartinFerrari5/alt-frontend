@@ -1,32 +1,68 @@
-// /src/store/statusStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-const useStatusStore = create(
+const useUserStore = create(
     persist(
         (set) => ({
-            statuses: [],
+            users: [],
             isLoading: false,
             error: null,
 
-            setStatuses: (statuses) => set({ statuses }),
-            addStatus: (status) =>
-                set((state) => ({ statuses: [...state.statuses, status] })),
-            updateStatus: (updatedStatus) =>
+            /**
+             * Establece la lista completa de usuarios.
+             * @param {Array} users - Lista de usuarios.
+             */
+            setUsers: (users) => set({ users }),
+
+            /**
+             * Agrega un nuevo usuario al estado.
+             * @param {Object} user - Nuevo usuario.
+             */
+            addUser: (user) =>
+                set((state) => ({ users: [...state.users, user] })),
+
+            /**
+             * Actualiza un usuario existente.
+             * @param {Object} updatedUser - Usuario actualizado.
+             */
+            updateUser: (updatedUser) =>
                 set((state) => ({
-                    statuses: state.statuses.map((status) =>
-                        status.id === updatedStatus.id ? updatedStatus : status
+                    users: state.users.map((user) =>
+                        user.id === updatedUser.id ? updatedUser : user
                     ),
                 })),
+
+            /**
+             * Elimina un usuario del estado.
+             * @param {string|number} userId - ID del usuario a eliminar.
+             */
+            removeUser: (userId) =>
+                set((state) => ({
+                    users: state.users.filter((user) => user.id !== userId),
+                })),
+
+            /**
+             * Establece el estado de carga.
+             * @param {boolean} isLoading - Estado de carga.
+             */
             setLoading: (isLoading) => set({ isLoading }),
+
+            /**
+             * Establece un error en el estado.
+             * @param {string|Object} error - Error a establecer.
+             */
             setError: (error) => set({ error }),
+
+            /**
+             * Limpia el error del estado.
+             */
             clearError: () => set({ error: null }),
         }),
         {
-            name: "status-storage", // Nombre de la clave en el storage (localStorage)
+            name: "user-storage", // Nombre de la clave en el localStorage
             getStorage: () => localStorage,
         }
     )
 )
 
-export default useStatusStore
+export default useUserStore

@@ -5,7 +5,7 @@ import Button from "../Button"
 import { Link } from "react-router-dom"
 
 const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
-    <div className="flex w-full justify-between">
+    <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
             <button
                 onClick={onBack}

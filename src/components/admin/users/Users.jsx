@@ -1,10 +1,18 @@
 // /src/components/Users/Users.jsx
-import { useGetUsers } from "../../../hooks/data/use-get-users"
+import { useGetUsers } from "../../../hooks/data/users/useUserHooks"
 import Header from "../../Header"
 import UsersItem from "./UsersItem"
 
 const Users = () => {
-    const { data: users = [] } = useGetUsers()
+    const { data: users = [], isLoading, error } = useGetUsers()
+
+    if (isLoading) {
+        return <div>Cargando usuarios...</div>
+    }
+
+    if (error) {
+        return <div>Error al cargar usuarios: {error.message}</div>
+    }
 
     return (
         <div className="w-full space-y-6 px-8 py-9">

@@ -19,6 +19,7 @@ import UsersPage from "./pages/admin/Users.jsx"
 import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
 import "flowbite"
+import UsersDetail from "./pages/admin/UsersDetail.jsx"
 
 const queryClient = new QueryClient()
 
@@ -76,6 +77,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute adminOnly={true}>
                 <UsersPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/admin/users/:id",
+        element: (
+            <ProtectedRoute adminOnly={true}>
+                <UsersDetail />
             </ProtectedRoute>
         ),
     },

@@ -13,14 +13,12 @@ import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
 import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
 
-// Obtenemos las opciones desde el store (igual que en AddTaskDialog)
 import { useOptionsStore } from "../store/optionsStore"
 
 const TaskDetailsPage = () => {
-    const { taskId } = useParams() // taskId se recibe como cadena (UUID)
+    const { taskId } = useParams()
     const navigate = useNavigate()
 
-    // Cargar opciones al montar el componente
     const { companies_table, hour_type_table, projects_table, fetchOptions } =
         useOptionsStore()
 
@@ -53,13 +51,11 @@ const TaskDetailsPage = () => {
         },
     })
 
-    // Función para formatear la hora para inputs de tipo "time"
     const formatTimeForInput = (timeStr) => {
         if (!timeStr) return ""
         return timeStr.length > 5 ? timeStr.slice(0, 5) : timeStr
     }
 
-    // Función para formatear la fecha según lo espera el backend
     const formatDateForBackend = (date) => {
         if (!date) return null
         const year = date.getFullYear()
@@ -68,12 +64,9 @@ const TaskDetailsPage = () => {
         return `${year}-${month}-${day} 00:00:00`
     }
 
-    // Obtenemos la tarea específica utilizando el hook "useGetTask"
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
-    // Obtenemos las mutaciones desde el hook de tareas
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
 
-    // Cada vez que "currentTask" cambie, reinicializamos el formulario y actualizamos la fecha
     useEffect(() => {
         if (currentTask) {
             const taskDateValue = currentTask.task_date
@@ -144,11 +137,12 @@ const TaskDetailsPage = () => {
     if (!currentTask) return <p>No se encontraron detalles de la tarea.</p>
 
     return (
-        // Contenedor principal con h-screen y overflow-hidden para fijar el layout
-        <div className="flex h-screen overflow-hidden">
-            <Sidebar />
-            {/* Se añade lg:ml-72 para desplazar el contenido y evitar que quede por detrás de la sidebar */}
-            <div className="w-full space-y-6 overflow-hidden px-8 py-16 lg:ml-72">
+        <div className="flex min-h-screen flex-col lg:flex-row">
+            {/* Sidebar solo visible en pantallas grandes */}
+            <div className="hidden lg:block lg:w-72">
+                <Sidebar />
+            </div>
+            <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
                 <TaskHeader
                     task={currentTask}
                     onBack={() => navigate(-1)}
