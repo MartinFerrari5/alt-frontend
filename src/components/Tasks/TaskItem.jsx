@@ -2,7 +2,7 @@
 import PropTypes from "prop-types"
 import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
-import { useNavigate } from "react-router-dom" // Se importa useNavigate
+import { useLocation, useNavigate } from "react-router-dom" // Se importa useNavigate
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { FaTrash } from "react-icons/fa"
 // Si deseas eliminar el botón de editar, no es necesario importar FaEdit
@@ -42,6 +42,7 @@ const TaskItem = ({ task }) => {
     const [newStatus, setNewStatus] = useState(task.status)
 
     const navigate = useNavigate() // Se crea el hook de navegación
+    const location = useLocation()
 
     // Actualiza el estado inicial del modal al cambiar la tarea
     useEffect(() => {
@@ -134,11 +135,13 @@ const TaskItem = ({ task }) => {
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-                <td className="px-4 py-5">
-                    {task.task_description.length > 10
-                        ? `${task.task_description.substring(0, 10)}...`
-                        : task.task_description}
-                </td>
+               {location.pathname === "/history" && ( // Conditional rendering
+                    <td className="px-4 py-5">
+                        {task.task_description.length > 10
+                            ? `${task.task_description.substring(0, 10)}...`
+                            : task.task_description}
+                    </td>
+                )}
                 <td className="flex gap-2 px-4 py-5 text-right">
                     <Button
                         color="ghost"
