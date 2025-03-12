@@ -1,106 +1,106 @@
 // src/main.jsx
-import "./index.css";
-import "react-toastify/dist/ReactToastify.css";
-import "flowbite";
+import "./index.css"
+import "react-toastify/dist/ReactToastify.css"
+import "flowbite"
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import React from "react"
+import ReactDOM from "react-dom/client"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { ToastContainer } from "react-toastify"
 
-import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
-import PageRegister from "./pages/auth/Register.jsx";
-import Login from "./pages/auth/SignIn.jsx";
-import DisboardPage from "./pages/Disboard.jsx";
-import TaskDetailsPage from "./pages/TaskDetails.jsx";
-import TasksPage from "./pages/Tasks.jsx";
-import ManagementPage from "./pages/admin/Management.jsx";
-import UsersPage from "./pages/admin/Users.jsx";
-import UsersDetail from "./pages/admin/UsersDetail.jsx";
-import UserProfilePage from "./pages/user/UserProfile.jsx";
-import NotFoundPage from "./pages/NotFound.jsx";
-import { Status } from "./pages/admin/Status.jsx";
+import ProtectedRoute from "./components/auth/ProtectedRoute.jsx"
+import PageRegister from "./pages/auth/Register.jsx"
+import Login from "./pages/auth/SignIn.jsx"
+import DisboardPage from "./pages/Disboard.jsx"
+import TaskDetailsPage from "./pages/TaskDetails.jsx"
+import TasksPage from "./pages/Tasks.jsx"
+import ManagementPage from "./pages/admin/Management.jsx"
+import UsersPage from "./pages/admin/Users.jsx"
+import UsersDetail from "./pages/admin/UsersDetail.jsx"
+import UserProfilePage from "./pages/user/UserProfile.jsx"
+import NotFoundPage from "./pages/NotFound.jsx"
+import { Status } from "./pages/admin/Status.jsx"
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
     { path: "/login", element: <Login /> },
     { path: "/register", element: <PageRegister /> },
-    { 
-        path: "/", 
+    {
+        path: "/",
         element: (
             <ProtectedRoute>
                 <TasksPage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
+    {
         path: "/user/:userId",
         element: (
             <ProtectedRoute>
                 <UserProfilePage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/history", 
+    {
+        path: "/history",
         element: (
             <ProtectedRoute>
                 <DisboardPage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/task/:taskId", 
+    {
+        path: "/task/:taskId",
         element: (
             <ProtectedRoute>
                 <TaskDetailsPage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/task/exported", 
+    {
+        path: "/task/exported",
         element: (
             <ProtectedRoute>
                 <Status />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/admin/management", 
+    {
+        path: "/admin/management",
         element: (
             <ProtectedRoute adminOnly>
                 <ManagementPage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/admin/users", 
+    {
+        path: "/admin/users",
         element: (
             <ProtectedRoute adminOnly>
                 <UsersPage />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/admin/users/:id", 
+    {
+        path: "/admin/users/:id",
         element: (
             <ProtectedRoute adminOnly>
                 <UsersDetail />
             </ProtectedRoute>
-        )
+        ),
     },
-    { 
-        path: "/admin/exported", 
+    {
+        path: "/admin/exported",
         element: (
             <ProtectedRoute adminOnly>
                 <Status />
             </ProtectedRoute>
-        )
+        ),
     },
-    { path: "*", element: <NotFoundPage /> }
-]);
+    { path: "*", element: <NotFoundPage /> },
+])
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -119,4 +119,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <RouterProvider router={router} />
         </QueryClientProvider>
     </React.StrictMode>
-);
+)

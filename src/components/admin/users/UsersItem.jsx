@@ -10,7 +10,8 @@ import useAuthStore from "../../../store/authStore"
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()
     const role = useAuthStore((state) => state.role)
-    const { mutate: deleteUser, isPending: deleteUserIsLoading } = useDeleteUser(user.id)
+    const { mutate: deleteUser, isPending: deleteUserIsLoading } =
+        useDeleteUser(user.id)
 
     const handleDeleteClick = (e) => {
         e.stopPropagation() // Evita que se dispare la navegación al hacer click en el botón
@@ -28,7 +29,10 @@ const UsersItem = ({ user }) => {
     }
 
     return (
-        <tr onClick={handleRowClick} className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50">
+        <tr
+            onClick={handleRowClick}
+            className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
+        >
             <td className="px-4 py-5">{user.full_name}</td>
             <td className="px-4 py-5">{user.email}</td>
             <td className="px-4 py-5">{user.role}</td>

@@ -33,7 +33,9 @@ export const useGetUsers = (userId = null) => {
     const role = useAuthStore((state) => state.role)
 
     return useQuery({
-        queryKey: userId ? userQueryKeys.getById(userId) : userQueryKeys.getAll(),
+        queryKey: userId
+            ? userQueryKeys.getById(userId)
+            : userQueryKeys.getAll(),
         queryFn: async () => {
             if (role !== "admin") {
                 throw new Error(
@@ -124,7 +126,9 @@ export const useDeleteUser = (userId) => {
         onSuccess: () => {
             // Actualiza la lista de usuarios eliminando el usuario borrado
             queryClient.setQueryData(userQueryKeys.getAll(), (oldUsers) => {
-                return oldUsers ? oldUsers.filter((user) => user.id !== userId) : []
+                return oldUsers
+                    ? oldUsers.filter((user) => user.id !== userId)
+                    : []
             })
         },
         onError: (error) => {

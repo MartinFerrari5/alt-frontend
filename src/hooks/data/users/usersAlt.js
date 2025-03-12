@@ -1,6 +1,5 @@
 import { api } from "../../../lib/axios"
 
-
 /**
  * Crea un nuevo usuario.
  * @param {Object} payload - Datos del nuevo usuario.
