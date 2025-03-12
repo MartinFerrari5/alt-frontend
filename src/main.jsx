@@ -21,12 +21,14 @@ import UsersDetail from "./pages/admin/UsersDetail.jsx"
 import UserProfilePage from "./pages/user/UserProfile.jsx"
 import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
+import NewPasswordPage from "./pages/auth/NewPasswordPage.jsx"
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
     { path: "/login", element: <Login /> },
     { path: "/register", element: <PageRegister /> },
+    { path: "/new-password", element: <NewPasswordPage /> },
     {
         path: "/",
         element: (

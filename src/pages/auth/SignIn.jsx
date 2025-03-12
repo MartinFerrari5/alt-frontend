@@ -154,6 +154,18 @@ const SignIn = () => {
                                     </p>
                                 )}
                             </div>
+                                <div>
+                                    <a
+                                        className="text-sm font-light"
+                                    >
+                                    <Link
+                                        to="/new-password"
+                                         className="text-primary-600 text-sm font-medium hover:underline"
+                                    >
+                                        ¿Olvidaste la contraseña?
+                                    </Link>
+                                    </a>
+                                </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-start">
                                     <div className="flex h-5 items-center">
@@ -171,14 +183,6 @@ const SignIn = () => {
                                             Recuérdame
                                         </label>
                                     </div>
-                                </div>
-                                <div>
-                                    <a
-                                        href="#"
-                                        className="text-primary-600 text-sm font-medium hover:underline"
-                                    >
-                                        ¿Olvidaste la contraseña?
-                                    </a>
                                 </div>
                             </div>
                             <button
