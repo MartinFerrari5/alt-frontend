@@ -1,24 +1,23 @@
 // src/components/Sidebar.jsx
-import { useState, useCallback } from "react"
-import { NavLink } from "react-router-dom"
-import LogoutButton from "./auth/LogoutButton"
-import HamburgerButton from "./HamburgerButton"
-import { tv } from "tailwind-variants"
-import useAuthStore from "../store/authStore"
-import { FaHome, FaUndoAlt } from "react-icons/fa"
-import useSidebarStore from "../store/sidebarStore"
+import { useState, useCallback } from "react";
+import { NavLink } from "react-router-dom";
+import LogoutButton from "./auth/LogoutButton";
+import HamburgerButton from "./HamburgerButton";
+import { tv } from "tailwind-variants";
+import useAuthStore from "../store/authStore";
+import { FaHome, FaUndoAlt } from "react-icons/fa";
+import useSidebarStore from "../store/sidebarStore";
 
 // Estilos reutilizables para los botones de la sidebar
 const sidebarStyle = tv({
     base: "flex items-center gap-2 rounded-lg px-6 py-3",
     variants: {
         color: {
-            selected:
-                "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
+            selected: "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
             unselected: "text-brand-dark-blue",
         },
     },
-})
+});
 
 const SidebarButton = ({ children, to }) => (
     <NavLink
@@ -29,11 +28,11 @@ const SidebarButton = ({ children, to }) => (
     >
         {children}
     </NavLink>
-)
+);
 
 // Componente para el menú desplegable de Admin usando Zustand para el estado
 const AdminDropdown = () => {
-    const { adminDropdownOpen, toggleAdminDropdown } = useSidebarStore()
+    const { adminDropdownOpen, toggleAdminDropdown } = useSidebarStore();
 
     return (
         <div className="relative">
@@ -90,34 +89,45 @@ const AdminDropdown = () => {
                         Usuarios
                     </NavLink>
                 </li>
-                {/* <li>
-                    <NavLink
-                        to="/admin/exported"
-                        className={({ isActive }) =>
-                            sidebarStyle({
-                                color: isActive ? "selected" : "unselected",
-                            }) + " block px-4 py-2"
-                        }
-                    >
-                        Exportados
-                    </NavLink>
-                </li> */}
             </ul>
         </div>
-    )
-}
+    );
+};
+
+// Componente de detalles de usuario
+const UserDetails = () => {
+    const fullNameFromStore = useAuthStore((state) => state.fullName)
+    const userId = useAuthStore((state) => state.userId)
+    
+    if (!userId) return null;
+    return (
+        <NavLink
+            to={`/user?id=${userId}`}
+            className="flex items-center hover:bg-brand-custom-green transition-colors rounded-full"
+        >
+            <img
+                className="w-10 h-10 rounded-full"
+                src={"/src/assets/icons//LogoPerfil.png"}
+                alt={fullNameFromStore}
+            />
+            <div className="font-medium">
+                <h2>{fullNameFromStore}</h2>
+            </div>
+        </NavLink>
+    );
+};
 
 const Sidebar = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-    const role = useAuthStore((state) => state.role)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const role = useAuthStore((state) => state.role);
 
     const toggleSidebar = useCallback(() => {
-        setIsSidebarOpen((prev) => !prev)
-    }, [])
+        setIsSidebarOpen((prev) => !prev);
+    }, []);
 
     return (
         <div className="relative flex h-screen">
-            {/* Cambiamos absolute por fixed para que la sidebar esté fija en la pantalla */}
+            {/* Sidebar fija en la pantalla */}
             <div
                 className={`fixed left-0 top-0 z-50 flex h-full w-72 min-w-72 transform flex-col justify-between bg-white transition-transform ${
                     isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -128,13 +138,7 @@ const Sidebar = () => {
                         <h1 className="text-xl font-semibold text-brand-custom-green">
                             Administrador de Tareas
                         </h1>
-                        <p>
-                            Un simple{" "}
-                            <span className="text-brand-custom-green">
-                                organizador de tareas
-                            </span>
-                            .
-                        </p>
+                    <UserDetails />
                     </div>
                     <div className="flex flex-col gap-2 p-2">
                         <SidebarButton to="/history">
@@ -155,14 +159,12 @@ const Sidebar = () => {
             </div>
             <div
                 className={`flex-1 transition-opacity ${
-                    isSidebarOpen
-                        ? "pointer-events-none opacity-50"
-                        : "opacity-100"
+                    isSidebarOpen ? "pointer-events-none opacity-50" : "opacity-100"
                 }`}
                 onClick={() => isSidebarOpen && setIsSidebarOpen(false)}
             ></div>
         </div>
-    )
-}
+    );
+};
 
-export default Sidebar
+export default Sidebar;

@@ -87,7 +87,7 @@ export const changePassword = async (payload) => {
  */
 export const updateUser = async (user_id, payload) => {
     try {
-        const { data } = await api.put(`/users/user?user_id=${user_id}`, payload)
+        const { data } = await api.put(`/users?user_id=${user_id}`, payload)
         console.log("Usuario actualizado:", data)
         return data
     } catch (error) {
