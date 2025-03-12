@@ -7,61 +7,68 @@ import Sidebar from "../../components/Sidebar"
 
 const UserProfilePage = () => {
     // Se obtiene el id del usuario desde la URL
-    const { id } = useParams()
-    if (!id) {
-        null
-    }
-    const navigate = useNavigate()
-    console.log("id: ", id)
-    const { data: user, isLoading, error } = useGetUsers(id)
-    const updateUserMutation = useUpdateUser(id)
-    console.log("user: ", user)
+    const { userId } = useParams(); // Cambié 'id' a 'userId' para que coincida con la ruta
+
+    console.log("userId: ", userId);
+
+    const navigate = useNavigate();
+
+    const { data: userData, isLoading, error } = useGetUsers(userId); // Usar userId aquí
+
+    const updateUserMutation = useUpdateUser(userId); // Usar userId aquí
+
+    console.log("user: ", userData);
+
+    // Verifica si userData es un array y obtiene el primer elemento
+    const user = Array.isArray(userData) ? userData[0] : null;
 
     // Estados para el nombre y para almacenar el valor original
-    const [fullName, setFullName] = useState("")
-    const [originalFullName, setOriginalFullName] = useState("")
-    const [isEditingName, setIsEditingName] = useState(false)
+    const [fullName, setFullName] = useState("");
+    const [originalFullName, setOriginalFullName] = useState("");
+    const [isEditingName, setIsEditingName] = useState(false);
 
     // Actualiza los estados cuando se obtiene la información del usuario
     useEffect(() => {
         if (user) {
-            setFullName(user.full_name)
-            setOriginalFullName(user.full_name)
+            setFullName(user.full_name);
+            setOriginalFullName(user.full_name);
         }
-    }, [user])
+    }, [user]);
 
     const handleSave = () => {
         // Si el campo fullName quedó vacío, se conserva el valor original
-        const newFullName = fullName.trim() === "" ? originalFullName : fullName
+        const newFullName = fullName.trim() === "" ? originalFullName : fullName;
+
         // Solo se envía el campo si se modificó
         if (newFullName === originalFullName) {
-            setIsEditingName(false)
-            return
+            setIsEditingName(false);
+            return;
         }
-        const payload = { full_name: newFullName }
+
+        const payload = { full_name: newFullName };
 
         updateUserMutation.mutate(payload, {
             onSuccess: () => {
                 // Actualiza el valor original y sale del modo edición
-                setOriginalFullName(newFullName)
-                setIsEditingName(false)
+                setOriginalFullName(newFullName);
+                setIsEditingName(false);
             },
             onError: () => {
                 // Aquí se puede manejar el error, por ejemplo, mostrando una notificación
             },
-        })
-    }
+        });
+    };
 
     if (isLoading) {
-        return <div>Cargando información del usuario...</div>
+        return <div>Cargando información del usuario...</div>;
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>
+        return <div>Error: {error.message}</div>;
     }
 
     if (!user) {
-        return <div>No se encontró información para este usuario.</div>
+        return <div>No se encontró información para este usuario.</div>;
     }
 
     return (
@@ -76,51 +83,32 @@ const UserProfilePage = () => {
                     <div className="rounded bg-white p-4 shadow">
                         {/* Se muestran los datos del usuario */}
                         <div className="mb-4">
-                            <label className="mb-1 block font-semibold">
-                                ID:
-                            </label>
+                            <label className="mb-1 block font-semibold">ID:</label>
                             <span>{user.id}</span>
                         </div>
                         <div className="mb-4">
-                            <label className="mb-1 block font-semibold">
-                                Email:
-                            </label>
+                            <label className="mb-1 block font-semibold">Email:</label>
                             <span>{user.email}</span>
                         </div>
                         <div className="mb-4">
-                            <label className="mb-1 block font-semibold">
-                                Role:
-                            </label>
+                            <label className="mb-1 block font-semibold">Role:</label>
                             <span>{user.role}</span>
                         </div>
                         <div className="mb-4">
-                            <label className="mb-1 block font-semibold">
-                                Fecha de Creación:
-                            </label>
-                            <span>
-                                {new Date(user.created_at).toLocaleString()}
-                            </span>
+                            <label className="mb-1 block font-semibold">Fecha de Creación:</label>
+                            <span>{new Date(user.created_at).toLocaleString()}</span>
                         </div>
                         <div className="mb-4">
-                            <label className="mb-1 block font-semibold">
-                                Nombre Completo:
-                            </label>
+                            <label className="mb-1 block font-semibold">Nombre Completo:</label>
                             {isEditingName ? (
                                 <div className="flex items-center">
                                     <input
                                         type="text"
                                         value={fullName}
-                                        onChange={(e) =>
-                                            setFullName(e.target.value)
-                                        }
+                                        onChange={(e) => setFullName(e.target.value)}
                                         className="w-full rounded border p-2"
                                     />
-                                    <Button
-                                        onClick={handleSave}
-                                        className="ml-2"
-                                    >
-                                        Guardar
-                                    </Button>
+                                    <Button onClick={handleSave} className="ml-2">Guardar</Button>
                                 </div>
                             ) : (
                                 <div className="flex items-center">
@@ -139,7 +127,7 @@ const UserProfilePage = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default UserProfilePage
+export default UserProfilePage;
