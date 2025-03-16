@@ -11,7 +11,7 @@ import {
     getUserById,
     deleteUser,
 } from "./usersAlt"
-import useAuthStore from "../../../store/authStore"
+// import useAuthStore from "../../../store/authStore"
 
 /**
  * Claves de consulta para usuarios.
@@ -25,29 +25,26 @@ export const userQueryKeys = {
  * Hook para obtener usuarios.
  * Si se proporciona un userId, retorna el usuario correspondiente;
  * de lo contrario, retorna la lista completa.
- * Solo usuarios con rol "admin" pueden acceder a esta información.
  *
  * @param {string|null} userId - ID del usuario a obtener (opcional).
  */
 export const useGetUsers = (userId = null) => {
-    const role = useAuthStore((state) => state.role)
 
     return useQuery({
         queryKey: userId
             ? userQueryKeys.getById(userId)
             : userQueryKeys.getAll(),
         queryFn: async () => {
-            if (role !== "admin") {
-                throw new Error(
-                    "No tienes permisos para obtener la información del usuario."
-                )
+            // Asegúrate de que userId sea válido antes de llamar a getUserById
+            if (userId) {
+                return await getUserById(userId);
+            } else {
+                return await getUsers();
             }
-            return userId ? await getUserById(userId) : await getUsers()
         },
-        // La consulta se ejecuta solo si el usuario es admin y, en caso de solicitar un solo usuario, se tenga un ID válido
-        enabled: role === "admin" && (userId ? Boolean(userId) : true),
-    })
-}
+
+    });
+};
 
 /**
  * Hook para crear un nuevo usuario.

@@ -139,7 +139,7 @@ const Sidebar = () => {
                         <h1 className="text-xl font-semibold text-brand-custom-green">
                             Administrador de Tareas
                         </h1>
-                        {/* <UserDetails /> */}
+                        <UserDetails />
                     </div>
                     <div className="flex flex-col gap-2 p-2">
                         <SidebarButton to="/history">

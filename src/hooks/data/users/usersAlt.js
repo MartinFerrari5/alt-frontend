@@ -15,7 +15,6 @@ import { api } from "../../../lib/axios"
 export const createUser = async (payload) => {
     try {
         const { data } = await api.post("/users", payload)
-        console.log("Usuario creado:", data)
         return data
     } catch (error) {
         console.error("Error al crear usuario:", error)
@@ -38,7 +37,6 @@ export const createUser = async (payload) => {
 export const resetPassword = async (payload) => {
     try {
         const { data } = await api.post("/users/newpassword", payload)
-        console.log("Correo de reseteo enviado:", data)
         return data
     } catch (error) {
         console.error("Error al enviar correo de reseteo:", error)
@@ -124,6 +122,7 @@ export const getUsers = async () => {
  * @throws {Error} - Si ocurre un error al obtener el usuario.
  */
 export const getUserById = async (userId) => {
+    console.log("-userId: ", userId)
     try {
         const { data } = await api.get(`/users/user?user_id=${userId}`)
         console.log("Usuario obtenido: ", data)
