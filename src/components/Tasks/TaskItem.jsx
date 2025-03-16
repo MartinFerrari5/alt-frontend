@@ -2,11 +2,9 @@
 import PropTypes from "prop-types"
 import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
-import { useLocation, useNavigate } from "react-router-dom" // Se importa useNavigate
+import { useLocation, useNavigate } from "react-router-dom"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { FaTrash } from "react-icons/fa"
-// Si deseas eliminar el botón de editar, no es necesario importar FaEdit
-// import { FaEdit } from "react-icons/fa"
 
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
@@ -14,7 +12,6 @@ import { useTasks } from "../../hooks/data/task/useTasks"
 import useAuthStore from "../../store/authStore"
 import Button from "../Button"
 
-// Función auxiliar para formatear fechas
 const formatDate = (dateString) => {
     if (!dateString) return "Fecha no disponible"
     const parsedDate = new Date(dateString)
@@ -29,30 +26,25 @@ const formatDate = (dateString) => {
     }).format(parsedDate)
 }
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
     const role = useAuthStore((state) => state.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
-    const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
-        deleteTaskMutation
-    const { mutate: updateTask, isLoading: updateTaskIsLoading } =
-        updateTaskMutation
+    const { mutate: deleteTask, isLoading: deleteTaskIsLoading } = deleteTaskMutation
+    const { mutate: updateTask, isLoading: updateTaskIsLoading } = updateTaskMutation
 
     const [showConfirm, setShowConfirm] = useState(false)
     const [showStatusModal, setShowStatusModal] = useState(false)
     const [newStatus, setNewStatus] = useState(task.status)
 
-    const navigate = useNavigate() // Se crea el hook de navegación
+    const navigate = useNavigate()
     const location = useLocation()
 
-    // Actualiza el estado inicial del modal al cambiar la tarea
     useEffect(() => {
         setNewStatus(task.status)
     }, [task.status])
 
-    // Muestra el modal de eliminación
     const handleDeleteClick = useCallback(() => setShowConfirm(true), [])
 
-    // Función para confirmar la eliminación
     const confirmDelete = useCallback(() => {
         deleteTask(task.id, {
             onSuccess: () => {
@@ -66,18 +58,15 @@ const TaskItem = ({ task }) => {
         })
     }, [deleteTask, task.id])
 
-    // Abre el modal de actualización de estado
     const openStatusModal = useCallback(() => {
-        setNewStatus(task.status) // Reinicia el valor al estado actual
+        setNewStatus(task.status)
         setShowStatusModal(true)
     }, [task.status])
 
-    // Cierra el modal de actualización de estado
     const closeStatusModal = useCallback(() => {
         setShowStatusModal(false)
     }, [])
 
-    // Maneja la confirmación de la actualización de estado
     const handleStatusConfirm = useCallback(() => {
         if (!task.task_date || isNaN(new Date(task.task_date).getTime())) {
             toast.error("Fecha de tarea inválida. Verifica los datos.")
@@ -92,20 +81,16 @@ const TaskItem = ({ task }) => {
                 },
                 onError: (error) => {
                     console.error("🔴 Error al actualizar tarea:", error)
-                    toast.error(
-                        "Error al actualizar la tarea. Inténtalo de nuevo."
-                    )
+                    toast.error("Error al actualizar la tarea. Inténtalo de nuevo.")
                 },
             }
         )
     }, [updateTask, task, newStatus])
 
-    // Navega al detalle de la tarea cuando se hace click en la fila
     const handleRowClick = () => {
         navigate(`/task/${task.id}`)
     }
 
-    // Previene la propagación del evento para que no se dispare la navegación
     const handleDeleteButtonClick = (e) => {
         e.stopPropagation()
         handleDeleteClick()
@@ -116,12 +101,25 @@ const TaskItem = ({ task }) => {
         openStatusModal()
     }
 
+
     return (
         <>
             <tr
                 onClick={handleRowClick}
                 className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
             >
+{showCheckbox && (
+    <td className="px-4 py-5">
+        <input
+            type="checkbox"
+            checked={isSelected}
+            onClick={(e) => {
+                e.stopPropagation();
+                onSelectTask(task.id);
+            }}
+        />
+    </td>
+)}
                 {role === "admin" && (
                     <td className="px-4 py-5">
                         {task.full_name || "Sin nombre"}
@@ -154,12 +152,7 @@ const TaskItem = ({ task }) => {
                             <FaTrash className="h-5 w-5" />
                         )}
                     </Button>
-                    {/*
-            Se eliminó el botón de editar para que la navegación se realice al presionar el item completo.
-            Si se requiere mantenerlo, habría que también aplicar e.stopPropagation() en su onClick.
-          */}
                     {role === "admin" ? (
-                        // Se envuelve el StatusIndicator en un div para disparar el modal y se previene la propagación.
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
                                 status={task.status}
@@ -249,6 +242,15 @@ TaskItem.propTypes = {
             .isRequired,
         status: PropTypes.number.isRequired,
     }).isRequired,
+    showCheckbox: PropTypes.bool,
+    isSelected: PropTypes.bool,
+    onSelectTask: PropTypes.func,
+}
+
+TaskItem.defaultProps = {
+    showCheckbox: false,
+    isSelected: false,
+    onSelectTask: () => {},
 }
 
 export default TaskItem

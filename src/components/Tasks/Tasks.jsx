@@ -1,6 +1,6 @@
 // src/components/Tasks/Tasks.jsx
-import { useMemo } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useMemo, useState } from "react"
+import { useSearchParams, useLocation } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import Header from "../Header"
 import TaskItem from "./TaskItem"
@@ -10,7 +10,11 @@ import useAuthStore from "../../store/authStore"
 const Tasks = () => {
     const { useFilterTasks } = useTasks()
     const [searchParams, setSearchParams] = useSearchParams()
+    const location = useLocation()
     const role = useAuthStore((state) => state.role)
+
+    // Solo mostramos el sistema de selección en la ruta "/"
+    const isInicio = location.pathname === "/"
 
     // Obtención de filtros desde la URL
     const filters = useMemo(
@@ -24,7 +28,7 @@ const Tasks = () => {
         [searchParams]
     )
 
-    const { data: filteredTasks, isLoading, isError } = useFilterTasks(filters)
+    const { data: filteredTasks = [], isLoading, isError } = useFilterTasks(filters)
 
     // Actualiza la URL con los datos del filtro
     const handleFilter = (filterData) => {
@@ -32,7 +36,37 @@ const Tasks = () => {
         setSearchParams({ fullname, company, project, status, date })
     }
 
-    // Función para renderizar la tabla de tareas
+    // Estado para almacenar los IDs de las tareas seleccionadas
+    const [selectedTasks, setSelectedTasks] = useState([])
+    const [allSelected, setAllSelected] = useState(false)
+
+    // Selección/deselección global
+    const handleSelectAll = () => {
+        if (allSelected) {
+            setSelectedTasks([])
+            setAllSelected(false)
+        } else {
+            const allTaskIds = filteredTasks.map(task => task.id)
+            setSelectedTasks(allTaskIds)
+            setAllSelected(true)
+        }
+    }
+
+    // Selección individual
+    const handleSelectTask = (taskId) => {
+        if (selectedTasks.includes(taskId)) {
+            setSelectedTasks(selectedTasks.filter(id => id !== taskId))
+        } else {
+            setSelectedTasks([...selectedTasks, taskId])
+        }
+    }
+
+    // Filtra los items seleccionados de la lista de tareas
+    const selectedTaskItems = filteredTasks.filter(task =>
+        selectedTasks.includes(task.id)
+    )
+
+    // Renderiza la tabla con encabezados y filas
     const renderTable = () => (
         <div className="overflow-x-auto">
             <div className="min-w-full">
@@ -40,6 +74,15 @@ const Tasks = () => {
                     <table className="w-full text-left text-sm text-gray-500">
                         <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
                             <tr>
+                                {isInicio && (
+                                    <th className="px-4 py-3">
+                                        <input
+                                            type="checkbox"
+                                            checked={allSelected}
+                                            onChange={handleSelectAll}
+                                        />
+                                    </th>
+                                )}
                                 {role === "admin" && (
                                     <th className="px-4 py-3">Nombre</th>
                                 )}
@@ -56,7 +99,13 @@ const Tasks = () => {
                         </thead>
                         <tbody>
                             {filteredTasks.map((task) => (
-                                <TaskItem key={task.id} task={task} />
+                                <TaskItem
+                                    key={task.id}
+                                    task={task}
+                                    showCheckbox={isInicio}
+                                    isSelected={selectedTasks.includes(task.id)}
+                                    onSelectTask={handleSelectTask}
+                                />
                             ))}
                         </tbody>
                     </table>
@@ -65,7 +114,7 @@ const Tasks = () => {
         </div>
     )
 
-    // Función para gestionar los distintos estados de carga/error/vacío
+    // Manejo de estados de carga, error o sin datos
     const renderContent = () => {
         if (isLoading)
             return (
@@ -90,10 +139,11 @@ const Tasks = () => {
 
     return (
         <div className="space-y-6 overflow-hidden px-8 py-9">
+            {/* Se pasa al Header solo los items seleccionados */}
             <Header
                 subtitle="Mis Tareas"
                 title="Mis Tareas"
-                tasks={filteredTasks}
+                tasks={selectedTaskItems}
             />
             <div className="space-y-3 rounded-xl bg-white p-6">
                 <TaskFilter onFilter={handleFilter} />
