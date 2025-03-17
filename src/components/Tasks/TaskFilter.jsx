@@ -113,11 +113,7 @@ const TaskFilter = ({ onFilter }) => {
                     <option value="">Seleccionar estado</option>
                     <option value="0">progreso</option>
                     <option value="1">finalizado</option>
-                    {
-                        role === "admin" && (
-                            <option value="2">facturado</option>
-                        )
-                    }
+                    {role === "admin" && <option value="2">facturado</option>}
                 </select>
             )}
             <input

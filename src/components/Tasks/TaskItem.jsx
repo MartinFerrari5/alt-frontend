@@ -29,8 +29,10 @@ const formatDate = (dateString) => {
 const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
     const role = useAuthStore((state) => state.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
-    const { mutate: deleteTask, isLoading: deleteTaskIsLoading } = deleteTaskMutation
-    const { mutate: updateTask, isLoading: updateTaskIsLoading } = updateTaskMutation
+    const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
+        deleteTaskMutation
+    const { mutate: updateTask, isLoading: updateTaskIsLoading } =
+        updateTaskMutation
 
     const [showConfirm, setShowConfirm] = useState(false)
     const [showStatusModal, setShowStatusModal] = useState(false)
@@ -81,7 +83,9 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
                 },
                 onError: (error) => {
                     console.error("🔴 Error al actualizar tarea:", error)
-                    toast.error("Error al actualizar la tarea. Inténtalo de nuevo.")
+                    toast.error(
+                        "Error al actualizar la tarea. Inténtalo de nuevo."
+                    )
                 },
             }
         )
@@ -101,25 +105,24 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
         openStatusModal()
     }
 
-
     return (
         <>
             <tr
                 onClick={handleRowClick}
                 className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
             >
-{showCheckbox && (
-    <td className="px-4 py-5">
-        <input
-            type="checkbox"
-            checked={isSelected}
-            onClick={(e) => {
-                e.stopPropagation();
-                onSelectTask(task.id);
-            }}
-        />
-    </td>
-)}
+                {showCheckbox && (
+                    <td className="px-4 py-5">
+                        <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onSelectTask(task.id)
+                            }}
+                        />
+                    </td>
+                )}
                 {role === "admin" && (
                     <td className="px-4 py-5">
                         {task.full_name || "Sin nombre"}

@@ -29,7 +29,6 @@ export const userQueryKeys = {
  * @param {string|null} userId - ID del usuario a obtener (opcional).
  */
 export const useGetUsers = (userId = null) => {
-
     return useQuery({
         queryKey: userId
             ? userQueryKeys.getById(userId)
@@ -37,14 +36,13 @@ export const useGetUsers = (userId = null) => {
         queryFn: async () => {
             // Asegúrate de que userId sea válido antes de llamar a getUserById
             if (userId) {
-                return await getUserById(userId);
+                return await getUserById(userId)
             } else {
-                return await getUsers();
+                return await getUsers()
             }
         },
-
-    });
-};
+    })
+}
 
 /**
  * Hook para crear un nuevo usuario.

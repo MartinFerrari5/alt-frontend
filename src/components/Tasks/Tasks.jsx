@@ -28,7 +28,11 @@ const Tasks = () => {
         [searchParams]
     )
 
-    const { data: filteredTasks = [], isLoading, isError } = useFilterTasks(filters)
+    const {
+        data: filteredTasks = [],
+        isLoading,
+        isError,
+    } = useFilterTasks(filters)
 
     // Actualiza la URL con los datos del filtro
     const handleFilter = (filterData) => {
@@ -46,7 +50,7 @@ const Tasks = () => {
             setSelectedTasks([])
             setAllSelected(false)
         } else {
-            const allTaskIds = filteredTasks.map(task => task.id)
+            const allTaskIds = filteredTasks.map((task) => task.id)
             setSelectedTasks(allTaskIds)
             setAllSelected(true)
         }
@@ -55,14 +59,14 @@ const Tasks = () => {
     // Selección individual
     const handleSelectTask = (taskId) => {
         if (selectedTasks.includes(taskId)) {
-            setSelectedTasks(selectedTasks.filter(id => id !== taskId))
+            setSelectedTasks(selectedTasks.filter((id) => id !== taskId))
         } else {
             setSelectedTasks([...selectedTasks, taskId])
         }
     }
 
     // Filtra los items seleccionados de la lista de tareas
-    const selectedTaskItems = filteredTasks.filter(task =>
+    const selectedTaskItems = filteredTasks.filter((task) =>
         selectedTasks.includes(task.id)
     )
 

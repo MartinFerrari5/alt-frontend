@@ -103,7 +103,7 @@ const UserDetails = () => {
     if (!userId) return null
     return (
         <NavLink
-            to={`/user/${userId}`}
+            to={`/user/user-profile`}
             className="flex items-center rounded-full transition-colors hover:bg-brand-custom-green"
         >
             <img
