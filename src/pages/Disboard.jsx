@@ -25,7 +25,7 @@ const TABLE_HEADERS = [
 
 const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
-        const { pathname: currentPath } = useLocation()
+    const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.role)
 
     // Extraer filtros desde la URL y normalizar el status

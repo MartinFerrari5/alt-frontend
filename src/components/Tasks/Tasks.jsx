@@ -150,10 +150,17 @@ const Tasks = () => {
                 title="Mis Tareas"
                 tasks={selectedTaskItems}
             />
-                <DashboardCards filters={handleFilter} currentPath={currentPath} role={role} />
+            <DashboardCards
+                filters={handleFilter}
+                currentPath={currentPath}
+                role={role}
+            />
             <div className="space-y-3 rounded-xl bg-white p-1">
                 <div className="min-w-full py-2">
-                    <TaskFilter onFilter={handleFilter} currentPath={currentPath} />
+                    <TaskFilter
+                        onFilter={handleFilter}
+                        currentPath={currentPath}
+                    />
                     {renderContent()}
                 </div>
             </div>
