@@ -6,15 +6,16 @@ import Header from "../Header"
 import TaskItem from "./TaskItem"
 import TaskFilter from "./TaskFilter"
 import useAuthStore from "../../store/authStore"
+import DashboardCards from "../DashboardCards"
 
 const Tasks = () => {
     const { useFilterTasks } = useTasks()
     const [searchParams, setSearchParams] = useSearchParams()
-    const location = useLocation()
+    const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.role)
 
     // Solo mostramos el sistema de selección en la ruta "/"
-    const isInicio = location.pathname === "/"
+    const isInicio = currentPath === "/"
 
     // Obtención de filtros desde la URL
     const filters = useMemo(
@@ -149,9 +150,12 @@ const Tasks = () => {
                 title="Mis Tareas"
                 tasks={selectedTaskItems}
             />
-            <div className="space-y-3 rounded-xl bg-white p-6">
-                <TaskFilter onFilter={handleFilter} />
-                {renderContent()}
+                <DashboardCards filters={handleFilter} currentPath={currentPath} role={role} />
+            <div className="space-y-3 rounded-xl bg-white p-1">
+                <div className="min-w-full py-2">
+                    <TaskFilter onFilter={handleFilter} currentPath={currentPath} />
+                    {renderContent()}
+                </div>
             </div>
         </div>
     )

@@ -1,5 +1,6 @@
+// /src/pages/Disboard.jsx
 import { useMemo, useCallback } from "react"
-import { useSearchParams } from "react-router-dom"
+import { useLocation, useSearchParams } from "react-router-dom"
 import DashboardCards from "../components/DashboardCards"
 import Header from "../components/Header"
 import Sidebar from "../components/Sidebar"
@@ -24,6 +25,7 @@ const TABLE_HEADERS = [
 
 const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
+        const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.role)
 
     // Extraer filtros desde la URL y normalizar el status
@@ -165,7 +167,7 @@ const DisboardPage = () => {
             <Sidebar />
             <div className="w-full space-y-6 px-8 py-10 lg:ml-72">
                 <Header subtitle="Panel" title="Panel" tasks={validTasks} />
-                <DashboardCards filters={filters} />
+                <DashboardCards filters={filters} currentPath={currentPath} />
                 <div className="space-y-3 rounded-xl bg-white p-1">
                     <div className="overflow-x-auto">
                         <div className="min-w-full py-2">

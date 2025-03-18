@@ -1,16 +1,14 @@
 // src/components/Tasks/TaskFilter.jsx
 import { useEffect, useCallback } from "react"
-import { useSearchParams, useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import useAuthStore from "../../store/authStore"
 import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
 
-const TaskFilter = ({ onFilter }) => {
+const TaskFilter = ({ onFilter, currentPath }) => {
     const role = useAuthStore((state) => state.role)
     const [searchParams] = useSearchParams()
-    const { pathname: currentPath } = useLocation() // Utilizamos useLocation
-
     const {
         register,
         handleSubmit,
