@@ -1,4 +1,4 @@
-// / src\components\Dropdown\Dropdown.jsx
+// /src/components/Dropdown/Dropdown.jsx
 import PropTypes from "prop-types"
 import { useEffect } from "react"
 import { toast } from "react-toastify"
@@ -13,6 +13,7 @@ const Dropdown = ({
     items,
     loadingText,
     errorText,
+    useIdAsValue = false, // Nueva prop opcional
 }) => {
     useEffect(() => {
         if (isError) {
@@ -38,7 +39,10 @@ const Dropdown = ({
                     <option className="text-red-500">{errorText}</option>
                 ) : (
                     items.map((item) => (
-                        <option key={item.id} value={item.option}>
+                        <option
+                            key={item.id}
+                            value={useIdAsValue ? item.id : item.option}
+                        >
                             {item.option}
                         </option>
                     ))
@@ -60,11 +64,12 @@ Dropdown.propTypes = {
         PropTypes.shape({
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
                 .isRequired,
-            option: PropTypes.string.isRequired, // Se corrige para que coincida con el uso en el map
+            option: PropTypes.string.isRequired,
         })
     ).isRequired,
     loadingText: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
+    useIdAsValue: PropTypes.bool, // Declaración de la nueva prop
 }
 
 export default Dropdown
