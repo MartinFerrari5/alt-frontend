@@ -5,7 +5,7 @@ import { FaEdit, FaTrash } from "react-icons/fa"
 const TableItemView = ({ id, name, onEditClick, onDeleteClick }) => {
     return (
         <tr className="border-b bg-white transition-colors hover:bg-gray-50">
-            <td className="px-6 py-4 font-medium text-gray-900">{id}</td>
+            {/* <td className="px-6 py-4 font-medium text-gray-900">{id}</td> */}
             <td className="px-6 py-4">{name}</td>
             <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end space-x-2">

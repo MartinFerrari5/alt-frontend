@@ -151,7 +151,7 @@ const Tasks = () => {
                 tasks={selectedTaskItems}
             />
             <DashboardCards
-                filters={handleFilter}
+                filters={filters}
                 currentPath={currentPath}
                 role={role}
             />

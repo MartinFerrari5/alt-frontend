@@ -12,7 +12,7 @@ const TableItemEdit = ({
 }) => {
     return (
         <tr className="border-b bg-white transition-colors hover:bg-gray-50">
-            <td className="px-6 py-4 font-medium text-gray-900">{id}</td>
+            {/* <td className="px-6 py-4 font-medium text-gray-900">{id}</td> */}
             <td className="px-6 py-4">
                 <input
                     type="text"

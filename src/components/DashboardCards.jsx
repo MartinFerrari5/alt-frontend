@@ -4,6 +4,7 @@ import DashboardCard from "./DashboardCard"
 import { useGetKpiReport } from "../hooks/data/reportes/use-kpi-hooks"
 
 const DashboardCards = ({ filters, currentPath, role }) => {
+    console.log("filters", filters)
     // Consultas a la API para cada grupo, pasando los filtros recibidos por props
     const {
         data: statusKpiData,

@@ -248,7 +248,7 @@ const DataTable = ({
                 <table className="w-full text-left text-sm text-gray-500">
                     <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-600">
                         <tr>
-                            <th className="px-6 py-3">Id</th>
+                            {/* <th className="px-6 py-3">Id</th> */}
                             <th className="px-6 py-3">{title}</th>
                             <th className="px-6 py-3 text-right">Acciones</th>
                         </tr>

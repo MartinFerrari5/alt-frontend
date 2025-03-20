@@ -6,8 +6,14 @@ import { api } from "../../../lib/axios"
  * @returns {Promise<Object>} Datos de las opciones.
  */
 export const getOptions = async (table) => {
-    const { data } = await api.get(`/options?table=${table}`)
-    return data
+    try {
+        const { data } = await api.get("/options", { params: { table } })
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error obteniendo opciones para la tabla ${table}: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -17,8 +23,12 @@ export const getOptions = async (table) => {
  * @returns {Promise<any>} La opción creada.
  */
 export const addOption = async (table, option) => {
-    const { data } = await api.post("/options", { table, option })
-    return data.option
+    try {
+        const { data } = await api.post("/options", { table, option })
+        return data.option
+    } catch (error) {
+        throw new Error(`Error creando opción en ${table}: ${error.message}`)
+    }
 }
 
 /**
@@ -29,11 +39,18 @@ export const addOption = async (table, option) => {
  * @returns {Promise<any>} La opción actualizada.
  */
 export const updateOption = async (table, id, updatedData) => {
-    const { data } = await api.put(`/options?options_id=${id}`, {
-        table,
-        option: updatedData,
-    })
-    return data.option
+    try {
+        const { data } = await api.put(`/options`, {
+            table,
+            option: updatedData,
+            options_id: id,
+        })
+        return data.option
+    } catch (error) {
+        throw new Error(
+            `Error actualizando opción ${id} en ${table}: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -43,10 +60,16 @@ export const updateOption = async (table, id, updatedData) => {
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteOption = async (table, id) => {
-    const { data } = await api.delete(`/options?options_id=${id}`, {
-        data: { table },
-    })
-    return data
+    try {
+        const { data } = await api.delete(`/options`, {
+            data: { table, options_id: id },
+        })
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error eliminando opción ${id} en ${table}: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -55,10 +78,16 @@ export const deleteOption = async (table, id) => {
  * @returns {Promise<Object>} Opciones relacionadas.
  */
 export const getRelatedOptions = async (user_id) => {
-    const { data } = await api.get(`/options/relatedOptions`, {
-        params: { user_id },
-    })
-    return data
+    try {
+        const { data } = await api.get(`/options/relatedOptions`, {
+            params: { user_id },
+        })
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error obteniendo opciones relacionadas para el usuario ${user_id}: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -67,10 +96,16 @@ export const getRelatedOptions = async (user_id) => {
  * @returns {Promise<Object>} Opciones no relacionadas.
  */
 export const getNotRelatedOptions = async (user_id) => {
-    const { data } = await api.get(`/options/notRelatedOptions`, {
-        params: { user_id },
-    })
-    return data
+    try {
+        const { data } = await api.get(`/options/notRelatedOptions`, {
+            params: { user_id },
+        })
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error obteniendo opciones no relacionadas para el usuario ${user_id}: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -79,8 +114,14 @@ export const getNotRelatedOptions = async (user_id) => {
  * @returns {Promise<Object>} Resultado de la creación.
  */
 export const addCompanyUserRelation = async (relationData) => {
-    const { data } = await api.post(`/companyUser`, relationData)
-    return data
+    try {
+        const { data } = await api.post(`/companyUser`, relationData)
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error creando relación compañía-usuario: ${error.message}`
+        )
+    }
 }
 
 /**
@@ -89,6 +130,12 @@ export const addCompanyUserRelation = async (relationData) => {
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteCompanyUserRelation = async (ids) => {
-    const { data } = await api.delete(`/companyUser`, { data: { ids } })
-    return data
+    try {
+        const { data } = await api.delete(`/companyUser`, { data: { ids } })
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error eliminando relación compañía-usuario: ${error.message}`
+        )
+    }
 }
