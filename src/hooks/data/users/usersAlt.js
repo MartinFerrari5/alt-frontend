@@ -104,7 +104,6 @@ export const updateUser = async (user_id, payload) => {
 export const getUsers = async () => {
     try {
         const { data } = await api.get("/users")
-        console.log("Usuarios obtenidos:", data)
         // Se asume que la respuesta retorna un arreglo en data.users o directamente data
         return data.users || data
     } catch (error) {
@@ -122,10 +121,8 @@ export const getUsers = async () => {
  * @throws {Error} - Si ocurre un error al obtener el usuario.
  */
 export const getUserById = async (userId) => {
-    console.log("-userId: ", userId)
     try {
         const { data } = await api.get(`/users/user?user_id=${userId}`)
-        console.log("Usuario obtenido: ", data)
         return data.user || data
     } catch (error) {
         console.error("Error al obtener el usuario:", error)

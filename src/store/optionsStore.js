@@ -1,3 +1,4 @@
+// src/store/optionsStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import {
@@ -5,13 +6,11 @@ import {
     addOption as apiAddOption,
     updateOption as apiUpdateOption,
     deleteOption as apiDeleteOption,
+    addCompanyUserRelation as apiAddCompanyUserRelation,
+    deleteCompanyUserRelation as apiDeleteCompanyUserRelation,
     getRelatedOptions,
     getNotRelatedOptions,
 } from "../hooks/data/options/options"
-import {
-    createCompanyUserRelation as apiAddCompanyUserRelation,
-    deleteCompanyUserRelation as apiDeleteCompanyUserRelation,
-} from "../hooks/data/options/companyUserRelations"
 
 const initialState = {
     companies: [],
@@ -19,10 +18,7 @@ const initialState = {
     projects: [],
     typesTable: [],
     relatedOptions: [],
-    notRelatedOptions: {
-        companies: [],
-        projects: [],
-    },
+    notRelatedOptions: { companies: [], projects: [] },
 }
 
 export const useOptionsStore = create(
@@ -30,10 +26,7 @@ export const useOptionsStore = create(
         (set, get) => ({
             ...initialState,
 
-            /**
-             * Obtiene las opciones para una tabla específica y actualiza el estado.
-             * @param {string} table - Nombre de la tabla.
-             */
+            // Obtiene opciones de una tabla y actualiza el estado
             fetchOptions: async (table) => {
                 try {
                     const data = await getOptions(table)
@@ -43,11 +36,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Agrega una nueva opción y actualiza el estado.
-             * @param {string} table - Nombre de la tabla.
-             * @param {any} option - Opción a agregar.
-             */
+            // Agrega una opción y la sincroniza en el estado
             addOption: async (table, option) => {
                 try {
                     const newOption = await apiAddOption(table, option)
@@ -61,12 +50,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Actualiza una opción existente y actualiza el estado.
-             * @param {string} table - Nombre de la tabla.
-             * @param {number|string} id - ID de la opción.
-             * @param {Object} updatedData - Datos actualizados.
-             */
+            // Actualiza una opción y sincroniza el estado
             updateOption: async (table, id, updatedData) => {
                 try {
                     const updatedOption = await apiUpdateOption(
@@ -84,11 +68,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Elimina una opción y actualiza el estado.
-             * @param {string} table - Nombre de la tabla.
-             * @param {number|string} id - ID de la opción.
-             */
+            // Elimina una opción y sincroniza el estado
             deleteOption: async (table, id) => {
                 try {
                     await apiDeleteOption(table, id)
@@ -100,17 +80,13 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Limpia todas las opciones almacenadas en el estado.
-             */
+            // Reinicia todas las opciones
             clearOptions: () => set(initialState),
 
-            /**
-             * Actualiza las relaciones de opciones (relacionadas y no relacionadas) para un usuario.
-             * @param {number|string} user_id - ID del usuario.
-             */
+            // Actualiza (sincroniza) las relaciones de opciones para un usuario
             updateRelations: async (user_id) => {
                 try {
+                    // Se hacen ambas peticiones en paralelo
                     const [relatedOptions, notRelatedOptions] =
                         await Promise.all([
                             getRelatedOptions(user_id),
@@ -125,10 +101,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Obtiene las opciones relacionadas para un usuario y actualiza el estado.
-             * @param {number|string} user_id - ID del usuario.
-             */
+            // Actualiza solo las opciones relacionadas para un usuario
             fetchRelatedOptions: async (user_id) => {
                 try {
                     const relatedOptions = await getRelatedOptions(user_id)
@@ -141,10 +114,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Obtiene las opciones no relacionadas para un usuario y actualiza el estado.
-             * @param {number|string} user_id - ID del usuario.
-             */
+            // Actualiza solo las opciones no relacionadas para un usuario
             fetchNotRelatedOptions: async (user_id) => {
                 try {
                     const notRelatedOptions =
@@ -158,11 +128,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Crea la relación entre usuario, compañía y proyecto y actualiza las relaciones.
-             * @param {Object} relationData - Datos de la relación.
-             * @param {number|string} user_id - ID del usuario.
-             */
+            // Crea la relación entre usuario, compañía y proyecto y actualiza las relaciones
             addCompanyUserRelation: async (relationData, user_id) => {
                 try {
                     await apiAddCompanyUserRelation(relationData)
@@ -172,11 +138,7 @@ export const useOptionsStore = create(
                 }
             },
 
-            /**
-             * Elimina la relación entre usuario, compañía y proyecto y actualiza las relaciones.
-             * @param {Array} ids - IDs de las relaciones a eliminar.
-             * @param {number|string} user_id - ID del usuario.
-             */
+            // Elimina la(s) relación(es) y actualiza las relaciones
             deleteCompanyUserRelation: async (ids, user_id) => {
                 try {
                     await apiDeleteCompanyUserRelation(ids)

@@ -9,7 +9,7 @@ const RelationSection = ({
     availableItems,
     displayProp,
     onAddRelation,
-    onDeleteRelation, // Si se permite eliminar la relación
+    onDeleteRelation,
 }) => {
     const [showModal, setShowModal] = useState(false)
 

@@ -1,34 +1,52 @@
 // src/pages/admin/UsersDetail.jsx
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import Sidebar from "../../components/Sidebar"
 import Button from "../../components/Button"
 import UserEditForm from "../../components/admin/users/UserEditForm"
 import RelationSection from "../../components/admin/users/RelationSection"
 import { useGetUsers, useUpdateUser } from "../../hooks/data/users/useUserHooks"
-import { useOptionsStore } from "../../store/optionsStore"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { schema } from "../../util/validationSchema"
+import {
+    addCompanyUserRelation,
+    deleteCompanyUserRelation,
+    getOptions,
+    getRelatedOptions,
+    getNotRelatedOptions,
+} from "../../hooks/data/options/options"
 
 const UsersDetail = () => {
-    // Obtención de datos y funciones del store
-    const {
-        companies_table,
-        projects_table,
-        fetchOptions,
-        relatedOptions,
-        updateRelations,
-        addCompanyUserRelation,
-        removeCompanyUserRelation, // Función para eliminar (ya debe estar implementada en el store)
-    } = useOptionsStore()
+    const { id } = useParams()
+    const navigate = useNavigate()
 
-    // Cargar opciones de compañías y proyectos disponibles
+    // Estados para opciones y relaciones
+    const [companiesTable, setCompaniesTable] = useState([])
+    const [projectsTable, setProjectsTable] = useState([])
+    const [relatedOptions, setRelatedOptions] = useState([])
+    // Estado para opciones no relacionadas
+    const [notRelatedOptions, setNotRelatedOptions] = useState({
+        companies: [],
+        projects: [],
+    })
+
+    // Cargar opciones disponibles para compañías y proyectos
     useEffect(() => {
-        fetchOptions("companies_table")
-        fetchOptions("projects_table")
-    }, [fetchOptions])
+        const fetchOptions = async () => {
+            try {
+                const companiesData = await getOptions("companies_table")
+                const projectsData = await getOptions("projects_table")
+                setCompaniesTable(companiesData.options || [])
+                setProjectsTable(projectsData.options || [])
+            } catch (error) {
+                console.error("Error al obtener opciones:", error)
+            }
+        }
+        fetchOptions()
+    }, [])
 
+    // Configuración del formulario (solo para reiniciar valores)
     const { reset, watch } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -47,64 +65,114 @@ const UsersDetail = () => {
     useEffect(() => {
         reset({
             ...watch(),
-            company:
-                companies_table && companies_table.length > 0
-                    ? companies_table[0].company
-                    : "",
-            project:
-                projects_table && projects_table.length > 0
-                    ? projects_table[0].project
-                    : "",
+            company: companiesTable.length > 0 ? companiesTable[0].company : "",
+            project: projectsTable.length > 0 ? projectsTable[0].project : "",
         })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companies_table, projects_table])
+    }, [companiesTable, projectsTable, reset, watch])
 
-    const { id } = useParams()
-    const navigate = useNavigate()
     const { data: user, isLoading, error } = useGetUsers(id)
     const updateUserMutation = useUpdateUser(id)
-
-    // Si el dato del usuario llega como arreglo, se toma el primer elemento
     const userData = Array.isArray(user) ? user[0] : user
 
-    // Actualizar relaciones del usuario
+    // Consultar relaciones existentes para el usuario
     useEffect(() => {
         if (id) {
-            updateRelations(id)
+            const fetchRelated = async () => {
+                try {
+                    const relatedData = await getRelatedOptions(id)
+                    setRelatedOptions(relatedData)
+                } catch (error) {
+                    console.error("Error al obtener relaciones:", error)
+                }
+            }
+            fetchRelated()
         }
-    }, [id, updateRelations])
+    }, [id])
 
-    // Convertir la respuesta de relatedOptions (array de objetos con comp_option y proj_option)
-    const relatedCompanies = relatedOptions
-        ? relatedOptions.map((r) => ({ id: r.id, company: r.comp_option }))
-        : []
-    const relatedProjects = relatedOptions
-        ? relatedOptions.map((r) => ({ id: r.id, project: r.proj_option }))
-        : []
+    // Consultar opciones no relacionadas para el usuario
+    useEffect(() => {
+        if (id) {
+            const fetchNotRelated = async () => {
+                try {
+                    const notRelatedData = await getNotRelatedOptions(id)
+                    setNotRelatedOptions(notRelatedData)
+                } catch (error) {
+                    console.error(
+                        "Error al obtener opciones no relacionadas:",
+                        error
+                    )
+                }
+            }
+            fetchNotRelated()
+        }
+    }, [id])
 
-    // Función para agregar relación de compañía
+    // Mapear relaciones existentes: se asigna la propiedad "option"
+    const relatedCompanies =
+        relatedOptions.map((r) => ({ id: r.id, option: r.comp_option })) || []
+    const relatedProjects =
+        relatedOptions.map((r) => ({ id: r.id, option: r.proj_option })) || []
+
+    // Mapear opciones disponibles: se agrega la propiedad "option" a cada objeto
+    const availableCompanies = notRelatedOptions.companies
+        ? notRelatedOptions.companies.map((item) => ({
+              ...item,
+              option: item.company,
+          }))
+        : companiesTable.map((item) => ({ ...item, option: item.company }))
+
+    const availableProjects = notRelatedOptions.projects
+        ? notRelatedOptions.projects.map((item) => ({
+              ...item,
+              option: item.project,
+          }))
+        : projectsTable.map((item) => ({ ...item, option: item.project }))
+
+    // Funciones para agregar y eliminar relaciones
     const handleAddCompanyRelation = async (companyId) => {
-        const relationData = {
-            user_id: [id],
-            company_id: [companyId],
-            project_id: [null],
+        try {
+            const relationData = {
+                user_id: [id],
+                company_id: [companyId],
+                project_id: [null],
+            }
+            await addCompanyUserRelation(relationData)
+            const updatedRelated = await getRelatedOptions(id)
+            setRelatedOptions(updatedRelated)
+            const updatedNotRelated = await getNotRelatedOptions(id)
+            setNotRelatedOptions(updatedNotRelated)
+        } catch (error) {
+            console.error("Error al agregar relación de compañía:", error)
         }
-        await addCompanyUserRelation(relationData, id)
     }
 
-    // Función para eliminar relación de compañía
     const handleDeleteCompanyRelation = async (relationId) => {
-        await removeCompanyUserRelation(relationId, id)
+        try {
+            await deleteCompanyUserRelation([relationId])
+            const updatedRelated = await getRelatedOptions(id)
+            setRelatedOptions(updatedRelated)
+            const updatedNotRelated = await getNotRelatedOptions(id)
+            setNotRelatedOptions(updatedNotRelated)
+        } catch (error) {
+            console.error("Error al eliminar relación de compañía:", error)
+        }
     }
 
-    // Función para agregar relación de proyecto
     const handleAddProjectRelation = async (projectId) => {
-        const relationData = {
-            user_id: [id],
-            company_id: [null],
-            project_id: [projectId],
+        try {
+            const relationData = {
+                user_id: [id],
+                company_id: [null],
+                project_id: [projectId],
+            }
+            await addCompanyUserRelation(relationData)
+            const updatedRelated = await getRelatedOptions(id)
+            setRelatedOptions(updatedRelated)
+            const updatedNotRelated = await getNotRelatedOptions(id)
+            setNotRelatedOptions(updatedNotRelated)
+        } catch (error) {
+            console.error("Error al agregar relación de proyecto:", error)
         }
-        await addCompanyUserRelation(relationData, id)
     }
 
     if (isLoading) return <div>Cargando información del usuario...</div>
@@ -129,7 +197,7 @@ const UsersDetail = () => {
                 <RelationSection
                     title="Compañías"
                     relatedItems={relatedCompanies}
-                    availableItems={companies_table || []}
+                    availableItems={availableCompanies}
                     displayProp="option"
                     onAddRelation={handleAddCompanyRelation}
                     onDeleteRelation={handleDeleteCompanyRelation}
@@ -138,7 +206,7 @@ const UsersDetail = () => {
                 <RelationSection
                     title="Proyectos"
                     relatedItems={relatedProjects}
-                    availableItems={projects_table || []}
+                    availableItems={availableProjects}
                     displayProp="option"
                     onAddRelation={handleAddProjectRelation}
                 />

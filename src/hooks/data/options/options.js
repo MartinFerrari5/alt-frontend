@@ -40,7 +40,7 @@ export const addOption = async (table, option) => {
  */
 export const updateOption = async (table, id, updatedData) => {
     try {
-        const { data } = await api.put(`/options`, {
+        const { data } = await api.put("/options", {
             table,
             option: updatedData,
             options_id: id,
@@ -61,7 +61,7 @@ export const updateOption = async (table, id, updatedData) => {
  */
 export const deleteOption = async (table, id) => {
     try {
-        const { data } = await api.delete(`/options`, {
+        const { data } = await api.delete("/options", {
             data: { table, options_id: id },
         })
         return data
@@ -79,7 +79,7 @@ export const deleteOption = async (table, id) => {
  */
 export const getRelatedOptions = async (user_id) => {
     try {
-        const { data } = await api.get(`/options/relatedOptions`, {
+        const { data } = await api.get("/options/relatedOptions", {
             params: { user_id },
         })
         return data
@@ -97,7 +97,7 @@ export const getRelatedOptions = async (user_id) => {
  */
 export const getNotRelatedOptions = async (user_id) => {
     try {
-        const { data } = await api.get(`/options/notRelatedOptions`, {
+        const { data } = await api.get("/options/notRelatedOptions", {
             params: { user_id },
         })
         return data
@@ -109,13 +109,15 @@ export const getNotRelatedOptions = async (user_id) => {
 }
 
 /**
- * Crea la relación entre compañía y usuario.
+ * Crea la relación entre compañía/proyecto y usuario.
  * @param {Object} relationData - Datos de la relación.
  * @returns {Promise<Object>} Resultado de la creación.
  */
 export const addCompanyUserRelation = async (relationData) => {
+    console.log("addCompanyUserRelation ->", relationData)
     try {
-        const { data } = await api.post(`/companyUser`, relationData)
+        const { data } = await api.post("/companyUser", relationData)
+        console.log("addCompanyUserRelation ->", data)
         return data
     } catch (error) {
         throw new Error(
@@ -125,13 +127,13 @@ export const addCompanyUserRelation = async (relationData) => {
 }
 
 /**
- * Elimina la relación entre compañía y usuario.
+ * Elimina la relación entre compañía/proyecto y usuario.
  * @param {Array} ids - IDs de las relaciones a eliminar.
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteCompanyUserRelation = async (ids) => {
     try {
-        const { data } = await api.delete(`/companyUser`, { data: { ids } })
+        const { data } = await api.delete("/companyUser", { data: { ids } })
         return data
     } catch (error) {
         throw new Error(
