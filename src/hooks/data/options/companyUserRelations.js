@@ -7,8 +7,8 @@ import { api } from "../../../lib/axios"
  * @returns {Promise<Object>} Resultado de la creación.
  */
 export const createCompanyUserRelation = async (relationData) => {
-  const { data } = await api.post(`/companyUser`, relationData)
-  return data
+    const { data } = await api.post(`/companyUser`, relationData)
+    return data
 }
 
 /**
@@ -18,6 +18,6 @@ export const createCompanyUserRelation = async (relationData) => {
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteCompanyUserRelation = async (ids) => {
-  const { data } = await api.delete(`/companyUser`, { data: { ids } })
-  return data
+    const { data } = await api.delete(`/companyUser`, { data: { ids } })
+    return data
 }

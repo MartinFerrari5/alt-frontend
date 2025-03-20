@@ -118,26 +118,24 @@ const DashboardCards = ({ filters, currentPath, role }) => {
                     stats={statusDataFiltered.stats}
                     total={statusDataFiltered.total}
                 />
-                {currentPath === "/history" && (
-                    <>
-                        <DashboardCard
-                            icon={
-                                <FaChartBar className="text-2xl text-brand-dark-blue" />
-                            }
-                            title="Tipo de Tarea"
-                            stats={taskData.stats}
-                            total={taskData.total}
-                        />
-                        <DashboardCard
-                            icon={
-                                <FaChartBar className="text-2xl text-brand-dark-blue" />
-                            }
-                            title="Tipo de Hora"
-                            stats={hourData.stats}
-                            total={hourData.total}
-                        />
-                    </>
-                )}
+                <>
+                    <DashboardCard
+                        icon={
+                            <FaChartBar className="text-2xl text-brand-dark-blue" />
+                        }
+                        title="Tipo de Tarea"
+                        stats={taskData.stats}
+                        total={taskData.total}
+                    />
+                    <DashboardCard
+                        icon={
+                            <FaChartBar className="text-2xl text-brand-dark-blue" />
+                        }
+                        title="Tipo de Hora"
+                        stats={hourData.stats}
+                        total={hourData.total}
+                    />
+                </>
             </section>
         </main>
     )

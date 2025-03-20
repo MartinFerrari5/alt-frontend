@@ -26,6 +26,7 @@ const TABLE_HEADERS = [
 const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
+
     const role = useAuthStore((state) => state.role)
 
     // Extraer filtros desde la URL y normalizar el status
@@ -171,7 +172,10 @@ const DisboardPage = () => {
                 <div className="space-y-3 rounded-xl bg-white p-1">
                     <div className="overflow-x-auto">
                         <div className="min-w-full py-2">
-                            <TaskFilter onFilter={handleFilter} />
+                            <TaskFilter
+                                onFilter={handleFilter}
+                                currentPath={currentPath}
+                            />
                             <div className="max-h-[500px] overflow-y-auto rounded-lg border">
                                 <table className="w-full text-left text-sm text-gray-500">
                                     <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">

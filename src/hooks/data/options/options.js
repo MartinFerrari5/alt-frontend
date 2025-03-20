@@ -6,8 +6,8 @@ import { api } from "../../../lib/axios"
  * @returns {Promise<Object>} Datos de las opciones.
  */
 export const getOptions = async (table) => {
-  const { data } = await api.get(`/options?table=${table}`)
-  return data
+    const { data } = await api.get(`/options?table=${table}`)
+    return data
 }
 
 /**
@@ -17,8 +17,8 @@ export const getOptions = async (table) => {
  * @returns {Promise<any>} La opción creada.
  */
 export const addOption = async (table, option) => {
-  const { data } = await api.post("/options", { table, option })
-  return data.option
+    const { data } = await api.post("/options", { table, option })
+    return data.option
 }
 
 /**
@@ -29,11 +29,11 @@ export const addOption = async (table, option) => {
  * @returns {Promise<any>} La opción actualizada.
  */
 export const updateOption = async (table, id, updatedData) => {
-  const { data } = await api.put(`/options?options_id=${id}`, {
-    table,
-    option: updatedData,
-  })
-  return data.option
+    const { data } = await api.put(`/options?options_id=${id}`, {
+        table,
+        option: updatedData,
+    })
+    return data.option
 }
 
 /**
@@ -43,8 +43,10 @@ export const updateOption = async (table, id, updatedData) => {
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteOption = async (table, id) => {
-  const { data } = await api.delete(`/options?options_id=${id}`, { data: { table } })
-  return data
+    const { data } = await api.delete(`/options?options_id=${id}`, {
+        data: { table },
+    })
+    return data
 }
 
 /**
@@ -53,8 +55,10 @@ export const deleteOption = async (table, id) => {
  * @returns {Promise<Object>} Opciones relacionadas.
  */
 export const getRelatedOptions = async (user_id) => {
-  const { data } = await api.get(`/options/relatedOptions`, { params: { user_id } })
-  return data
+    const { data } = await api.get(`/options/relatedOptions`, {
+        params: { user_id },
+    })
+    return data
 }
 
 /**
@@ -63,8 +67,10 @@ export const getRelatedOptions = async (user_id) => {
  * @returns {Promise<Object>} Opciones no relacionadas.
  */
 export const getNotRelatedOptions = async (user_id) => {
-  const { data } = await api.get(`/options/notRelatedOptions`, { params: { user_id } })
-  return data
+    const { data } = await api.get(`/options/notRelatedOptions`, {
+        params: { user_id },
+    })
+    return data
 }
 
 /**
@@ -73,8 +79,8 @@ export const getNotRelatedOptions = async (user_id) => {
  * @returns {Promise<Object>} Resultado de la creación.
  */
 export const addCompanyUserRelation = async (relationData) => {
-  const { data } = await api.post(`/companyUser`, relationData)
-  return data
+    const { data } = await api.post(`/companyUser`, relationData)
+    return data
 }
 
 /**
@@ -83,6 +89,6 @@ export const addCompanyUserRelation = async (relationData) => {
  * @returns {Promise<Object>} Resultado de la eliminación.
  */
 export const deleteCompanyUserRelation = async (ids) => {
-  const { data } = await api.delete(`/companyUser`, { data: { ids } })
-  return data
+    const { data } = await api.delete(`/companyUser`, { data: { ids } })
+    return data
 }
