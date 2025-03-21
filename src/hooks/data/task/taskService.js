@@ -1,3 +1,4 @@
+// /src/hooks/data/task/taskService.js
 /**
  * Hook principal para la gestión de tareas.
  * Permite obtener la lista de tareas, y gestionar las mutaciones (agregar, actualizar y eliminar).
@@ -59,10 +60,10 @@ export const deleteTaskApi = async (taskId) => {
 
 export const filterTasksApi = async (filters) => {
     const queryParams = new URLSearchParams()
-    // Se agregan todos los filtros disponibles si tienen valor
     if (filters.company) queryParams.append("company", filters.company)
     if (filters.project) queryParams.append("project", filters.project)
     if (filters.fullname) queryParams.append("fullname", filters.fullname)
+    if (filters.hourtype) queryParams.append("hourtype", filters.hourtype)
     if (filters.date) queryParams.append("date", filters.date)
     if (filters.status !== undefined)
         queryParams.append("status", filters.status)

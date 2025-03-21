@@ -29,7 +29,7 @@ const DisboardPage = () => {
 
     const role = useAuthStore((state) => state.role)
 
-    // Extraer filtros desde la URL y normalizar el status
+    // Extraer filtros desde la URL e incluir el nuevo filtro "hourtype"
     const filters = useMemo(() => {
         const dateParam = searchParams.get("date") || ""
         const rawStatus = searchParams.get("status")
@@ -37,6 +37,7 @@ const DisboardPage = () => {
             fullname: searchParams.get("fullname") || "",
             company: searchParams.get("company") || "",
             project: searchParams.get("project") || "",
+            hourtype: searchParams.get("hourtype") || "",
             date: dateParam.replace(/\+/g, " "),
             status:
                 rawStatus !== null && rawStatus !== "" ? Number(rawStatus) : "",
@@ -63,10 +64,10 @@ const DisboardPage = () => {
         [displayedTasks]
     )
 
-    // Función para actualizar los filtros en la URL
+    // Función para actualizar los filtros en la URL (se agrega hourtype)
     const updateFilter = useCallback(
         (filterData) => {
-            const { fullname, company, project, status, startDate, endDate } =
+            const { fullname, company, project, status, startDate, endDate, hourtype } =
                 filterData
             const dateRange =
                 startDate && endDate
@@ -78,12 +79,13 @@ const DisboardPage = () => {
                 project: project || "",
                 status: status || "",
                 date: dateRange,
+                hourtype: hourtype || "",
             })
         },
         [setSearchParams]
     )
 
-    // Función que adapta el objeto recibido desde TaskFilter
+    // Función que adapta el objeto recibido desde TaskFilter (incluye hourtype)
     const handleFilter = useCallback(
         (filterData) => {
             let startDate = ""
@@ -108,6 +110,7 @@ const DisboardPage = () => {
                 status,
                 startDate,
                 endDate,
+                hourtype: filterData.hourtype,
             })
         },
         [updateFilter]
