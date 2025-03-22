@@ -42,7 +42,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         const company = searchParams.get("company") || ""
         const project = searchParams.get("project") || ""
         const status = searchParams.get("status") || ""
-        const hourtype = searchParams.get("hourtype") || "" 
+        const hourtype = searchParams.get("hourtype") || ""
         const urlDate = searchParams.get("date") || ""
         let startDate = ""
         let endDate = ""

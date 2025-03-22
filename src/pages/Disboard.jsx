@@ -169,7 +169,9 @@ const DisboardPage = () => {
                 </tr>
             )
         }
-        return validTasks.map((task) => <TaskItem key={task.id} task={task} currentPath={currentPath} />)
+        return validTasks.map((task) => (
+            <TaskItem key={task.id} task={task} currentPath={currentPath} />
+        ))
     }, [isLoading, isError, validTasks, tableHeaders, currentPath])
 
     return (

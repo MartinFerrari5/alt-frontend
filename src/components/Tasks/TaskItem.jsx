@@ -26,7 +26,13 @@ const formatDate = (dateString) => {
     }).format(parsedDate)
 }
 
-const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath }) => {
+const TaskItem = ({
+    task,
+    showCheckbox,
+    isSelected,
+    onSelectTask,
+    currentPath,
+}) => {
     const role = useAuthStore((state) => state.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
@@ -107,8 +113,7 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath })
     return (
         <>
             <tr
-            
-                 onClick={handleRowClick}
+                onClick={handleRowClick}
                 className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
             >
                 {showCheckbox && (
@@ -136,17 +141,16 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath })
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-{currentPath === "/history" && (
-    <td className="px-4 py-5" title={task.task_description}>
-        {task.task_description.length > 10
-            ? `${task.task_description.substring(0, 10)}...`
-            : task.task_description}
-    </td>
-)}
+                {currentPath === "/history" && (
+                    <td className="px-4 py-5" title={task.task_description}>
+                        {task.task_description.length > 10
+                            ? `${task.task_description.substring(0, 10)}...`
+                            : task.task_description}
+                    </td>
+                )}
 
                 <td className="flex gap-2 px-4 py-5 text-right">
-                    {
-                        currentPath === "/history" && (
+                    {currentPath === "/history" && (
                         <Button
                             color="ghost"
                             onClick={handleDeleteButtonClick}
@@ -158,8 +162,7 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath })
                                 <FaTrash className="h-5 w-5" />
                             )}
                         </Button>
-                        )
-                    }
+                    )}
                     {role === "admin" ? (
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
