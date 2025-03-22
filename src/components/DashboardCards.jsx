@@ -63,9 +63,9 @@ const DashboardCards = ({ filters, currentPath, role }) => {
             case 0:
                 return "En progreso"
             case 1:
-                return "Finalizado"
+                return "Enviado a RRHH"
             case 2:
-                return "Facturado"
+                return "Finalizado"
             default:
                 return statusValue
         }

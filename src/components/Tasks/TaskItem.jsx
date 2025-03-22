@@ -2,7 +2,7 @@
 import PropTypes from "prop-types"
 import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { FaTrash } from "react-icons/fa"
 
@@ -26,7 +26,7 @@ const formatDate = (dateString) => {
     }).format(parsedDate)
 }
 
-const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
+const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath }) => {
     const role = useAuthStore((state) => state.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
@@ -39,7 +39,6 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
     const [newStatus, setNewStatus] = useState(task.status)
 
     const navigate = useNavigate()
-    const location = useLocation()
 
     useEffect(() => {
         setNewStatus(task.status)
@@ -108,7 +107,8 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
     return (
         <>
             <tr
-                onClick={handleRowClick}
+            
+                 onClick={handleRowClick}
                 className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
             >
                 {showCheckbox && (
@@ -136,7 +136,7 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-                {location.pathname === "/history" && (
+                {currentPath === "/history" && (
                     <td className="px-4 py-5">
                         {task.task_description.length > 10
                             ? `${task.task_description.substring(0, 10)}...`
@@ -144,17 +144,21 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask }) => {
                     </td>
                 )}
                 <td className="flex gap-2 px-4 py-5 text-right">
-                    <Button
-                        color="ghost"
-                        onClick={handleDeleteButtonClick}
-                        disabled={deleteTaskIsLoading}
-                    >
-                        {deleteTaskIsLoading ? (
-                            <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
-                        ) : (
-                            <FaTrash className="h-5 w-5" />
-                        )}
-                    </Button>
+                    {
+                        currentPath === "/history" && (
+                        <Button
+                            color="ghost"
+                            onClick={handleDeleteButtonClick}
+                            disabled={deleteTaskIsLoading}
+                        >
+                            {deleteTaskIsLoading ? (
+                                <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
+                            ) : (
+                                <FaTrash className="h-5 w-5" />
+                            )}
+                        </Button>
+                        )
+                    }
                     {role === "admin" ? (
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator

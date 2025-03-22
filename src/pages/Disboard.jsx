@@ -169,8 +169,8 @@ const DisboardPage = () => {
                 </tr>
             )
         }
-        return validTasks.map((task) => <TaskItem key={task.id} task={task} />)
-    }, [isLoading, isError, validTasks, tableHeaders])
+        return validTasks.map((task) => <TaskItem key={task.id} task={task} currentPath={currentPath} />)
+    }, [isLoading, isError, validTasks, tableHeaders, currentPath])
 
     return (
         <div className="flex h-screen">

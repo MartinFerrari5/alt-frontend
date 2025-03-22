@@ -33,7 +33,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     useEffect(() => {
         fetchOptions("companies_table")
         fetchOptions("projects_table")
-        fetchOptions("hour_type_table") // Cargar opciones para "Tipo de Hora"
+        fetchOptions("hour_type_table")
     }, [fetchOptions])
 
     // Extraer los valores de filtro desde la URL para sincronizar el formulario
@@ -42,7 +42,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         const company = searchParams.get("company") || ""
         const project = searchParams.get("project") || ""
         const status = searchParams.get("status") || ""
-        const hourtype = searchParams.get("hourtype") || "" // Extraemos hourtype
+        const hourtype = searchParams.get("hourtype") || "" 
         const urlDate = searchParams.get("date") || ""
         let startDate = ""
         let endDate = ""
@@ -151,9 +151,9 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                     className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                     <option value="">Seleccionar estado</option>
-                    <option value="0">progreso</option>
-                    <option value="1">finalizado</option>
-                    {role === "admin" && <option value="2">facturado</option>}
+                    <option value="0">En Progreso</option>
+                    <option value="1">Enviado a RRHH</option>
+                    <option value="2">Finalizado</option>
                 </select>
             )}
             <input

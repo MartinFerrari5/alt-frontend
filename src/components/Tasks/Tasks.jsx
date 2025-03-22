@@ -112,6 +112,7 @@ const Tasks = () => {
                                     showCheckbox={isInicio}
                                     isSelected={selectedTasks.includes(task.id)}
                                     onSelectTask={handleSelectTask}
+                                    currentPath={currentPath}
                                 />
                             ))}
                         </tbody>
