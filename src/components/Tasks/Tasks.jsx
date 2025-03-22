@@ -22,11 +22,13 @@ const Tasks = () => {
         () => ({
             fullname: searchParams.get("fullname") || "",
             company: searchParams.get("company") || "",
+            hourtype: searchParams.get("hourtype") || "",
             project: searchParams.get("project") || "",
             date: searchParams.get("date") || "",
-            status: searchParams.get("status") || "0",
+            status:
+                searchParams.get("status") || (role === "admin" ? "1" : "0"),
         }),
-        [searchParams]
+        [searchParams, role]
     )
 
     const {

@@ -77,7 +77,7 @@ export const updateOption = async (table, id, updatedData) => {
  * @param {string} table - Nombre de la tabla.
  * @param {number|string} id - ID de la opción.
  * @returns {Promise<Object>} Resultado de la eliminación.
- * 
+ *
  * La respuesta contiene un objeto con la siguiente estructura:
  * {
  *     "options_id": number, // ID de la opción eliminada.

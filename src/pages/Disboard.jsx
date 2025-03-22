@@ -31,16 +31,13 @@ const DisboardPage = () => {
 
     // Extraer filtros desde la URL e incluir el nuevo filtro "hourtype"
     const filters = useMemo(() => {
-        const dateParam = searchParams.get("date") || ""
-        const rawStatus = searchParams.get("status")
         return {
             fullname: searchParams.get("fullname") || "",
             company: searchParams.get("company") || "",
-            project: searchParams.get("project") || "",
             hourtype: searchParams.get("hourtype") || "",
-            date: dateParam.replace(/\+/g, " "),
-            status:
-                rawStatus !== null && rawStatus !== "" ? Number(rawStatus) : "",
+            project: searchParams.get("project") || "",
+            date: searchParams.get("date") || "",
+            status: searchParams.get("status") || "",
         }
     }, [searchParams])
 
@@ -67,8 +64,15 @@ const DisboardPage = () => {
     // Función para actualizar los filtros en la URL (se agrega hourtype)
     const updateFilter = useCallback(
         (filterData) => {
-            const { fullname, company, project, status, startDate, endDate, hourtype } =
-                filterData
+            const {
+                fullname,
+                company,
+                project,
+                status,
+                startDate,
+                endDate,
+                hourtype,
+            } = filterData
             const dateRange =
                 startDate && endDate
                     ? `${startDate}+${endDate}`
@@ -77,21 +81,22 @@ const DisboardPage = () => {
                 fullname: fullname || "",
                 company: company || "",
                 project: project || "",
+                hourtype: hourtype || "",
                 status: status || "",
                 date: dateRange,
-                hourtype: hourtype || "",
             })
         },
         [setSearchParams]
     )
+    console.log("Filtros actuales:", filters)
 
-    // Función que adapta el objeto recibido desde TaskFilter (incluye hourtype)
+    // Función que adapta el objeto recibido desde TaskFilter
     const handleFilter = useCallback(
         (filterData) => {
             let startDate = ""
             let endDate = ""
             if (filterData.date) {
-                const dates = filterData.date.split(" ")
+                const dates = filterData.date.split("+")
                 if (dates.length === 2) {
                     startDate = dates[0]
                     endDate = dates[1]
@@ -107,14 +112,15 @@ const DisboardPage = () => {
                 fullname: filterData.fullname,
                 company: filterData.company,
                 project: filterData.project,
+                hourtype: filterData.hourtype,
                 status,
                 startDate,
                 endDate,
-                hourtype: filterData.hourtype,
             })
         },
         [updateFilter]
     )
+    console.log("handleFilter: ", handleFilter)
 
     // Definir los encabezados de la tabla según el rol
     const tableHeaders = useMemo(
