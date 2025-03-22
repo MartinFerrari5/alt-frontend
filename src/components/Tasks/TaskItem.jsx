@@ -136,13 +136,14 @@ const TaskItem = ({ task, showCheckbox, isSelected, onSelectTask, currentPath })
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-                {currentPath === "/history" && (
-                    <td className="px-4 py-5">
-                        {task.task_description.length > 10
-                            ? `${task.task_description.substring(0, 10)}...`
-                            : task.task_description}
-                    </td>
-                )}
+{currentPath === "/history" && (
+    <td className="px-4 py-5" title={task.task_description}>
+        {task.task_description.length > 10
+            ? `${task.task_description.substring(0, 10)}...`
+            : task.task_description}
+    </td>
+)}
+
                 <td className="flex gap-2 px-4 py-5 text-right">
                     {
                         currentPath === "/history" && (
