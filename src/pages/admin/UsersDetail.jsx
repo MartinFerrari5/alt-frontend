@@ -1,4 +1,4 @@
-// src/pages/admin/UsersDetail.jsx
+// /src/pages/admin/UsersDetail.jsx
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import Sidebar from "../../components/Sidebar"
@@ -26,7 +26,7 @@ const UsersDetail = () => {
 
     const [companiesTable, setCompaniesTable] = useState([])
     const [projectsTable, setProjectsTable] = useState([])
-    // Separamos las relaciones: una para compañías y otra para proyectos
+    // Relaciones separadas: compañías y proyectos
     const [relatedCompanies, setRelatedCompanies] = useState([])
     const [relatedProjects, setRelatedProjects] = useState([])
     const [notRelatedOptions, setNotRelatedOptions] = useState({
@@ -77,7 +77,7 @@ const UsersDetail = () => {
     const updateUserMutation = useUpdateUser(id)
     const userData = Array.isArray(user) ? user[0] : user
 
-    // 1. Obtener las compañías en las que trabaja el usuario
+    // 1. Obtener las compañías relacionadas al usuario
     useEffect(() => {
         if (id) {
             const fetchRelatedCompanies = async () => {
@@ -99,13 +99,11 @@ const UsersDetail = () => {
         }
     }, [id])
 
-    // 2. Obtener los proyectos asociados a las compañías
+    // 2. Obtener los proyectos relacionados al usuario (tomando el relationship_id de la primera compañía)
     useEffect(() => {
         if (id && relatedCompanies.length > 0) {
             const fetchRelatedProjects = async () => {
                 try {
-                    // Ejemplo: se usa el relationship_id del primer registro relacionado.
-                    // Si el usuario tiene relación con varias compañías, podrías iterar y combinar resultados.
                     const relationshipId = relatedCompanies[0].relationship_id
                     const projectsData = await getRelatedOptions({
                         user_id: id,
@@ -132,7 +130,6 @@ const UsersDetail = () => {
                 try {
                     const companiesNotRelated = await getNotRelatedCompanies(id)
                     let projectsNotRelated = []
-                    // Se asume que se utiliza el relationship_id del primer registro relacionado para proyectos
                     if (relatedCompanies && relatedCompanies.length > 0) {
                         const relationshipId =
                             relatedCompanies[0].relationship_id
@@ -156,37 +153,29 @@ const UsersDetail = () => {
         }
     }, [id, relatedCompanies])
 
-    // Mapear relaciones existentes para mostrar en la UI
+    // Mapear relaciones para mostrar en la UI
     const mappedRelatedCompanies =
         relatedCompanies.map((r) => ({
             id: r.company_id,
-            option: r.option, // "option" contiene el nombre de la compañía, por ejemplo "Mc Donald's"
+            option: r.option,
         })) || []
 
     const mappedRelatedProjects =
         relatedProjects.map((r) => ({
             id: r.project_id,
-            option: r.option, // "option" contiene el nombre del proyecto, por ejemplo "Pagina Web"
+            option: r.option,
         })) || []
 
-    // Mapear opciones disponibles: se toma el valor de "options" que devuelve la API
+    // Mapear opciones disponibles para compañías (se utiliza en la sección de compañías)
     const availableCompanies = notRelatedOptions.companies.map((item) => ({
         id: item.company_id,
-        option: item.options,
-    }))
-
-    const availableProjects = notRelatedOptions.projects.map((item) => ({
-        id: item.project_id,
         option: item.options,
     }))
 
     // Funciones para agregar y eliminar relaciones de compañías y proyectos
     const handleAddCompanyRelation = async (companyId) => {
         try {
-            const relationData = {
-                user_id: id,
-                company_id: companyId,
-            }
+            const relationData = { user_id: id, company_id: companyId }
             await addCompanyUserRelation(relationData)
             const updatedCompanies = await getRelatedOptions({
                 user_id: id,
@@ -228,10 +217,10 @@ const UsersDetail = () => {
             const relationData = {
                 user_id: id,
                 project_id: projectId,
-                relationship_id: relationshipId, // relationship_id extraído de la compañía seleccionada
+                relationship_id: relationshipId,
             }
             await addProjectUserRelation(relationData)
-            // Actualizar proyectos relacionados y disponibles
+            // Actualizar proyectos relacionados y opciones disponibles
             const updatedProjects = await getRelatedOptions({
                 user_id: id,
                 related_table: "project_company_table",
@@ -283,17 +272,14 @@ const UsersDetail = () => {
                 <RelationSection
                     title="Proyectos"
                     relatedItems={mappedRelatedProjects}
-                    availableItems={availableProjects} // No se usará en el modal personalizado
                     displayProp="option"
-                    // En este caso onAddRelation ya se inyecta desde el modal personalizado
                     customModal={({ onClose }) => (
                         <EditProjectRelationModal
                             title="Proyectos"
-                            associatedItems={mappedRelatedProjects}
-                            availableProjects={availableProjects}
-                            relatedCompanies={relatedCompanies} // datos originales para extraer relationship_id
+                            relatedCompanies={relatedCompanies}
                             onAddRelation={handleAddProjectRelation}
                             onClose={onClose}
+                            userId={id}
                         />
                     )}
                 />

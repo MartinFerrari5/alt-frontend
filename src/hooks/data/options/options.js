@@ -100,7 +100,6 @@ export const getRelatedOptions = async ({
         if (relationship_id) {
             params.relationship_id = relationship_id
         }
-        console.log("Params: ", params)
         const { data } = await api.get("/options/relatedOptions", { params })
         return data
     } catch (error) {
@@ -111,17 +110,20 @@ export const getRelatedOptions = async ({
 }
 
 /**
- * Obtiene las compañías donde el usuario NO trabaja.
+ * Obtiene las compañías y proyectos donde el usuario NO trabaja.
+ *
  * Endpoint: GET /options/notRelatedOptions?user_id=...
+ *
  * @param {number|string} user_id - ID del usuario.
  * @returns {Promise<Array>} Array de objetos con la propiedad "options".
+ *
+ * @throws Will throw an error if the request fails.
  */
 export const getNotRelatedCompanies = async (user_id) => {
     try {
         const { data } = await api.get("/options/notRelatedOptions", {
             params: { user_id },
         })
-        console.log("Companies: ", data)
         return data
     } catch (error) {
         throw new Error(
@@ -132,10 +134,13 @@ export const getNotRelatedCompanies = async (user_id) => {
 
 /**
  * Obtiene los proyectos NO relacionados con las compañías en las que trabaja el usuario.
+ *
  * Endpoint: GET /options/notRelatedOptions?user_id=...&relationship_id=...
+ *
  * @param {number|string} user_id - ID del usuario.
  * @param {string} relationship_id - ID de la relación (company-user).
  * @returns {Promise<Array>} Array de objetos con la propiedad "options".
+ * @throws Will throw an error if the request fails.
  */
 export const getNotRelatedProjects = async (user_id, relationship_id) => {
     try {
@@ -151,10 +156,16 @@ export const getNotRelatedProjects = async (user_id, relationship_id) => {
 }
 
 /**
- * Crea la relación entre compañía y usuario.
- * @param {Object} relationData - Datos de la relación.
+ * Creates a relationship between a company and a user.
+ *
+ * This function creates a new relationship between a company and a user.
+ * It makes a POST request to the "/companyUser" endpoint with the
+ * provided data and returns the result of the creation.
+ *
+ * @param {Object} relationData - Data for the relationship.
  *        { user_id: string, company_id: string }
- * @returns {Promise<Object>} Resultado de la creación.
+ * @returns {Promise<Object>} The result of the creation.
+ * @throws Will throw an error if the creation fails.
  */
 export const addCompanyUserRelation = async (relationData) => {
     try {
@@ -170,6 +181,11 @@ export const addCompanyUserRelation = async (relationData) => {
 
 /**
  * Creates a relationship between a project and a user.
+ *
+ * This function creates a new relationship between a project and a user.
+ * It makes a POST request to the "/projectUser" endpoint with the
+ * provided data and returns the result of the creation.
+ *
  * @param {Object} relationData - Data for the relationship.
  * @param {string} relationData.user_id - The ID of the user.
  * @param {string} relationData.project_id - The ID of the project.
@@ -178,7 +194,6 @@ export const addCompanyUserRelation = async (relationData) => {
  * @throws Will throw an error if the creation fails.
  */
 export const addProjectUserRelation = async (relationData) => {
-    console.log("relationData: ", relationData) // Log the relation data for debugging
     try {
         // Make a POST request to create the project-user relationship
         const { data } = await api.post("/projectUser", relationData)

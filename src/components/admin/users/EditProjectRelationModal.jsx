@@ -1,18 +1,66 @@
 // src/components/admin/users/EditProjectRelationModal.jsx
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
+import {
+    getRelatedOptions,
+    getNotRelatedProjects,
+} from "../../../hooks/data/options/options"
 
 const EditProjectRelationModal = ({
     title,
-    associatedItems, // Proyectos ya asociados (para mostrarlos en lista)
-    availableProjects, // Proyectos disponibles para agregar
-    relatedCompanies, // Compañías relacionadas (se usará para extraer el relationship_id)
+    relatedCompanies, // Compañías relacionadas para extraer el relationship_id
     onAddRelation,
     onClose,
+    userId,
 }) => {
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
+
+    // Estados para proyectos asociados y disponibles según la compañía seleccionada
+    const [associatedProjects, setAssociatedProjects] = useState([])
+    const [availableProjects, setAvailableProjects] = useState([])
+
+    const [isProjectsLoading, setIsProjectsLoading] = useState(false)
+    const [projectsError, setProjectsError] = useState(null)
+
+    // Al cambiar la compañía seleccionada se obtienen los proyectos asociados y no asociados
+    useEffect(() => {
+        const fetchProjects = async () => {
+            if (selectedRelationshipId) {
+                setIsProjectsLoading(true)
+                setProjectsError(null)
+                try {
+                    const relatedData = await getRelatedOptions({
+                        user_id: userId,
+                        related_table: "project_company_table",
+                        individual_table: "projects_table",
+                        relationship_id: selectedRelationshipId,
+                    })
+                    const notRelatedData = await getNotRelatedProjects(
+                        userId,
+                        selectedRelationshipId
+                    )
+                    setAssociatedProjects(relatedData)
+                    setAvailableProjects(notRelatedData)
+                } catch (error) {
+                    console.error(
+                        "Error al obtener proyectos para la compañía seleccionada:",
+                        error
+                    )
+                    setProjectsError(error.message)
+                    setAssociatedProjects([])
+                    setAvailableProjects([])
+                } finally {
+                    setIsProjectsLoading(false)
+                }
+            } else {
+                setAssociatedProjects([])
+                setAvailableProjects([])
+            }
+        }
+        fetchProjects()
+    }, [selectedRelationshipId, userId])
 
     const handleAddRelation = () => {
         if (selectedRelationshipId && selectedProject) {
@@ -27,16 +75,17 @@ const EditProjectRelationModal = ({
             <div className="w-11/12 rounded bg-white p-6 shadow-lg md:w-2/3 lg:w-1/2">
                 <h3 className="mb-4 text-xl font-bold">Editar {title}</h3>
                 <div className="flex gap-4">
-                    {/* Panel de elementos ya asociados */}
+                    {/* Panel para mostrar proyectos ya asociados a la compañía seleccionada */}
                     <div className="w-1/2">
                         <h4 className="mb-2 text-lg font-semibold">
                             Asociados
                         </h4>
                         <ul className="max-h-64 overflow-y-auto">
-                            {associatedItems && associatedItems.length > 0 ? (
-                                associatedItems.map((item) => (
+                            {associatedProjects &&
+                            associatedProjects.length > 0 ? (
+                                associatedProjects.map((item) => (
                                     <li
-                                        key={item.id}
+                                        key={item.project_id}
                                         className="flex items-center justify-between border-b py-2"
                                     >
                                         <span>{item.option}</span>
@@ -47,34 +96,34 @@ const EditProjectRelationModal = ({
                             )}
                         </ul>
                     </div>
-                    {/* Panel de selección */}
+                    {/* Panel para agregar nuevos proyectos */}
                     <div className="w-1/2">
                         <h4 className="mb-2 text-lg font-semibold">
                             Agregar {title}
                         </h4>
-                        {/* Dropdown para seleccionar la compañía (se extrae el relationship_id) */}
+                        {/* Dropdown para seleccionar la compañía y obtener el relationship_id */}
                         <Dropdown
                             id="companyDropdown"
                             label="Seleccionar Compañía"
                             register={() => ({
-                                onChange: (e) =>
-                                    setSelectedRelationshipId(e.target.value),
+                                onChange: (e) => {
+                                    setSelectedRelationshipId(e.target.value)
+                                    setSelectedProject("") // Reiniciamos el proyecto al cambiar la compañía
+                                },
                                 value: selectedRelationshipId,
                             })}
                             error={null}
                             isLoading={false}
                             isError={false}
-                            // Mapeamos las compañías relacionadas para usar el relationship_id como value
                             items={relatedCompanies.map((item) => ({
                                 id: item.relationship_id,
-                                option: item.option, // nombre de la compañía
+                                option: item.option,
                             }))}
                             loadingText="Cargando..."
                             errorText="Error al cargar"
                             useIdAsValue={true}
                         />
-
-                        {/* Dropdown para seleccionar el proyecto */}
+                        {/* Dropdown para seleccionar un proyecto no asociado */}
                         <Dropdown
                             id="projectDropdown"
                             label="Seleccionar Proyecto"
@@ -83,18 +132,21 @@ const EditProjectRelationModal = ({
                                     setSelectedProject(e.target.value),
                                 value: selectedProject,
                             })}
-                            error={null}
-                            isLoading={false}
-                            isError={false}
+                            error={
+                                projectsError
+                                    ? { message: projectsError }
+                                    : null
+                            }
+                            isLoading={isProjectsLoading}
+                            isError={!!projectsError}
                             items={availableProjects.map((item) => ({
-                                id: item.id,
-                                option: item.option,
+                                id: item.project_id,
+                                option: item.options,
                             }))}
-                            loadingText="Cargando..."
-                            errorText="Error al cargar"
+                            loadingText="Cargando proyectos..."
+                            errorText="Error al cargar proyectos"
                             useIdAsValue={true}
                         />
-
                         <Button
                             onClick={handleAddRelation}
                             disabled={
