@@ -44,10 +44,9 @@ export const addOption = async (table, option) => {
  */
 export const updateOption = async (table, id, updatedData) => {
     try {
-        const { data } = await api.put("/options", {
+        const { data } = await api.put(`/options?options_id=${id}`, {
             table,
             option: updatedData,
-            options_id: id,
         })
         return data.option
     } catch (error) {
@@ -65,8 +64,8 @@ export const updateOption = async (table, id, updatedData) => {
  */
 export const deleteOption = async (table, id) => {
     try {
-        const { data } = await api.delete("/options", {
-            data: { table, options_id: id },
+        const { data } = await api.delete(`/options?options_id=${id}`, {
+            data: { table},
         })
         return data
     } catch (error) {
