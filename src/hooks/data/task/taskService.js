@@ -59,7 +59,6 @@ export const deleteTaskApi = async (taskId) => {
 }
 
 export const filterTasksApi = async (filters) => {
-    console.log("Filtrando tareas con los siguientes filtros:", filters)
     const queryParams = new URLSearchParams()
     if (filters.company) queryParams.append("company", filters.company)
     if (filters.project) queryParams.append("project", filters.project)

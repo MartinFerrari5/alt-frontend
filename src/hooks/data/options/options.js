@@ -9,6 +9,7 @@ import { api } from "../../../lib/axios"
 export const getOptions = async (table) => {
     try {
         const { data } = await api.get("/options", { params: { table } })
+        console.log("data", data)
         return data
     } catch (error) {
         throw new Error(

@@ -7,7 +7,6 @@ import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
 
 const TaskFilter = ({ onFilter, currentPath }) => {
-    console.log("onFilter:", onFilter)
     const role = useAuthStore((state) => state.role)
     const [searchParams] = useSearchParams()
     const {
@@ -69,8 +68,6 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     // Sincronizar los valores del formulario con los parámetros de la URL
     useEffect(() => {
         const filters = getUrlFilterValues()
-        // Opcional: puedes agregar un console.log para verificar los valores
-        console.log("Filtros sincronizados:", filters)
         Object.entries(filters).forEach(([key, value]) => {
             setValue(key, value)
         })
