@@ -10,6 +10,7 @@ const RelationSection = ({
     displayProp,
     onAddRelation,
     onDeleteRelation,
+    customModal, // nuevo prop opcional
 }) => {
     const [showModal, setShowModal] = useState(false)
 
@@ -51,19 +52,24 @@ const RelationSection = ({
                     <p>No hay {title.toLowerCase()} asociadas.</p>
                 )}
             </div>
-            {showModal && (
-                <EditRelationModal
-                    title={title}
-                    associatedItems={relatedItems}
-                    availableItems={availableItems}
-                    displayProp={displayProp}
-                    onAddRelation={(id) => {
-                        onAddRelation(id)
-                        setShowModal(false)
-                    }}
-                    onClose={() => setShowModal(false)}
-                />
-            )}
+            {showModal &&
+                (customModal ? (
+                    // Clonamos el componente personalizado para inyectarle onClose y onAddRelation
+                    // (asumiendo que el componente custom ya recibe las props necesarias)
+                    customModal({ onClose: () => setShowModal(false) })
+                ) : (
+                    <EditRelationModal
+                        title={title}
+                        associatedItems={relatedItems}
+                        availableItems={availableItems}
+                        displayProp={displayProp}
+                        onAddRelation={(id) => {
+                            onAddRelation(id)
+                            setShowModal(false)
+                        }}
+                        onClose={() => setShowModal(false)}
+                    />
+                ))}
         </div>
     )
 }
