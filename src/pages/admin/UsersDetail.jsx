@@ -94,7 +94,10 @@ const UsersDetail = () => {
                     })
                     setRelatedCompanies(companiesData)
                 } catch (error) {
-                    console.error("Error al obtener compañías relacionadas:", error)
+                    console.error(
+                        "Error al obtener compañías relacionadas:",
+                        error
+                    )
                     toast.error("Error al obtener compañías relacionadas")
                 }
             }
@@ -122,7 +125,10 @@ const UsersDetail = () => {
                     })
                     setRelatedProjects(projectsData)
                 } catch (error) {
-                    console.error("Error al obtener proyectos relacionados:", error)
+                    console.error(
+                        "Error al obtener proyectos relacionados:",
+                        error
+                    )
                     toast.error("Error al obtener proyectos relacionados")
                 }
             }
@@ -149,7 +155,10 @@ const UsersDetail = () => {
                         projects: projectsNotRelated,
                     })
                 } catch (error) {
-                    console.error("Error al obtener opciones no relacionadas:", error)
+                    console.error(
+                        "Error al obtener opciones no relacionadas:",
+                        error
+                    )
                     toast.error("Error al obtener opciones no relacionadas")
                 }
             }
@@ -157,7 +166,7 @@ const UsersDetail = () => {
         }
     }, [id, relatedCompanies, selectedCompanyRelId])
 
-    // Mapear relaciones para mostrar en la UI  
+    // Mapear relaciones para mostrar en la UI
     // Para compañías se mantiene el mapping (se envía el objeto completo a delete)
     const mappedRelatedCompanies =
         relatedCompanies.map((r) => ({
@@ -238,8 +247,7 @@ const UsersDetail = () => {
         console.log("Relación a eliminar:", relation)
         try {
             // Se envían ambos identificadores para eliminar solo el proyecto específico
-            await deleteProjectUserRelation( relation
-            )
+            await deleteProjectUserRelation(relation)
             toast.success("Relación con el proyecto eliminada exitosamente")
             if (selectedCompanyRelId) {
                 const updatedProjects = await getRelatedOptions({
@@ -327,7 +335,7 @@ const UsersDetail = () => {
                     <div className="mb-4">
                         <label
                             htmlFor="companySelector"
-                            className="block font-bold mb-1"
+                            className="mb-1 block font-bold"
                         >
                             Seleccionar Compañía:
                         </label>
@@ -337,7 +345,7 @@ const UsersDetail = () => {
                             onChange={(e) =>
                                 setSelectedCompanyRelId(e.target.value)
                             }
-                            className="border p-2 rounded w-full"
+                            className="w-full rounded border p-2"
                         >
                             {mappedRelatedCompanies.map((company) => (
                                 <option
