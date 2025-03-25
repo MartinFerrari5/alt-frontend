@@ -228,17 +228,44 @@ export const addProjectUserRelation = async (relationData) => {
 }
 
 /**
- * Elimina la relación entre compañía/proyecto y usuario.
- * @param {Array} ids - IDs de las relaciones a eliminar.
+ * Elimina la relación entre la compañía y el usuario.
+ * Se realiza una petición DELETE al endpoint /reportes/companyUser
+ * enviando el relationship_id como parámetro.
+ *
+ * @param {string} relationship_id - ID de la relación a eliminar.
  * @returns {Promise<Object>} Resultado de la eliminación.
+ * @throws Will throw an error if the deletion fails.
  */
-export const deleteCompanyUserRelation = async (ids) => {
+export const deleteCompanyUserRelation = async (relationship_id) => {
     try {
-        const { data } = await api.delete("/companyUser", { data: { ids } })
-        return data
+        const { data } = await api.delete("/companyUser", {
+            params: { relationship_id },
+        });
+        return data;
     } catch (error) {
         throw new Error(
-            `Error eliminando relación compañía-usuario: ${error.message}`
-        )
+            `Error eliminando relación con la compañía: ${error.message}`
+        );
     }
-}
+};
+
+/**
+ * Elimina la relación entre el proyecto y el usuario.
+ * Se realiza una petición DELETE al endpoint /reportes/projectUser
+ * enviando el relationship_id como parámetro.
+ *
+ * @param {string} relationship_id - ID de la relación a eliminar.
+ * @returns {Promise<Object>} Resultado de la eliminación.
+ * @throws Will throw an error if the deletion fails.
+ */
+export const deleteProjectUserRelation = async (relationship_id) => {
+    console.log("relationship_id", relationship_id);
+    try {
+        const { data } = await api.delete(`/projectUser?relationship_id=${relationship_id}` + relationship_id);
+        return data;
+    } catch (error) {
+        throw new Error(
+            `Error eliminando relación con el proyecto: ${error.message}`
+        );
+    }
+};

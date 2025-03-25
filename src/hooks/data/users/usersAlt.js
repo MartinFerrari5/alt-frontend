@@ -61,10 +61,16 @@ export const resetPassword = async (payload) => {
  */
 export const changePassword = async (payload) => {
     try {
+        // Realiza una petición al endpoint para cambiar la contraseña
         const { data } = await api.post("/users/changepassword", payload)
+
+        // Devuelve la respuesta del servidor
         return data
     } catch (error) {
+        // Loguea el error en la consola
         console.error("Error al cambiar contraseña:", error)
+
+        // Lanza un nuevo error con el mensaje del servidor o uno genérico
         throw new Error(
             error.response?.data?.message || "Error al cambiar la contraseña"
         )

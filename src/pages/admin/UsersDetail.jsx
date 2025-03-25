@@ -13,12 +13,14 @@ import {
     addCompanyUserRelation,
     addProjectUserRelation,
     deleteCompanyUserRelation,
+    deleteProjectUserRelation,
     getOptions,
     getRelatedOptions,
     getNotRelatedCompanies,
     getNotRelatedProjects,
 } from "../../hooks/data/options/options"
 import EditProjectRelationModal from "../../components/admin/users/EditProjectRelationModal"
+import { toast } from "react-toastify"
 
 const UsersDetail = () => {
     const { id } = useParams()
@@ -33,6 +35,9 @@ const UsersDetail = () => {
         companies: [],
         projects: [],
     })
+
+    // Nuevo estado para la compañía seleccionada (por su relationship_id)
+    const [selectedCompanyRelId, setSelectedCompanyRelId] = useState("")
 
     // Cargar opciones disponibles para compañías y proyectos
     useEffect(() => {
@@ -89,39 +94,41 @@ const UsersDetail = () => {
                     })
                     setRelatedCompanies(companiesData)
                 } catch (error) {
-                    console.error(
-                        "Error al obtener compañías relacionadas:",
-                        error
-                    )
+                    console.error("Error al obtener compañías relacionadas:", error)
+                    toast.error("Error al obtener compañías relacionadas")
                 }
             }
             fetchRelatedCompanies()
         }
     }, [id])
 
-    // 2. Obtener los proyectos relacionados al usuario (tomando el relationship_id de la primera compañía)
+    // Al actualizar las compañías relacionadas, se establece el primer relationship_id si no hay ninguno seleccionado
     useEffect(() => {
-        if (id && relatedCompanies.length > 0) {
+        if (relatedCompanies.length > 0 && !selectedCompanyRelId) {
+            setSelectedCompanyRelId(relatedCompanies[0].relationship_id)
+        }
+    }, [relatedCompanies, selectedCompanyRelId])
+
+    // 2. Obtener los proyectos relacionados para la compañía seleccionada
+    useEffect(() => {
+        if (id && selectedCompanyRelId) {
             const fetchRelatedProjects = async () => {
                 try {
-                    const relationshipId = relatedCompanies[0].relationship_id
                     const projectsData = await getRelatedOptions({
                         user_id: id,
                         related_table: "project_company_table",
                         individual_table: "projects_table",
-                        relationship_id: relationshipId,
+                        relationship_id: selectedCompanyRelId,
                     })
                     setRelatedProjects(projectsData)
                 } catch (error) {
-                    console.error(
-                        "Error al obtener proyectos relacionados:",
-                        error
-                    )
+                    console.error("Error al obtener proyectos relacionados:", error)
+                    toast.error("Error al obtener proyectos relacionados")
                 }
             }
             fetchRelatedProjects()
         }
-    }, [id, relatedCompanies])
+    }, [id, selectedCompanyRelId])
 
     // Consultar opciones no relacionadas para compañías y proyectos
     useEffect(() => {
@@ -131,11 +138,10 @@ const UsersDetail = () => {
                     const companiesNotRelated = await getNotRelatedCompanies(id)
                     let projectsNotRelated = []
                     if (relatedCompanies && relatedCompanies.length > 0) {
-                        const relationshipId =
-                            relatedCompanies[0].relationship_id
+                        // Usar el relationship_id seleccionado para los proyectos
                         projectsNotRelated = await getNotRelatedProjects(
                             id,
-                            relationshipId
+                            selectedCompanyRelId
                         )
                     }
                     setNotRelatedOptions({
@@ -143,30 +149,32 @@ const UsersDetail = () => {
                         projects: projectsNotRelated,
                     })
                 } catch (error) {
-                    console.error(
-                        "Error al obtener opciones no relacionadas:",
-                        error
-                    )
+                    console.error("Error al obtener opciones no relacionadas:", error)
+                    toast.error("Error al obtener opciones no relacionadas")
                 }
             }
             fetchNotRelated()
         }
-    }, [id, relatedCompanies])
+    }, [id, relatedCompanies, selectedCompanyRelId])
 
-    // Mapear relaciones para mostrar en la UI
+    // Mapear relaciones para mostrar en la UI  
+    // Para compañías se mantiene el mapping (se envía el objeto completo a delete)
     const mappedRelatedCompanies =
         relatedCompanies.map((r) => ({
             id: r.company_id,
+            relationship_id: r.relationship_id,
             option: r.option,
         })) || []
 
+    // Para proyectos, se usa el project_id como identificador único y se guarda también el relationship_id
     const mappedRelatedProjects =
         relatedProjects.map((r) => ({
-            id: r.project_id,
+            id: r.project_id, // identificador único para el listado
+            relationshipId: r.relationship_id, // se usa para la eliminación
             option: r.option,
         })) || []
 
-    // Mapear opciones disponibles para compañías (se utiliza en la sección de compañías)
+    // Opciones disponibles para compañías (se utiliza en la sección de compañías)
     const availableCompanies = notRelatedOptions.companies.map((item) => ({
         id: item.company_id,
         option: item.options,
@@ -177,6 +185,7 @@ const UsersDetail = () => {
         try {
             const relationData = { user_id: id, company_id: companyId }
             await addCompanyUserRelation(relationData)
+            toast.success("Relación con la compañía creada exitosamente")
             const updatedCompanies = await getRelatedOptions({
                 user_id: id,
                 related_table: "company_users_table",
@@ -190,12 +199,15 @@ const UsersDetail = () => {
             }))
         } catch (error) {
             console.error("Error al agregar relación de compañía:", error)
+            toast.error("Error al agregar relación de compañía")
         }
     }
 
-    const handleDeleteCompanyRelation = async (relationId) => {
+    const handleDeleteCompanyRelation = async (relation) => {
         try {
-            await deleteCompanyUserRelation([relationId])
+            // Se utiliza el relationship_id de la relación de compañía
+            await deleteCompanyUserRelation(relation.relationship_id)
+            toast.success("Relación con la compañía eliminada exitosamente")
             const updatedCompanies = await getRelatedOptions({
                 user_id: id,
                 related_table: "company_users_table",
@@ -207,8 +219,48 @@ const UsersDetail = () => {
                 ...prev,
                 companies: updatedNotRelatedCompanies,
             }))
+            // Si la compañía eliminada era la seleccionada, se reinicia el selector
+            if (relation.relationship_id === selectedCompanyRelId) {
+                setSelectedCompanyRelId(
+                    updatedCompanies.length > 0
+                        ? updatedCompanies[0].relationship_id
+                        : ""
+                )
+            }
         } catch (error) {
             console.error("Error al eliminar relación de compañía:", error)
+            toast.error("Error al eliminar relación de compañía")
+        }
+    }
+
+    // Se actualiza la función para eliminar un solo proyecto recibiendo el objeto completo de la relación
+    const handleDeleteProjectRelation = async (relation) => {
+        console.log("Relación a eliminar:", relation)
+        try {
+            // Se envían ambos identificadores para eliminar solo el proyecto específico
+            await deleteProjectUserRelation( relation
+            )
+            toast.success("Relación con el proyecto eliminada exitosamente")
+            if (selectedCompanyRelId) {
+                const updatedProjects = await getRelatedOptions({
+                    user_id: id,
+                    related_table: "project_company_table",
+                    individual_table: "projects_table",
+                    relationship_id: selectedCompanyRelId,
+                })
+                setRelatedProjects(updatedProjects)
+                const updatedNotRelatedProjects = await getNotRelatedProjects(
+                    id,
+                    selectedCompanyRelId
+                )
+                setNotRelatedOptions((prev) => ({
+                    ...prev,
+                    projects: updatedNotRelatedProjects,
+                }))
+            }
+        } catch (error) {
+            console.error("Error al eliminar relación de proyecto:", error)
+            toast.error("Error al eliminar relación de proyecto")
         }
     }
 
@@ -220,6 +272,7 @@ const UsersDetail = () => {
                 relationship_id: relationshipId,
             }
             await addProjectUserRelation(relationData)
+            toast.success("Relación con el proyecto creada exitosamente")
             // Actualizar proyectos relacionados y opciones disponibles
             const updatedProjects = await getRelatedOptions({
                 user_id: id,
@@ -238,6 +291,7 @@ const UsersDetail = () => {
             }))
         } catch (error) {
             console.error("Error al agregar relación de proyecto:", error)
+            toast.error("Error al agregar relación de proyecto")
         }
     }
 
@@ -268,11 +322,42 @@ const UsersDetail = () => {
                     onAddRelation={handleAddCompanyRelation}
                     onDeleteRelation={handleDeleteCompanyRelation}
                 />
-                {/* Sección para Proyectos con modal personalizado */}
+                {/* Selector de Compañía para filtrar proyectos */}
+                {mappedRelatedCompanies.length > 0 && (
+                    <div className="mb-4">
+                        <label
+                            htmlFor="companySelector"
+                            className="block font-bold mb-1"
+                        >
+                            Seleccionar Compañía:
+                        </label>
+                        <select
+                            id="companySelector"
+                            value={selectedCompanyRelId}
+                            onChange={(e) =>
+                                setSelectedCompanyRelId(e.target.value)
+                            }
+                            className="border p-2 rounded w-full"
+                        >
+                            {mappedRelatedCompanies.map((company) => (
+                                <option
+                                    key={company.relationship_id}
+                                    value={company.relationship_id}
+                                >
+                                    {company.option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                )}
+                {/* Sección para Proyectos */}
                 <RelationSection
                     title="Proyectos"
+                    // Se envía el objeto completo para que el botón de eliminar
+                    // invoque la función con todos los datos necesarios
                     relatedItems={mappedRelatedProjects}
                     displayProp="option"
+                    onDeleteRelation={handleDeleteProjectRelation}
                     customModal={({ onClose }) => (
                         <EditProjectRelationModal
                             title="Proyectos"

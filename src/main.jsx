@@ -21,14 +21,15 @@ import UsersDetail from "./pages/admin/UsersDetail.jsx"
 import UserProfilePage from "./pages/user/UserProfile.jsx"
 import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
-import NewPasswordPage from "./pages/auth/NewPasswordPage.jsx"
+import ResetPasswordPage from "./pages/auth/ResetPassword.jsx"
+import NewPasswordPage from "./pages/user/NewPassword.jsx"
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
     { path: "/login", element: <Login /> },
     { path: "/register", element: <PageRegister /> },
-    { path: "/new-password", element: <NewPasswordPage /> },
+    { path: "/reset-password", element: <ResetPasswordPage /> },
     {
         path: "/",
         element: (
@@ -42,6 +43,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute>
                 <UserProfilePage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/user/password",
+        element: (
+            <ProtectedRoute>
+                <NewPasswordPage />
             </ProtectedRoute>
         ),
     },

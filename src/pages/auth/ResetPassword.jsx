@@ -1,4 +1,4 @@
-// /src/pages/auth/NewPasswordPage.jsx
+// /src/pages/auth/ResetPasswordPage.jsx
 import { useState } from "react"
 import { useResetPassword } from "../../hooks/data/users/useUserHooks"
 import Button from "../../components/Button"
@@ -29,7 +29,7 @@ const LoadingSpinner = () => (
     </div>
 )
 
-const NewPasswordPage = () => {
+const ResetPasswordPage = () => {
     const [email, setEmail] = useState("")
     const resetPasswordMutation = useResetPassword()
     const navigate = useNavigate()
@@ -115,4 +115,4 @@ const NewPasswordPage = () => {
     )
 }
 
-export default NewPasswordPage
+export default ResetPasswordPage

@@ -111,7 +111,6 @@ const TaskItem = ({
         e.stopPropagation()
         openStatusModal()
     }
-
     return (
         <>
             <tr
@@ -135,6 +134,7 @@ const TaskItem = ({
                         {task.full_name || "Sin nombre"}
                     </td>
                 )}
+                
                 <td className="px-4 py-5">{formatDate(task.task_date)}</td>
                 <td className="px-4 py-5">{task.entry_time}</td>
                 <td className="px-4 py-5">{task.exit_time}</td>
