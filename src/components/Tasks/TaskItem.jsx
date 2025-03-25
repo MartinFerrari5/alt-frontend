@@ -97,7 +97,9 @@ const TaskItem = ({
     }, [updateTask, task, newStatus])
 
     const handleRowClick = () => {
-        navigate(`/task/${task.id}`)
+        if (currentPath !== "/") {
+            navigate(`/task/${task.id}`)
+        }
     }
 
     const handleDeleteButtonClick = (e) => {
@@ -142,10 +144,15 @@ const TaskItem = ({
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
                 {currentPath === "/history" && (
-                    <td className="px-4 py-5" title={task.task_description}>
-                        {task.task_description.length > 10
-                            ? `${task.task_description.substring(0, 10)}...`
-                            : task.task_description}
+                    <td className="group relative px-4 py-5">
+                        <span>
+                            {task.task_description.length > 10
+                                ? `${task.task_description.substring(0, 10)}...`
+                                : task.task_description}
+                        </span>
+                        <div className="absolute bottom-full left-0 z-50 mb-2 hidden w-64 rounded border border-gray-300 bg-white p-2 text-black shadow-lg group-hover:block">
+                            {task.task_description}
+                        </div>
                     </td>
                 )}
 

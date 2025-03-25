@@ -52,7 +52,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         let endDate = ""
         // Se usa el separador '+' porque la URL se arma de esa forma
         if (urlDate) {
-            const dates = urlDate.split("+")
+            const dates = urlDate.split(" ")
             if (dates.length === 2) {
                 startDate = dates[0]
                 endDate = dates[1]
@@ -115,7 +115,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         } = data
         // Se usa el signo '+' como separador para la fecha
         const dateRange =
-            startDate && endDate ? `${startDate}+${endDate}` : startDate || ""
+            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
         onFilter({
             fullname,
             company,
