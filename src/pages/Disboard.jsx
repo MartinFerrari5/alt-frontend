@@ -88,7 +88,6 @@ const DisboardPage = () => {
         },
         [setSearchParams]
     )
-    console.log("Filtros actuales:", filters)
 
     // Función que adapta el objeto recibido desde TaskFilter
     const handleFilter = useCallback(
@@ -120,7 +119,6 @@ const DisboardPage = () => {
         },
         [updateFilter]
     )
-    console.log("handleFilter: ", handleFilter)
 
     // Definir los encabezados de la tabla según el rol
     const tableHeaders = useMemo(

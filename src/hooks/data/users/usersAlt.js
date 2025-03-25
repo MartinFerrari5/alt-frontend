@@ -85,7 +85,6 @@ export const changePassword = async (payload) => {
 export const updateUser = async (user_id, payload) => {
     try {
         const { data } = await api.put(`/users?user_id=${user_id}`, payload)
-        console.log("Usuario actualizado:", data)
         return data
     } catch (error) {
         console.error("Error al actualizar usuario:", error)
@@ -140,7 +139,6 @@ export const getUserById = async (userId) => {
 export const deleteUser = async (userId) => {
     try {
         const { data } = await api.delete(`/users/${userId}`)
-        console.log("Usuario eliminado:", data)
         return data
     } catch (error) {
         console.error("Error al eliminar usuario:", error)

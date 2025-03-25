@@ -13,7 +13,8 @@ const Dropdown = ({
     items,
     loadingText,
     errorText,
-    useIdAsValue = false, // Nueva prop opcional
+    useIdAsValue = false,
+    useRelationshipId = false, // Nuevo parámetro para utilizar relationship_id
 }) => {
     useEffect(() => {
         if (isError) {
@@ -38,14 +39,20 @@ const Dropdown = ({
                 ) : isError ? (
                     <option className="text-red-500">{errorText}</option>
                 ) : (
-                    items.map((item) => (
-                        <option
-                            key={item.id}
-                            value={useIdAsValue ? item.id : item.option}
-                        >
-                            {item.option}
-                        </option>
-                    ))
+                    items.map((item) => {
+                        let optionValue = item.option
+                        // Si se requiere usar el relationship_id, se asigna de esa forma
+                        if (useRelationshipId) {
+                            optionValue = item.relationship_id || item.id
+                        } else if (useIdAsValue) {
+                            optionValue = item.id
+                        }
+                        return (
+                            <option key={item.id} value={optionValue}>
+                                {item.option}
+                            </option>
+                        )
+                    })
                 )}
             </select>
             {error && <p className="text-sm text-red-500">{error.message}</p>}
@@ -64,12 +71,14 @@ Dropdown.propTypes = {
         PropTypes.shape({
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
                 .isRequired,
+            relationship_id: PropTypes.string, // Puede existir este campo
             option: PropTypes.string.isRequired,
         })
     ).isRequired,
     loadingText: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
-    useIdAsValue: PropTypes.bool, // Declaración de la nueva prop
+    useIdAsValue: PropTypes.bool,
+    useRelationshipId: PropTypes.bool, // Declaración de la nueva prop
 }
 
 export default Dropdown

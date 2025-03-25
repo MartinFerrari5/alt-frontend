@@ -1,10 +1,11 @@
-// /src/components/Tasks/TaskFilter.jsx
-import { useEffect, useCallback } from "react"
+import { useEffect, useCallback, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import useAuthStore from "../../store/authStore"
 import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
+import { getCompanyProjects } from "../../hooks/data/options/options"
 
 const TaskFilter = ({ onFilter, currentPath }) => {
     const role = useAuthStore((state) => state.role)
@@ -13,6 +14,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         register,
         handleSubmit,
         setValue,
+        watch,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -22,12 +24,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             status: "",
             startDate: "",
             endDate: "",
-            hourtype: "", // Valor por defecto para "hourtype"
+            hourtype: "",
         },
     })
 
-    const { companies_table, projects_table, hour_type_table, fetchOptions } =
-        useOptionsStore()
+    const { companies_table, hour_type_table, fetchOptions } = useOptionsStore()
+    const [filteredProjects, setFilteredProjects] = useState([])
 
     useEffect(() => {
         fetchOptions("companies_table")
@@ -35,7 +37,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         fetchOptions("hour_type_table")
     }, [fetchOptions])
 
-    // Extraer los valores de filtro desde la URL para sincronizar el formulario
+    // Sincronizar los valores del formulario con los parámetros de la URL
     const getUrlFilterValues = useCallback(() => {
         const fullname = searchParams.get("fullname") || ""
         const company = searchParams.get("company") || ""
@@ -65,13 +67,36 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         }
     }, [searchParams])
 
-    // Sincronizar los valores del formulario con los parámetros de la URL
     useEffect(() => {
         const filters = getUrlFilterValues()
         Object.entries(filters).forEach(([key, value]) => {
             setValue(key, value)
         })
     }, [searchParams, setValue, getUrlFilterValues])
+
+    // Observar el valor seleccionado en el dropdown de compañía.
+    // Se espera que el valor de "company" sea el relationship_id
+    const selectedCompany = watch("company")
+    useEffect(() => {
+        if (selectedCompany) {
+            getCompanyProjects(selectedCompany)
+                .then((projects) => {
+                    setFilteredProjects(projects)
+                    // Opcional: si se desea asignar el primer proyecto obtenido por defecto
+                    if (projects.length > 0) {
+                        setValue("project", projects[0].option)
+                    } else {
+                        setValue("project", "")
+                    }
+                })
+                .catch((error) => {
+                    toast.error(error.message)
+                })
+        } else {
+            setFilteredProjects([])
+            setValue("project", "")
+        }
+    }, [selectedCompany, setValue])
 
     const onSubmit = (data) => {
         const {
@@ -118,15 +143,17 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={companies_table}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
+                useRelationshipId={true} // Se usará relationship_id como valor
             />
             <Dropdown
                 id="project"
                 label="Proyecto"
                 register={register}
                 error={errors.project}
-                isLoading={!projects_table || projects_table.length === 0}
+                // Se utiliza el estado local con los proyectos filtrados por la compañía seleccionada
+                isLoading={!filteredProjects || filteredProjects.length === 0}
                 isError={false}
-                items={projects_table}
+                items={filteredProjects}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
             />

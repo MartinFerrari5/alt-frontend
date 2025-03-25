@@ -9,11 +9,32 @@ import { api } from "../../../lib/axios"
 export const getOptions = async (table) => {
     try {
         const { data } = await api.get("/options", { params: { table } })
-        console.log("data", data)
         return data
     } catch (error) {
         throw new Error(
             `Error obteniendo opciones para la tabla ${table}: ${error.message}`
+        )
+    }
+}
+
+/**
+ * Obtiene los proyectos relacionados a una compañía utilizando su relationship_id.
+ * @param {string} relationship_id - ID de la relación de la compañía.
+ * @returns {Promise<Array>} Array con los proyectos de la compañía.
+ */
+export const getCompanyProjects = async (relationship_id) => {
+    console.log("relationship_id:", relationship_id)
+    try {
+        // Se usa la tabla projects_table y se agrega el relationship_id en los parámetros
+        const table = "projects_table"
+        const { data } = await api.get("/options", {
+            params: { table, relationship_id },
+        })
+        console.log("Proyectos para la compañía:", data)
+        return data
+    } catch (error) {
+        throw new Error(
+            `Error obteniendo proyectos para la compañía con relationship_id ${relationship_id}: ${error.message}`
         )
     }
 }
@@ -65,7 +86,7 @@ export const updateOption = async (table, id, updatedData) => {
 export const deleteOption = async (table, id) => {
     try {
         const { data } = await api.delete(`/options?options_id=${id}`, {
-            data: { table},
+            data: { table },
         })
         return data
     } catch (error) {

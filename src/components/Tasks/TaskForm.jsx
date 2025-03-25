@@ -1,8 +1,10 @@
-// src/components/Tasks/TaskForm.jsx
+import { useEffect, useState } from "react"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
 import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
+import { getCompanyProjects } from "../../hooks/data/options/options"
+import { toast } from "react-toastify"
 
 const formatTimeForInput = (timeStr) => {
     if (!timeStr) return ""
@@ -11,6 +13,7 @@ const formatTimeForInput = (timeStr) => {
 
 const TaskForm = ({
     register,
+    watch,
     errors,
     handleSubmit,
     isSubmitting,
@@ -24,10 +27,31 @@ const TaskForm = ({
     if (!task) return null
 
     const isLoadingCompanies = companies.length === 0
-    const isLoadingProjects = projects.length === 0
+    const [filteredProjects, setFilteredProjects] = useState(projects)
+    const isLoadingProjects = filteredProjects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
 
-    const taskData = task
+    const taskData = task || {}
+
+    // Observar el valor seleccionado en el Dropdown de "Empresa"
+    const selectedCompany = watch("company")
+    useEffect(() => {
+        if (selectedCompany) {
+            getCompanyProjects(selectedCompany)
+                .then((resp) => {
+                    setFilteredProjects(resp)
+                    // Aquí podrías actualizar el campo "project" si lo deseas
+                })
+                .catch((error) => {
+                    toast.error(error.message)
+                })
+        } else {
+            setFilteredProjects([])
+        }
+    }, [selectedCompany])
+    if (!task) {
+        return <p>No hay tarea para editar.</p>
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -44,6 +68,7 @@ const TaskForm = ({
                         items={companies}
                         loadingText="Cargando empresas..."
                         errorText="Error cargando empresas"
+                        useRelationshipId={true}
                     />
                     <Dropdown
                         id="project"
@@ -52,7 +77,7 @@ const TaskForm = ({
                         error={errors.project}
                         isLoading={isLoadingProjects}
                         isError={false}
-                        items={projects}
+                        items={filteredProjects}
                         loadingText="Cargando proyectos..."
                         errorText="Error cargando proyectos"
                     />

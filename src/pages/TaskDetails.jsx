@@ -1,4 +1,3 @@
-// src/pages/TaskDetails.jsx
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -33,6 +32,7 @@ const TaskDetailsPage = () => {
 
     const {
         register,
+        watch,
         formState: { errors, isSubmitting },
         handleSubmit,
         reset,
@@ -153,6 +153,7 @@ const TaskDetailsPage = () => {
                 {isEditing ? (
                     <TaskForm
                         register={register}
+                        watch={watch}
                         errors={errors}
                         handleSubmit={handleSubmit(handleSaveClick)}
                         isSubmitting={isSubmitting}

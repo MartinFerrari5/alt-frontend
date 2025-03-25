@@ -1,4 +1,3 @@
-// src/components/Tasks/AddTaskDialog.jsx
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState, useEffect } from "react"
@@ -16,6 +15,7 @@ import Dropdown from "../Dropdown/Dropdown"
 import { useOptionsStore } from "../../store/optionsStore"
 import { toast } from "react-toastify"
 import { useTasks } from "../../hooks/data/task/useTasks"
+import { getCompanyProjects } from "../../hooks/data/options/options"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
     const nodeRef = useRef(null)
@@ -29,14 +29,12 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         return initialDate
     })
 
+    // Estado local para proyectos filtrados por compañía
+    const [filteredProjects, setFilteredProjects] = useState([])
+
     // Obtener las opciones del store
-    const {
-        companies_table,
-        hour_type_table,
-        projects_table,
-        types_table,
-        fetchOptions,
-    } = useOptionsStore()
+    const { companies_table, hour_type_table, types_table, fetchOptions } =
+        useOptionsStore()
 
     useEffect(() => {
         fetchOptions("companies_table")
@@ -48,7 +46,8 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
     // Flags de carga para cada select
     const isLoadingCompanies = !companies_table || companies_table.length === 0
     const isLoadingHourTypes = !hour_type_table || hour_type_table.length === 0
-    const isLoadingProjects = !projects_table || projects_table.length === 0
+    // Para proyectos usaremos el estado filtrado
+    const isLoadingProjects = !filteredProjects || filteredProjects.length === 0
     const isLoadingTypesTable = !types_table || types_table.length === 0
 
     const {
@@ -72,18 +71,16 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         },
     })
 
-    // Al cargar las opciones se asignan valores por defecto a algunos selects
+    // Asignar valores por defecto a los selects cuando carguen las opciones
     useEffect(() => {
         reset({
             ...watch(),
             company:
                 companies_table && companies_table.length > 0
-                    ? companies_table[0].company
+                    ? companies_table[0].relationship_id // se usa el relationship_id
                     : "",
-            project:
-                projects_table && projects_table.length > 0
-                    ? projects_table[0].project
-                    : "",
+            // Se deja project vacío hasta obtener los proyectos filtrados
+            project: "",
             hour_type:
                 hour_type_table && hour_type_table.length > 0
                     ? hour_type_table[0].hour_type
@@ -94,7 +91,40 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                     : "",
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [companies_table, projects_table, hour_type_table, types_table])
+    }, [companies_table, hour_type_table, types_table])
+
+    // Observar el cambio en la compañía seleccionada (valor = relationship_id)
+    const selectedCompany = watch("company")
+    useEffect(() => {
+        if (selectedCompany) {
+            getCompanyProjects(selectedCompany)
+                .then((projects) => {
+                    setFilteredProjects(projects)
+                    if (projects.length > 0) {
+                        reset({
+                            ...watch(),
+                            project: projects[0].option,
+                        })
+                    } else {
+                        reset({
+                            ...watch(),
+                            project: "",
+                        })
+                    }
+                })
+                .catch((error) => {
+                    toast.error(error.message)
+                })
+        } else {
+            // Si no se ha seleccionado compañía, limpiar proyectos filtrados
+            setFilteredProjects([])
+            reset({
+                ...watch(),
+                project: "",
+            })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCompany])
 
     const formatDateForBackend = (date) => {
         const year = date.getFullYear()
@@ -189,6 +219,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                 items={companies_table}
                                                 loadingText="Cargando empresas..."
                                                 errorText="Error cargando empresas"
+                                                useRelationshipId={true}
                                             />
                                             <Dropdown
                                                 id="project"
@@ -197,7 +228,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                 error={errors.project}
                                                 isLoading={isLoadingProjects}
                                                 isError={false}
-                                                items={projects_table}
+                                                items={filteredProjects}
                                                 loadingText="Cargando proyectos..."
                                                 errorText="Error cargando proyectos"
                                             />
