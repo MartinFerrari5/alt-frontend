@@ -29,15 +29,17 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     })
 
     const { companies_table, hour_type_table, fetchOptions } = useOptionsStore()
+    // Estado para almacenar la lista de proyectos relacionados según la compañía seleccionada
     const [filteredProjects, setFilteredProjects] = useState([])
 
+    // Al montar el componente, cargar las opciones necesarias
     useEffect(() => {
         fetchOptions("companies_table")
         fetchOptions("projects_table")
         fetchOptions("hour_type_table")
     }, [fetchOptions])
 
-    // Sincronizar los valores del formulario con los parámetros de la URL
+    // Función para extraer los filtros de la URL
     const getUrlFilterValues = useCallback(() => {
         const fullname = searchParams.get("fullname") || ""
         const company = searchParams.get("company") || ""
@@ -45,10 +47,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         const status = searchParams.get("status") || ""
         const hourtype = searchParams.get("hourtype") || ""
         const urlDate = searchParams.get("date") || ""
+
         let startDate = ""
         let endDate = ""
+        // Se usa el separador '+' porque la URL se arma de esa forma
         if (urlDate) {
-            const dates = urlDate.split(" ")
+            const dates = urlDate.split("+")
             if (dates.length === 2) {
                 startDate = dates[0]
                 endDate = dates[1]
@@ -67,6 +71,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         }
     }, [searchParams])
 
+    // Sincronizar el formulario con los parámetros de la URL
     useEffect(() => {
         const filters = getUrlFilterValues()
         Object.entries(filters).forEach(([key, value]) => {
@@ -74,30 +79,30 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         })
     }, [searchParams, setValue, getUrlFilterValues])
 
-    // Observar el valor seleccionado en el dropdown de compañía.
-    // Se espera que el valor de "company" sea el relationship_id
+    // Observar el valor de "company" para actualizar los proyectos relacionados.
+    // Se espera que el valor de "company" sea el relationship_id, gracias a la prop "useRelationshipId" en el Dropdown.
     const selectedCompany = watch("company")
+    console.log("Selected Company:", selectedCompany)
     useEffect(() => {
+        console.log("Selected Company:", selectedCompany)
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
                 .then((projects) => {
                     setFilteredProjects(projects)
-                    // Opcional: si se desea asignar el primer proyecto obtenido por defecto
-                    if (projects.length > 0) {
-                        setValue("project", projects[0].option)
-                    } else {
-                        setValue("project", "")
-                    }
+                    // Si hay proyectos, asigna el primer valor por defecto en el campo "project"
+                    setValue(
+                        "project",
+                        projects.length > 0 ? projects[0].option : ""
+                    )
                 })
-                .catch((error) => {
-                    toast.error(error.message)
-                })
+                .catch((error) => toast.error(error.message))
         } else {
             setFilteredProjects([])
             setValue("project", "")
         }
     }, [selectedCompany, setValue])
 
+    // Función de envío del formulario
     const onSubmit = (data) => {
         const {
             fullname,
@@ -108,8 +113,9 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             endDate,
             hourtype,
         } = data
+        // Se usa el signo '+' como separador para la fecha
         const dateRange =
-            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
+            startDate && endDate ? `${startDate}+${endDate}` : startDate || ""
         onFilter({
             fullname,
             company,
@@ -150,14 +156,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 label="Proyecto"
                 register={register}
                 error={errors.project}
-                // Se utiliza el estado local con los proyectos filtrados por la compañía seleccionada
                 isLoading={!filteredProjects || filteredProjects.length === 0}
                 isError={false}
                 items={filteredProjects}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
             />
-            {/* Dropdown para "Tipo de Hora" */}
             <Dropdown
                 id="hourtype"
                 label="Tipo de Hora"

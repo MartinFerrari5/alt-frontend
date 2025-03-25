@@ -14,10 +14,10 @@ const Tasks = () => {
     const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.role)
 
-    // Solo mostramos el sistema de selección en la ruta "/"
+    // Se muestra la selección de tareas solo en la ruta "/"
     const isInicio = currentPath === "/"
 
-    // Obtención de filtros desde la URL
+    // Obtención de filtros desde la URL, incluyendo hourtype
     const filters = useMemo(
         () => ({
             fullname: searchParams.get("fullname") || "",
@@ -37,13 +37,14 @@ const Tasks = () => {
         isError,
     } = useFilterTasks(filters)
 
-    // Actualiza la URL con los datos del filtro
+    // Actualiza la URL con los datos del filtro, incluyendo hourtype
     const handleFilter = (filterData) => {
-        const { fullname, company, project, status, date } = filterData
-        setSearchParams({ fullname, company, project, status, date })
+        const { fullname, company, project, status, date, hourtype } =
+            filterData
+        setSearchParams({ fullname, company, project, status, date, hourtype })
     }
 
-    // Estado para almacenar los IDs de las tareas seleccionadas
+    // Estados para la selección de tareas
     const [selectedTasks, setSelectedTasks] = useState([])
     const [allSelected, setAllSelected] = useState(false)
 
@@ -122,7 +123,7 @@ const Tasks = () => {
         </div>
     )
 
-    // Manejo de estados de carga, error o sin datos
+    // Manejo de estados: carga, error o sin datos
     const renderContent = () => {
         if (isLoading)
             return (
@@ -147,7 +148,6 @@ const Tasks = () => {
 
     return (
         <div className="space-y-6 overflow-hidden px-8 py-9">
-            {/* Se pasa al Header solo los items seleccionados */}
             <Header
                 subtitle="Mis Tareas"
                 title="Mis Tareas"
