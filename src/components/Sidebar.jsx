@@ -108,7 +108,7 @@ const UserDetails = () => {
         >
             <img
                 className="h-10 w-10 rounded-full"
-                src={"/src/assets/icons//LogoPerfil.png"}
+                src={"/src/assets/icons/usuario.png"}
                 alt={fullNameFromStore}
             />
             <div className="font-medium">
