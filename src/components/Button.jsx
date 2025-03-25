@@ -1,5 +1,3 @@
-// //src/components/Button.jsx
-
 import PropTypes from "prop-types"
 import { tv } from "tailwind-variants"
 
@@ -27,6 +25,12 @@ const Button = ({
                 true: "cursor-not-allowed opacity-50 hover:opacity-50",
             },
         },
+        compoundVariants: [
+            {
+                active: true,
+                className: "scale-95",
+            },
+        ],
         defaultVariants: {
             color: "primary",
             size: "small",

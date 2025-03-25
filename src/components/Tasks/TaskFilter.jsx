@@ -1,3 +1,4 @@
+// /src/components/Tasks/TaskFilter.jsx
 import { useEffect, useCallback, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
@@ -6,6 +7,7 @@ import useAuthStore from "../../store/authStore"
 import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
 import { getCompanyProjects } from "../../hooks/data/options/options"
+import Button from "../Button"
 
 const TaskFilter = ({ onFilter, currentPath }) => {
     const role = useAuthStore((state) => state.role)
@@ -174,32 +176,39 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 errorText="Error cargando tipos de hora"
             />
             {currentPath === "/history" && (
-                <select
-                    {...register("status")}
-                    className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="">Seleccionar estado</option>
-                    <option value="0">En Progreso</option>
-                    <option value="1">Enviado a RRHH</option>
-                    <option value="2">Finalizado</option>
-                </select>
+                <div className="group relative z-0 mb-5 w-full">
+                    <label className="mb-2 block text-sm font-medium">
+                        Tipo de estado
+                    </label>
+                    <select
+                        {...register("status")}
+                        className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
+                    >
+                        <option value="">estado</option>
+                        <option value="0">En Progreso</option>
+                        <option value="1">Enviado a RRHH</option>
+                        <option value="2">Finalizado</option>
+                    </select>
+                </div>
             )}
             <input
                 type="date"
                 {...register("startDate")}
-                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
             <input
                 type="date"
                 {...register("endDate")}
-                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
-            <button
+            <Button
                 type="submit"
-                className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                color="primary"
+                size="large"
+                className="rounded-lg transition-transform active:scale-95"
             >
                 Filtrar
-            </button>
+            </Button>
         </form>
     )
 }

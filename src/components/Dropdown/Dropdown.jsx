@@ -30,10 +30,10 @@ const Dropdown = ({
             <select
                 id={id}
                 {...register(id)}
-                className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-gray-200 focus:outline-none focus:ring-0"
+                className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
                 disabled={isLoading}
             >
-                <option value="">Seleccione un {label}</option>
+                <option value="">{label}</option>
                 {isLoading ? (
                     <option>{loadingText}</option>
                 ) : isError ? (
@@ -55,6 +55,7 @@ const Dropdown = ({
                     })
                 )}
             </select>
+
             {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>
     )
