@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
-import Sidebar from "../components/Sidebar"
 import TaskHeader from "../components/Tasks/TaskHeader"
 import TaskForm from "../components/Tasks/TaskForm"
 import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
@@ -13,6 +12,7 @@ import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
 
 import { useOptionsStore } from "../store/optionsStore"
+import Sidebar from "../components/layout/Sidebar"
 
 const TaskDetailsPage = () => {
     const { taskId } = useParams()

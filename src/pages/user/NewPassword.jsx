@@ -1,5 +1,6 @@
 // /src/pages/Tasks.jsx
-import Sidebar from "../../components/Sidebar"
+
+import Sidebar from "../../components/layout/Sidebar"
 import ChangePassword from "../../components/user/ChangePassword"
 
 const NewPasswordPage = () => (

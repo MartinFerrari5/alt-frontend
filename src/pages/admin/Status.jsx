@@ -1,5 +1,6 @@
 import StatusTable from "../../components/admin/StatusManager/StatusTable"
-import Sidebar from "../../components/Sidebar"
+import Sidebar from "../../components/layout/Sidebar"
+
 import { useGetStatus } from "../../hooks/data/status/use-status-hooks"
 
 export const Status = () => {

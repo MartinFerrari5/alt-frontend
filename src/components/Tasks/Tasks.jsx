@@ -2,11 +2,12 @@
 import { useMemo, useState } from "react"
 import { useSearchParams, useLocation } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
-import Header from "../Header"
+
 import TaskItem from "./TaskItem"
 import TaskFilter from "./TaskFilter"
 import useAuthStore from "../../store/authStore"
 import DashboardCards from "../DashboardCards"
+import Header from "../layout/Header"
 
 const Tasks = () => {
     const { useFilterTasks } = useTasks()
@@ -73,6 +74,8 @@ const Tasks = () => {
     const selectedTaskItems = filteredTasks.filter((task) =>
         selectedTasks.includes(task.id)
     )
+
+    console.log("selectedTasks:", selectedTasks)
 
     // Renderiza la tabla con encabezados y filas
     const renderTable = () => (

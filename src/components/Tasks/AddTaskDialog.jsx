@@ -1,3 +1,4 @@
+// /src/components/Tasks/AddTaskDialog.jsx
 import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState, useEffect } from "react"
@@ -64,8 +65,8 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             task_type: "",
             hour_type: "",
             task_description: "Tarea de prueba",
-            entry_time: "09:00",
-            exit_time: "18:00",
+            entry_time: "",
+            exit_time: "",
             lunch_hours: "2",
             status: "progreso",
         },
@@ -145,8 +146,8 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         reset({
             ...currentValues,
             task_description: "Tarea de prueba",
-            entry_time: "09:00",
-            exit_time: "18:00",
+            entry_time: "",
+            exit_time: "",
             lunch_hours: "2",
         })
         // Reiniciar la fecha a la fecha actual

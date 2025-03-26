@@ -2,12 +2,13 @@
 import { useMemo, useCallback } from "react"
 import { useLocation, useSearchParams } from "react-router-dom"
 import DashboardCards from "../components/DashboardCards"
-import Header from "../components/Header"
-import Sidebar from "../components/Sidebar"
+
 import TaskItem from "../components/Tasks/TaskItem"
 import TaskFilter from "../components/Tasks/TaskFilter"
 import { useTasks } from "../hooks/data/task/useTasks"
 import useAuthStore from "../store/authStore"
+import Sidebar from "../components/layout/Sidebar"
+import Header from "../components/layout/Header"
 
 const TABLE_HEADERS = [
     "Nombre",

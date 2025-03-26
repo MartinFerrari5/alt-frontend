@@ -1,14 +1,14 @@
-// /src/components/Header.jsx
+// src/components/layout/Header.jsx
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useLocation, useSearchParams } from "react-router-dom"
-import Button from "./Button"
-import { AddIcon } from "../assets/icons"
-import AddOptionDialog from "./email/AddOptionDialog"
-import AddTaskDialog from "./Tasks/AddTaskDialog"
-import DownloadExcelButton from "./admin/DownloadExcelButton"
-import SendToRRHHButton from "./Tasks/SendToRRHHButton"
-import useAuthStore from "../store/authStore"
+import useAuthStore from "../../store/authStore"
+import { AddIcon } from "../../assets/icons"
+import AddOptionDialog from "../email/AddOptionDialog"
+import DownloadExcelButton from "../admin/DownloadExcelButton"
+import Button from "../Button"
+import SendToRRHHButton from "../Tasks/SendToRRHHButton"
+import AddTaskDialog from "../Tasks/AddTaskDialog"
 
 function Header({ subtitle, title, tasks }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)

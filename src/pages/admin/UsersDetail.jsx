@@ -1,7 +1,7 @@
 // /src/pages/admin/UsersDetail.jsx
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import Sidebar from "../../components/Sidebar"
+import Sidebar from "../../components/layout/Sidebar"
 import Button from "../../components/Button"
 import UserEditForm from "../../components/admin/users/UserEditForm"
 import RelationSection from "../../components/admin/users/RelationSection"

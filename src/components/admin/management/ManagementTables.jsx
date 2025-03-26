@@ -1,7 +1,7 @@
 // src/components/admin/management/ManagementTables.jsx
 import { useEffect, useState } from "react"
 import { useOptionsStore } from "../../../store/optionsStore"
-import Header from "../../Header"
+
 import TableItemView from "./TableItemView"
 import TableItemEdit from "./TableItemEdit"
 import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
@@ -10,6 +10,7 @@ import {
     useEmailMutations,
     useGetEmails,
 } from "../../../hooks/data/email/use-email-mutations"
+import Header from "../../layout/Header"
 
 const ManagementTables = () => {
     const {

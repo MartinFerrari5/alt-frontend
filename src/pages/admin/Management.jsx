@@ -1,7 +1,7 @@
 // /src/pages/Users.jsx
 
-import Sidebar from "../../components/Sidebar"
 import ManagementTables from "../../components/admin/management/ManagementTables"
+import Sidebar from "../../components/layout/Sidebar"
 
 function ManagementPage() {
     return (

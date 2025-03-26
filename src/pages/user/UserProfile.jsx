@@ -3,8 +3,9 @@ import { useState } from "react"
 import Button from "../../components/Button"
 import { useUpdateUser } from "../../hooks/data/users/useUserHooks"
 import { useNavigate } from "react-router-dom"
-import Sidebar from "../../components/Sidebar"
+
 import useAuthStore from "../../store/authStore"
+import Sidebar from "../../components/layout/Sidebar"
 
 const UserProfilePage = () => {
     const navigate = useNavigate()

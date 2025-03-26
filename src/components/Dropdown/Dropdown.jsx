@@ -14,7 +14,7 @@ const Dropdown = ({
     loadingText,
     errorText,
     useIdAsValue = false,
-    useRelationshipId = false, // Nuevo parámetro para utilizar relationship_id
+    useRelationshipId = false,
 }) => {
     useEffect(() => {
         if (isError) {

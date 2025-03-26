@@ -1,6 +1,6 @@
 // /src/pages/Users.jsx
 import Users from "../../components/admin/users/Users"
-import Sidebar from "../../components/Sidebar"
+import Sidebar from "../../components/layout/Sidebar"
 
 function UsersPage() {
     return (

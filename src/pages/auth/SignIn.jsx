@@ -180,7 +180,7 @@ const SignIn = () => {
                             <div>
                                 <a className="text-sm font-light">
                                     <Link
-                                        to="/new-password"
+                                        to="/reset-password"
                                         className="text-primary-600 text-sm font-medium hover:underline"
                                     >
                                         ¿Olvidaste la contraseña?

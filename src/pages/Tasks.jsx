@@ -1,5 +1,6 @@
 // /src/pages/Tasks.jsx
-import Sidebar from "../components/Sidebar"
+
+import Sidebar from "../components/layout/Sidebar"
 import Tasks from "../components/Tasks/Tasks"
 
 const TasksPage = () => (
