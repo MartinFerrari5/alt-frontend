@@ -41,7 +41,6 @@ const Dropdown = ({
                 ) : (
                     items.map((item) => {
                         let optionValue = item.option
-                        // Si se requiere usar el relationship_id, se asigna de esa forma
                         if (useRelationshipId) {
                             optionValue = item.relationship_id || item.id
                         } else if (useIdAsValue) {
@@ -55,7 +54,6 @@ const Dropdown = ({
                     })
                 )}
             </select>
-
             {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>
     )
@@ -72,14 +70,14 @@ Dropdown.propTypes = {
         PropTypes.shape({
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
                 .isRequired,
-            relationship_id: PropTypes.string, // Puede existir este campo
+            relationship_id: PropTypes.string,
             option: PropTypes.string.isRequired,
         })
     ).isRequired,
     loadingText: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
     useIdAsValue: PropTypes.bool,
-    useRelationshipId: PropTypes.bool, // Declaración de la nueva prop
+    useRelationshipId: PropTypes.bool,
 }
 
 export default Dropdown

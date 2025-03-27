@@ -14,7 +14,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
     const [selectedTable, setSelectedTable] = useState("projects_table")
     const [optionValue, setOptionValue] = useState("")
 
-    // Función que retorna el placeholder según la opción seleccionada
+    // Retorna el placeholder según la opción seleccionada
     const getPlaceholder = () => {
         const placeholders = {
             emails: "Ingrese el email",
@@ -26,7 +26,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
         return placeholders[selectedTable] || "Ingrese el nombre"
     }
 
-    // Función para manejar la respuesta exitosa sin cerrar el modal
+    // Maneja la respuesta exitosa sin cerrar el modal
     const handleSuccess = () => {
         setOptionValue("")
         toast.success("¡Dato agregado con éxito!", { autoClose: 3000 })
@@ -39,6 +39,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
         }
 
         if (selectedTable === "emails") {
+            // En caso de emails, se envía un objeto con la propiedad "email"
             addEmails.mutate(
                 { email: optionValue },
                 {
@@ -56,6 +57,7 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
             )
         } else {
             try {
+                // Se envía la opción como un objeto, por ejemplo { value: "valor ingresado" }
                 await addOptionAction(selectedTable, optionValue)
                 handleSuccess()
             } catch (error) {

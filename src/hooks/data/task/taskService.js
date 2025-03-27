@@ -12,6 +12,7 @@ import { api } from "../../../lib/axios"
 
 export const getAllTasks = async () => {
     const { data } = await api.get("/tasks")
+    console.log("Tasks: ", data)
     return data.tasks
 }
 

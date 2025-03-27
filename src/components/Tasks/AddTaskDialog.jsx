@@ -1,5 +1,3 @@
-// /src/components/Tasks/AddTaskDialog.jsx
-import "./AddTaskDialog.css"
 import PropTypes from "prop-types"
 import { useRef, useState, useEffect } from "react"
 import { createPortal } from "react-dom"
@@ -17,26 +15,28 @@ import { useOptionsStore } from "../../store/optionsStore"
 import { toast } from "react-toastify"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import { getCompanyProjects } from "../../hooks/data/options/options"
+import "./AddTaskDialog.css"
 
 const AddTaskDialog = ({ isOpen, handleClose }) => {
     const nodeRef = useRef(null)
     const { addTaskMutation } = useTasks()
     const isAddingTask = addTaskMutation.isLoading
 
-    // Estado para la fecha de la tarea
+    // Fecha inicial (sin hora) para la tarea
     const [taskDate, setTaskDate] = useState(() => {
-        const initialDate = new Date()
-        initialDate.setHours(0, 0, 0, 0)
-        return initialDate
+        const date = new Date()
+        date.setHours(0, 0, 0, 0)
+        return date
     })
 
-    // Estado local para proyectos filtrados por compañía
+    // Estado para proyectos filtrados según la compañía
     const [filteredProjects, setFilteredProjects] = useState([])
 
-    // Obtener las opciones del store
+    // Obtener opciones del store
     const { companies_table, hour_type_table, types_table, fetchOptions } =
         useOptionsStore()
 
+    // Se traen todas las opciones necesarias al montar el componente
     useEffect(() => {
         fetchOptions("companies_table")
         fetchOptions("hour_type_table")
@@ -44,10 +44,9 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         fetchOptions("types_table")
     }, [fetchOptions])
 
-    // Flags de carga para cada select
+    // Flags de carga
     const isLoadingCompanies = !companies_table || companies_table.length === 0
     const isLoadingHourTypes = !hour_type_table || hour_type_table.length === 0
-    // Para proyectos usaremos el estado filtrado
     const isLoadingProjects = !filteredProjects || filteredProjects.length === 0
     const isLoadingTypesTable = !types_table || types_table.length === 0
 
@@ -72,15 +71,14 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         },
     })
 
-    // Asignar valores por defecto a los selects cuando carguen las opciones
+    // Asigna valores por defecto a los selects cuando las opciones llegan
     useEffect(() => {
         reset({
             ...watch(),
             company:
                 companies_table && companies_table.length > 0
-                    ? companies_table[0].relationship_id // se usa el relationship_id
+                    ? companies_table[0].relationship_id
                     : "",
-            // Se deja project vacío hasta obtener los proyectos filtrados
             project: "",
             hour_type:
                 hour_type_table && hour_type_table.length > 0
@@ -94,39 +92,27 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [companies_table, hour_type_table, types_table])
 
-    // Observar el cambio en la compañía seleccionada (valor = relationship_id)
+    // Al cambiar la compañía (valor = relationship_id) se actualizan los proyectos
     const selectedCompany = watch("company")
     useEffect(() => {
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
                 .then((projects) => {
                     setFilteredProjects(projects)
-                    if (projects.length > 0) {
-                        reset({
-                            ...watch(),
-                            project: projects[0].option,
-                        })
-                    } else {
-                        reset({
-                            ...watch(),
-                            project: "",
-                        })
-                    }
+                    reset({
+                        ...watch(),
+                        project: projects.length > 0 ? projects[0].option : "",
+                    })
                 })
-                .catch((error) => {
-                    toast.error(error.message)
-                })
+                .catch((error) => toast.error(error.message))
         } else {
-            // Si no se ha seleccionado compañía, limpiar proyectos filtrados
             setFilteredProjects([])
-            reset({
-                ...watch(),
-                project: "",
-            })
+            reset({ ...watch(), project: "" })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
 
+    // Convierte la fecha al formato que espera el backend
     const formatDateForBackend = (date) => {
         const year = date.getFullYear()
         const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -134,7 +120,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
         return `${year}-${month}-${day} 00:00:00`
     }
 
-    // Función que resetea el formulario conservando los valores de los dropdowns
+    // Reinicia el formulario conservando los valores de los dropdowns y resetea la fecha
     const resetForm = () => {
         const currentValues = {
             company: watch("company"),
@@ -150,11 +136,10 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             exit_time: "",
             lunch_hours: "2",
         })
-        // Reiniciar la fecha a la fecha actual
         setTaskDate(() => {
-            const initialDate = new Date()
-            initialDate.setHours(0, 0, 0, 0)
-            return initialDate
+            const date = new Date()
+            date.setHours(0, 0, 0, 0)
+            return date
         })
     }
 
@@ -172,7 +157,9 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             onSuccess: () => {
                 toast.success(
                     "Tarea guardada. Puedes seguir agregando más tareas.",
-                    { autoClose: 3000 }
+                    {
+                        autoClose: 3000,
+                    }
                 )
                 resetForm()
             },
@@ -191,7 +178,7 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
             nodeRef={nodeRef}
             in={isOpen}
             timeout={500}
-            classNames="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+            classNames="dialog-transition"
             unmountOnExit
         >
             <div className="relative max-h-full w-full max-w-md p-4">
@@ -201,14 +188,14 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                         className="fixed inset-0 flex items-center justify-center backdrop-blur"
                     >
                         <div className="relative w-full max-w-lg rounded-xl bg-white shadow-sm">
-                            <div className="flex items-center justify-center rounded-t border-b p-4">
+                            <header className="flex items-center justify-center rounded-t border-b p-4">
                                 <h3 className="text-lg font-semibold text-gray-900">
                                     Nueva Tarea
                                 </h3>
-                            </div>
+                            </header>
                             <div className="p-4">
                                 <form onSubmit={handleSubmit(handleSaveClick)}>
-                                    <div className="mx-auto max-w-md">
+                                    <div className="mx-auto grid max-w-md gap-6">
                                         <div className="grid md:grid-cols-2 md:gap-6">
                                             <Dropdown
                                                 id="company"
@@ -245,7 +232,6 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                 errorText="Error cargando tipos de hora"
                                             />
                                         </div>
-
                                         <Dropdown
                                             id="task_type"
                                             label="Tipo de Tarea"
@@ -261,7 +247,6 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                             loadingText="Cargando tipos de Tarea..."
                                             errorText="Error cargando tipos de tarea"
                                         />
-
                                         <Input
                                             id="task_description"
                                             label="Descripción"
@@ -270,56 +255,45 @@ const AddTaskDialog = ({ isOpen, handleClose }) => {
                                                 errors.task_description?.message
                                             }
                                         />
-
                                         <div className="grid md:grid-cols-2 md:gap-6">
                                             <DatePicker
                                                 value={taskDate}
                                                 onChange={setTaskDate}
                                                 className="group relative z-0 mb-5 w-full"
                                             />
-                                            <div className="group relative z-0 mb-5 w-full">
-                                                <Input
-                                                    id="entry_time"
-                                                    label="Hora de Entrada"
-                                                    type="time"
-                                                    {...register("entry_time")}
-                                                    errorMessage={
-                                                        errors.entry_time
-                                                            ?.message
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="group relative z-0 mb-5 w-full">
-                                                <Input
-                                                    id="exit_time"
-                                                    label="Hora de Salida"
-                                                    type="time"
-                                                    {...register("exit_time")}
-                                                    errorMessage={
-                                                        errors.exit_time
-                                                            ?.message
-                                                    }
-                                                />
-                                            </div>
-                                            <div className="group relative z-0 mb-5 w-full">
-                                                <Input
-                                                    id="lunch_hours"
-                                                    label="Horas de Almuerzo"
-                                                    type="number"
-                                                    min="0.1"
-                                                    max="4"
-                                                    step="0.1"
-                                                    {...register("lunch_hours")}
-                                                    errorMessage={
-                                                        errors.lunch_hours
-                                                            ?.message
-                                                    }
-                                                />
-                                            </div>
+                                            <Input
+                                                id="entry_time"
+                                                label="Hora de Entrada"
+                                                type="time"
+                                                {...register("entry_time")}
+                                                errorMessage={
+                                                    errors.entry_time?.message
+                                                }
+                                            />
+                                            <Input
+                                                id="exit_time"
+                                                label="Hora de Salida"
+                                                type="time"
+                                                {...register("exit_time")}
+                                                errorMessage={
+                                                    errors.exit_time?.message
+                                                }
+                                            />
+                                            <Input
+                                                id="lunch_hours"
+                                                label="Horas de Almuerzo"
+                                                type="number"
+                                                min="0.1"
+                                                max="4"
+                                                step="0.1"
+                                                {...register("lunch_hours")}
+                                                errorMessage={
+                                                    errors.lunch_hours?.message
+                                                }
+                                            />
                                         </div>
                                     </div>
-
-                                    <div className="flex justify-end gap-3">
+                                    <div className="mt-4 flex justify-end gap-3">
                                         <Button
                                             type="button"
                                             color="secondary"

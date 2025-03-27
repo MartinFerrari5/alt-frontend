@@ -14,7 +14,6 @@ import PageRegister from "./pages/auth/Register.jsx"
 import Login from "./pages/auth/SignIn.jsx"
 import DisboardPage from "./pages/Disboard.jsx"
 import TaskDetailsPage from "./pages/TaskDetails.jsx"
-import TasksPage from "./pages/Tasks.jsx"
 import ManagementPage from "./pages/admin/Management.jsx"
 import UsersPage from "./pages/admin/Users.jsx"
 import UsersDetail from "./pages/admin/UsersDetail.jsx"
@@ -23,6 +22,7 @@ import NotFoundPage from "./pages/NotFound.jsx"
 import { Status } from "./pages/admin/Status.jsx"
 import ResetPasswordPage from "./pages/auth/ResetPassword.jsx"
 import NewPasswordPage from "./pages/user/NewPassword.jsx"
+import TasksPage from "./pages/TasksPage.jsx"
 
 const queryClient = new QueryClient()
 

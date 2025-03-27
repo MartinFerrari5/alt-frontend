@@ -1,13 +1,12 @@
-// src/components/Tasks/Tasks.jsx
-import { useMemo, useState } from "react"
+// src/components/tasks/Tasks.jsx
+import { useMemo, useState, useCallback } from "react"
 import { useSearchParams, useLocation } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
-
-import TaskItem from "./TaskItem"
 import TaskFilter from "./TaskFilter"
 import useAuthStore from "../../store/authStore"
-import DashboardCards from "../DashboardCards"
 import Header from "../layout/Header"
+import DashboardCards from "../DashboardCards"
+import TaskTable from "./TaskTable"
 
 const Tasks = () => {
     const { useFilterTasks } = useTasks()
@@ -18,7 +17,7 @@ const Tasks = () => {
     // Se muestra la selección de tareas solo en la ruta "/"
     const isInicio = currentPath === "/"
 
-    // Obtención de filtros desde la URL, incluyendo hourtype
+    // Filtros obtenidos de la URL
     const filters = useMemo(
         () => ({
             fullname: searchParams.get("fullname") || "",
@@ -38,19 +37,29 @@ const Tasks = () => {
         isError,
     } = useFilterTasks(filters)
 
-    // Actualiza la URL con los datos del filtro, incluyendo hourtype
-    const handleFilter = (filterData) => {
-        const { fullname, company, project, status, date, hourtype } =
-            filterData
-        setSearchParams({ fullname, company, project, status, date, hourtype })
-    }
+    // Actualiza los parámetros de búsqueda con los filtros
+    const handleFilter = useCallback(
+        (filterData) => {
+            const { fullname, company, project, status, date, hourtype } =
+                filterData
+            setSearchParams({
+                fullname,
+                company,
+                project,
+                status,
+                date,
+                hourtype,
+            })
+        },
+        [setSearchParams]
+    )
 
     // Estados para la selección de tareas
     const [selectedTasks, setSelectedTasks] = useState([])
     const [allSelected, setAllSelected] = useState(false)
 
-    // Selección/deselección global
-    const handleSelectAll = () => {
+    // Manejo de selección global
+    const handleSelectAll = useCallback(() => {
         if (allSelected) {
             setSelectedTasks([])
             setAllSelected(false)
@@ -59,74 +68,23 @@ const Tasks = () => {
             setSelectedTasks(allTaskIds)
             setAllSelected(true)
         }
-    }
+    }, [allSelected, filteredTasks])
 
     // Selección individual
-    const handleSelectTask = (taskId) => {
-        if (selectedTasks.includes(taskId)) {
-            setSelectedTasks(selectedTasks.filter((id) => id !== taskId))
-        } else {
-            setSelectedTasks([...selectedTasks, taskId])
-        }
-    }
+    const handleSelectTask = useCallback((taskId) => {
+        setSelectedTasks((prevSelected) =>
+            prevSelected.includes(taskId)
+                ? prevSelected.filter((id) => id !== taskId)
+                : [...prevSelected, taskId]
+        )
+    }, [])
 
-    // Filtra los items seleccionados de la lista de tareas
+    // Items de tareas seleccionadas
     const selectedTaskItems = filteredTasks.filter((task) =>
         selectedTasks.includes(task.id)
     )
 
-    console.log("selectedTasks:", selectedTasks)
-
-    // Renderiza la tabla con encabezados y filas
-    const renderTable = () => (
-        <div className="overflow-x-auto">
-            <div className="min-w-full">
-                <div className="max-h-[400px] overflow-y-auto rounded-lg border">
-                    <table className="w-full text-left text-sm text-gray-500">
-                        <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
-                            <tr>
-                                {isInicio && (
-                                    <th className="px-4 py-3">
-                                        <input
-                                            type="checkbox"
-                                            checked={allSelected}
-                                            onChange={handleSelectAll}
-                                        />
-                                    </th>
-                                )}
-                                {role === "admin" && (
-                                    <th className="px-4 py-3">Nombre</th>
-                                )}
-                                <th className="px-4 py-3">Fecha</th>
-                                <th className="px-4 py-3">HE</th>
-                                <th className="px-4 py-3">HS</th>
-                                <th className="px-4 py-3">Empresa</th>
-                                <th className="px-4 py-3">Proyecto</th>
-                                <th className="px-4 py-3">TH</th>
-                                <th className="px-4 py-3">HD</th>
-                                <th className="px-4 py-3">HT</th>
-                                <th className="px-4 py-3">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredTasks.map((task) => (
-                                <TaskItem
-                                    key={task.id}
-                                    task={task}
-                                    showCheckbox={isInicio}
-                                    isSelected={selectedTasks.includes(task.id)}
-                                    onSelectTask={handleSelectTask}
-                                    currentPath={currentPath}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    )
-
-    // Manejo de estados: carga, error o sin datos
+    // Renderizado de contenidos según estado de carga, error o datos vacíos
     const renderContent = () => {
         if (isLoading)
             return (
@@ -146,7 +104,17 @@ const Tasks = () => {
                     No hay tareas disponibles.
                 </p>
             )
-        return renderTable()
+        return (
+            <TaskTable
+                tasks={filteredTasks}
+                isInicio={isInicio}
+                selectedTasks={selectedTasks}
+                onSelectTask={handleSelectTask}
+                onSelectAll={handleSelectAll}
+                currentPath={currentPath}
+                role={role}
+            />
+        )
     }
 
     return (
