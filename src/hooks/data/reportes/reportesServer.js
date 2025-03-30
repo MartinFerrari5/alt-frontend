@@ -22,7 +22,7 @@ export const getKpiReport = async (group = "task_type", filters = {}) => {
     if (filters.project) params.append("project", filters.project)
     if (filters.fullname) params.append("fullname", filters.fullname)
     if (filters.date) params.append("date", filters.date)
-        console.log(params.toString())
+    console.log(params.toString())
 
     const { data } = await api.get(`/kpi?${params.toString()}`)
     return data

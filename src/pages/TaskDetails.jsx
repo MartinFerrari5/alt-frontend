@@ -1,3 +1,4 @@
+// /src/pages/TaskDetails.jsx
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -64,32 +65,39 @@ const TaskDetailsPage = () => {
         return `${year}-${month}-${day} 00:00:00`
     }
 
+    // Obtener la tarea (ahora currentTask.task es un array)
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
 
+    // Extraer el objeto real de la tarea (primer elemento del array)
+    const taskDetails =
+        currentTask && currentTask.task && currentTask.task.length > 0
+            ? currentTask.task[0]
+            : null
+
     useEffect(() => {
-        if (currentTask) {
-            const taskDateValue = currentTask.task_date
-                ? new Date(currentTask.task_date)
+        if (taskDetails) {
+            const taskDateValue = taskDetails.task_date
+                ? new Date(taskDetails.task_date)
                 : null
             setTaskDate(taskDateValue)
             reset({
-                company: currentTask.company || "",
-                project: currentTask.project || "",
-                task_type: currentTask.task_type || "",
-                task_description: currentTask.task_description || "",
-                entry_time: currentTask.entry_time
-                    ? formatTimeForInput(currentTask.entry_time)
+                company: taskDetails.company || "",
+                project: taskDetails.project || "",
+                task_type: taskDetails.task_type || "",
+                task_description: taskDetails.task_description || "",
+                entry_time: taskDetails.entry_time
+                    ? formatTimeForInput(taskDetails.entry_time)
                     : "09:00",
-                exit_time: currentTask.exit_time
-                    ? formatTimeForInput(currentTask.exit_time)
+                exit_time: taskDetails.exit_time
+                    ? formatTimeForInput(taskDetails.exit_time)
                     : "18:00",
-                lunch_hours: currentTask.lunch_hours?.toString() || "1",
-                hour_type: currentTask.hour_type || "",
-                status: currentTask.status?.toString() || "0",
+                lunch_hours: taskDetails.lunch_hours?.toString() || "1",
+                hour_type: taskDetails.hour_type || "",
+                status: taskDetails.status?.toString() || "0",
             })
         }
-    }, [currentTask, reset])
+    }, [taskDetails, reset])
 
     const handleSaveClick = (data) => {
         if (data.entry_time >= data.exit_time) {
@@ -134,7 +142,7 @@ const TaskDetailsPage = () => {
     if (isLoading) return <p>Cargando...</p>
     if (isError)
         return <p>Error al cargar la tarea. Inténtalo de nuevo más tarde.</p>
-    if (!currentTask) return <p>No se encontraron detalles de la tarea.</p>
+    if (!taskDetails) return <p>No se encontraron detalles de la tarea.</p>
 
     return (
         <div className="flex min-h-screen flex-col lg:flex-row">
@@ -144,7 +152,7 @@ const TaskDetailsPage = () => {
             </div>
             <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
                 <TaskHeader
-                    task={currentTask}
+                    task={currentTask} // TaskHeader sigue accediendo a currentTask.task[0] internamente
                     onBack={() => navigate(-1)}
                     onDelete={handleDeleteClick}
                     onEdit={() => setIsEditing((prev) => !prev)}
@@ -159,13 +167,13 @@ const TaskDetailsPage = () => {
                         isSubmitting={isSubmitting}
                         taskDate={taskDate}
                         setTaskDate={setTaskDate}
-                        task={currentTask}
+                        task={taskDetails} // Pasamos el objeto de tarea real
                         companies={companies_table}
                         projects={projects_table}
                         hourTypes={hour_type_table}
                     />
                 ) : (
-                    <ReadOnlyTaskDetails task={currentTask} />
+                    <ReadOnlyTaskDetails task={taskDetails} />
                 )}
             </div>
         </div>

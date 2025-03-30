@@ -65,5 +65,6 @@ export const filterTasksApi = async (filters) => {
 
 export const getTaskByIdApi = async (taskId) => {
     const { data } = await api.get(`/tasks/task?task_id=${taskId}`)
+    console.log("getTaskByIdApi: ", data)
     return data
 }
