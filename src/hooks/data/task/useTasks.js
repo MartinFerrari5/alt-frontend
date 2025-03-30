@@ -1,201 +1,149 @@
 // src/hooks/data/task/useTasks.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { taskMutationKeys } from "../../../keys/mutations"
+import { taskQueryKeys } from "../../../keys/queries"
+import useTaskStore from "../../../store/taskStore"
+import { handleApiError } from "../../../lib/errorHandler"
 import {
     getAllTasks,
     getAllTasksAll,
-    createTask,
     updateTaskApi,
     deleteTaskApi,
     filterTasksApi,
     getTaskByIdApi,
+    createTask,
 } from "./taskService"
-import useTaskStore from "../../../store/taskStore"
 
-import { taskMutationKeys } from "../../../keys/mutations"
-import { taskQueryKeys } from "../../../keys/queries"
+// Factory modificada para recibir queryClient
+const mutationFactory = (queryClient) => (config) => ({
+    ...config,
+    onError: (error) => handleApiError(error, config.errorMessage),
+    onSettled: () => queryClient.invalidateQueries(config.invalidateQueries),
+})
 
-/**
- * Hook para obtener una tarea por ID.
- */
-export const useGetTask = (taskId, onSuccess) => {
+export const useGetTask = (taskId) => {
     const { tasks } = useTaskStore()
+
     return useQuery({
         queryKey: taskQueryKeys.getOne(taskId),
         queryFn: async () => {
             const existingTask = tasks.find(
-                (task) => task.id.toString() === taskId.toString()
+                (t) => t.id.toString() === taskId.toString()
             )
-            if (existingTask) {
-                if (onSuccess) onSuccess(existingTask)
-                return existingTask
-            }
-            try {
-                const task = await getTaskByIdApi(taskId)
-                if (onSuccess) onSuccess(task)
-                return task
-            } catch (error) {
-                if (error.response?.status === 404) {
-                    console.warn("🚨 La tarea no existe o fue eliminada.")
-                    return null
-                }
-                throw new Error(
-                    "Error al obtener la tarea. Intenta nuevamente."
-                )
-            }
+            return existingTask || getTaskByIdApi(taskId)
         },
-        onError: (error) => {
-            console.error("Error al obtener la tarea:", error.message)
-        },
+        onError: (error) => handleApiError(error, "Error al obtener la tarea"),
         enabled: !!taskId,
         retry: false,
+        staleTime: 300000,
     })
 }
 
-/**
- * Hook principal para la gestión de tareas.
- */
 export const useTasks = ({ all = false } = {}) => {
     const queryClient = useQueryClient()
     const { tasks, addTask, deleteTask, updateTask, setTasks } = useTaskStore()
 
+    // Factory con queryClient inyectado
+    const createMutation = mutationFactory(queryClient)
+
+    const commonMutationConfig = {
+        invalidateQueries: taskQueryKeys.getAll(),
+    }
+
+    // Query principal
     const getTasks = useQuery({
         queryKey: all ? taskQueryKeys.getAllAll() : taskQueryKeys.getAll(),
-        queryFn: async () => {
-            const tasksData = all ? await getAllTasksAll() : await getAllTasks()
-            setTasks(tasksData)
-            return tasksData
-        },
+        queryFn: () => (all ? getAllTasksAll() : getAllTasks()),
+        onSuccess: setTasks,
+        onError: (error) =>
+            handleApiError(error, "Error al obtener las tareas"),
     })
 
-    // Mutación para agregar una tarea (actualización optimista)
-    const addTaskMutation = useMutation({
-        mutationKey: taskMutationKeys.add(),
-        mutationFn: async (newTask) => await createTask(newTask),
-        onMutate: async (newTask) => {
-            await queryClient.cancelQueries(taskQueryKeys.getAll())
-            const previousTasks =
-                queryClient.getQueryData(taskQueryKeys.getAll()) || []
-            const optimisticTask = {
-                ...newTask,
-                id: Date.now(),
-                optimistic: true,
-            }
-            addTask(optimisticTask)
-            queryClient.setQueryData(
-                taskQueryKeys.getAll(),
-                (oldTasks = []) => [...oldTasks, optimisticTask]
-            )
-            return { previousTasks, optimisticTask }
-        },
-        onError: (error, newTask, context) => {
-            queryClient.setQueryData(
-                taskQueryKeys.getAll(),
-                context.previousTasks
-            )
-            deleteTask(context.optimisticTask.id)
-            console.error("Error al agregar la tarea:", error)
-        },
-        onSuccess: (createdTask, newTask, context) => {
-            queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
-                oldTasks.map((task) =>
-                    task.id === context.optimisticTask.id ? createdTask : task
+    // Mutaciones optimizadas
+    const addTaskMutation = useMutation(
+        createMutation({
+            mutationKey: taskMutationKeys.add(),
+            mutationFn: createTask,
+            errorMessage: "Error al crear la tarea",
+            ...commonMutationConfig,
+            onMutate: async (newTask) => {
+                await queryClient.cancelQueries(taskQueryKeys.getAll())
+                const optimisticTask = {
+                    ...newTask,
+                    id: Date.now(),
+                    optimistic: true,
+                }
+                addTask(optimisticTask)
+                queryClient.setQueryData(taskQueryKeys.getAll(), (old) => [
+                    ...old,
+                    optimisticTask,
+                ])
+                return {
+                    previousTasks: queryClient.getQueryData(
+                        taskQueryKeys.getAll()
+                    ),
+                    optimisticTask,
+                }
+            },
+
+            onError: (error, _, context) => {
+                queryClient.setQueryData(
+                    taskQueryKeys.getAll(),
+                    context.previousTasks
                 )
-            )
-            deleteTask(context.optimisticTask.id)
-            addTask(createdTask)
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries(taskQueryKeys.getAll())
-        },
-    })
-
-    // Mutación para actualizar una tarea (actualización optimista)
-    const updateTaskMutation = useMutation({
-        mutationKey: taskMutationKeys.update(),
-        mutationFn: async ({ taskId, task }) =>
-            await updateTaskApi({ taskId, task }),
-        onMutate: async ({ taskId, task }) => {
-            await queryClient.cancelQueries(taskQueryKeys.getAll())
-            const previousTasks = queryClient.getQueryData(
-                taskQueryKeys.getAll()
-            )
-            queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
-                oldTasks.map((t) =>
-                    t.id.toString() === taskId.toString()
-                        ? { ...t, ...task }
-                        : t
-                )
-            )
-            updateTask(taskId, task)
-            return { previousTasks }
-        },
-        onError: (error, variables, context) => {
-            queryClient.setQueryData(
-                taskQueryKeys.getAll(),
-                context.previousTasks
-            )
-            console.error("Error al actualizar la tarea:", error)
-        },
-        onSuccess: (updatedTask, { taskId }) => {
-            queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks = []) =>
-                oldTasks.map((t) =>
-                    t.id.toString() === taskId.toString() ? updatedTask : t
-                )
-            )
-            queryClient.setQueryData(taskQueryKeys.getOne(taskId), updatedTask)
-            updateTask(taskId, updatedTask)
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries(taskQueryKeys.getAll())
-            queryClient.invalidateQueries(taskQueryKeys.getOne())
-        },
-    })
-
-    // Mutación para eliminar una tarea
-    const deleteTaskMutation = useMutation({
-        mutationKey: taskMutationKeys.delete(),
-        mutationFn: async (taskId) => await deleteTaskApi(taskId),
-        onMutate: async () => {
-            await queryClient.cancelQueries(taskQueryKeys.getAll())
-            const previousTasks = queryClient.getQueryData(
-                taskQueryKeys.getAll()
-            )
-            return { previousTasks }
-        },
-        onSuccess: (taskId) => {
-            // Actualizamos el store y la caché utilizando conversiones a string
-            deleteTask(taskId)
-            queryClient.setQueryData(taskQueryKeys.getAll(), (oldTasks) =>
-                oldTasks
-                    ? oldTasks.filter(
-                          (task) => task.id.toString() !== taskId.toString()
-                      )
-                    : []
-            )
-        },
-        onError: (error, taskId, context) => {
-            queryClient.setQueryData(
-                taskQueryKeys.getAll(),
-                context.previousTasks
-            )
-            console.error("Error al eliminar tarea:", error)
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries(taskQueryKeys.getAll())
-        },
-    })
-
-    const useFilterTasks = (filters) => {
-        return useQuery({
-            queryKey: ["filterTasks", filters],
-            queryFn: async () => await filterTasksApi(filters),
-            enabled:
-                filters &&
-                Object.values(filters).some(
-                    (value) => value !== undefined && value !== ""
-                ),
+                deleteTask(context.optimisticTask.id)
+                handleApiError(error, "Error al crear la tarea")
+            },
         })
-    }
+    )
+
+    const updateTaskMutation = useMutation(
+        createMutation({
+            mutationKey: taskMutationKeys.update(),
+            mutationFn: ({ taskId, task }) => updateTaskApi({ taskId, task }),
+            errorMessage: "Error al actualizar la tarea",
+            ...commonMutationConfig,
+            onMutate: async ({ taskId, task }) => {
+                await queryClient.cancelQueries(taskQueryKeys.getAll())
+                const previousTasks = queryClient.getQueryData(
+                    taskQueryKeys.getAll()
+                )
+                const updatedTasks = previousTasks.map((t) =>
+                    t.id === taskId ? { ...t, ...task } : t
+                )
+                queryClient.setQueryData(taskQueryKeys.getAll(), updatedTasks)
+                updateTask(taskId, task) // Usando updateTask del store
+                return { previousTasks }
+            },
+            onError: (error, _, context) => {
+                queryClient.setQueryData(
+                    taskQueryKeys.getAll(),
+                    context.previousTasks
+                )
+                handleApiError(error, "Error al actualizar la tarea")
+            },
+        })
+    )
+
+    const deleteTaskMutation = useMutation(
+        createMutation({
+            mutationKey: taskMutationKeys.delete(),
+            mutationFn: deleteTaskApi,
+            errorMessage: "Error al eliminar la tarea",
+            ...commonMutationConfig,
+            onSuccess: (_, taskId) => deleteTask(taskId),
+        })
+    )
+
+    // Filtrado de tareas
+    const useFilterTasks = (filters) =>
+        useQuery({
+            queryKey: ["filterTasks", filters],
+            queryFn: () => filterTasksApi(filters),
+            enabled: Object.values(filters || {}).some(Boolean),
+            onError: (error) =>
+                handleApiError(error, "Error al filtrar tareas"),
+        })
 
     return {
         tasks,

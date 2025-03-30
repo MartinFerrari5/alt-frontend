@@ -9,47 +9,38 @@
 
 // src/services/taskService.js
 import { api } from "../../../lib/axios"
+import { formatTaskDate } from "../../../util/date"
 
 export const getAllTasks = async () => {
     const { data } = await api.get("/tasks")
-    console.log("Tasks: ", data)
     return data.tasks
 }
 
-/**
- * Obtiene todas las tareas desde /tasks/all
- *
- * @returns {Promise<{tasks: Task[]}>} Objeto que contiene la lista de tareas.
- * @throws {Error} En caso de que la consulta falle.
- */
 export const getAllTasksAll = async () => {
     const { data } = await api.get("/tasks/all")
-    // Si necesitas ambos valores (tasks e id), puedes retornarlos así:
-    // return data;
-    // Si solo te interesa la lista de tareas:
     return data.tasks
 }
 
 export const createTask = async (task) => {
+    console.log("createTask: ", task)
     const { data } = await api.post("/tasks", task)
     return data
 }
 
 export const updateTaskApi = async ({ taskId, task }) => {
     const payload = {
-        company: task.company?.trim(),
-        project: task.project?.trim(),
+        company_id: task.company?.trim(), // Usar company_id en lugar de company
+        project_id: task.project?.trim(), // Usar project_id en lugar de project
         task_type: task.task_type?.trim(),
         task_description: task.task_description?.trim(),
-        task_date: task.task_date,
+        task_date: formatTaskDate(task.task_date),
         entry_time: task.entry_time,
         exit_time: task.exit_time,
-        lunch_hours: task.lunch_hours,
+        lunch_hours: Number(task.lunch_hours),
         hour_type: task.hour_type,
-        status: task.status,
+        status: Number(task.status),
     }
     await api.put(`/tasks?task_id=${taskId}`, payload)
-
     return payload
 }
 
@@ -58,7 +49,6 @@ export const deleteTaskApi = async (taskId) => {
 
     return taskId
 }
-
 export const filterTasksApi = async (filters) => {
     const queryParams = new URLSearchParams()
     if (filters.company) queryParams.append("company", filters.company)

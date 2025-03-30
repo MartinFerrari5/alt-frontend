@@ -2,35 +2,67 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
+/**
+ * Store para la gestión de tareas con persistencia en localStorage.
+ */
 const useTaskStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             tasks: [],
 
-            // Agregar una tarea
+            /**
+             * Agrega una nueva tarea al listado.
+             * @param {Object} newTask - La nueva tarea a agregar.
+             */
             addTask: (newTask) =>
-                set((state) => ({ tasks: [...state.tasks, newTask] })),
+                set((state) => ({
+                    tasks: [...state.tasks, newTask],
+                })),
 
-            // Actualizar una tarea (convertimos IDs a string para evitar discrepancias)
+            /**
+             * Actualiza una tarea existente.
+             * Se comparan los IDs convertidos a string para evitar discrepancias.
+             * @param {string|number} taskId - El identificador de la tarea.
+             * @param {Object} updatedTask - Los campos a actualizar.
+             */
             updateTask: (taskId, updatedTask) =>
                 set((state) => ({
                     tasks: state.tasks.map((task) =>
-                        task.id.toString() === taskId.toString()
+                        String(task.id) === String(taskId)
                             ? { ...task, ...updatedTask }
                             : task
                     ),
                 })),
 
-            // Eliminar una tarea (comparando los IDs convertidos a string)
+            /**
+             * Elimina una tarea del listado.
+             * @param {string|number} taskId - El identificador de la tarea a eliminar.
+             */
             deleteTask: (taskId) =>
                 set((state) => ({
                     tasks: state.tasks.filter(
-                        (task) => task.id.toString() !== taskId.toString()
+                        (task) => String(task.id) !== String(taskId)
                     ),
                 })),
 
-            // Establecer el listado completo de tareas
+            /**
+             * Establece el listado completo de tareas.
+             * @param {Array} tasks - Array de tareas.
+             */
             setTasks: (tasks) => set({ tasks }),
+
+            /**
+             * Obtiene una tarea por su ID.
+             * @param {string|number} taskId - El identificador de la tarea.
+             * @returns {Object|undefined} La tarea encontrada o undefined.
+             */
+            getTaskById: (taskId) =>
+                get().tasks.find((task) => String(task.id) === String(taskId)),
+
+            /**
+             * Limpia todas las tareas almacenadas.
+             */
+            clearTasks: () => set({ tasks: [] }),
         }),
         {
             name: "task-storage",

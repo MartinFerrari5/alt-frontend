@@ -3,6 +3,9 @@ import PropTypes from "prop-types"
 import { useEffect } from "react"
 import { toast } from "react-toastify"
 
+/**
+ * Dropdown reutilizable que muestra una lista de opciones con estados de carga y error.
+ */
 const Dropdown = ({
     id,
     label,
@@ -10,17 +13,34 @@ const Dropdown = ({
     error,
     isLoading,
     isError,
-    items,
-    loadingText,
-    errorText,
-    useIdAsValue = false,
-    useRelationshipId = false,
+    items = [],
+    valueKey = "id",
+    loadingText = "Cargando...",
+    errorText = "Error al cargar opciones",
 }) => {
     useEffect(() => {
         if (isError) {
             toast.error(errorText, { autoClose: 5000 })
         }
     }, [isError, errorText])
+
+    const getOptions = () => {
+        if (isLoading) {
+            return <option disabled>{loadingText}</option>
+        }
+        if (isError) {
+            return (
+                <option disabled className="text-red-500">
+                    {errorText}
+                </option>
+            )
+        }
+        return items.map((item) => (
+            <option key={item.id} value={item[valueKey]}>
+                {item.option}
+            </option>
+        ))
+    }
 
     return (
         <div className="group relative z-0 mb-5 w-full">
@@ -30,29 +50,11 @@ const Dropdown = ({
             <select
                 id={id}
                 {...register(id)}
-                className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
                 disabled={isLoading}
+                className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
             >
-                <option value="">{label}</option>
-                {isLoading ? (
-                    <option>{loadingText}</option>
-                ) : isError ? (
-                    <option className="text-red-500">{errorText}</option>
-                ) : (
-                    items.map((item) => {
-                        let optionValue = item.option
-                        if (useRelationshipId) {
-                            optionValue = item.relationship_id || item.id
-                        } else if (useIdAsValue) {
-                            optionValue = item.id
-                        }
-                        return (
-                            <option key={item.id} value={optionValue}>
-                                {item.option}
-                            </option>
-                        )
-                    })
-                )}
+                <option value="">Seleccione {label}</option>
+                {getOptions()}
             </select>
             {error && <p className="text-sm text-red-500">{error.message}</p>}
         </div>
@@ -70,14 +72,12 @@ Dropdown.propTypes = {
         PropTypes.shape({
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
                 .isRequired,
-            relationship_id: PropTypes.string,
             option: PropTypes.string.isRequired,
         })
-    ).isRequired,
-    loadingText: PropTypes.string.isRequired,
-    errorText: PropTypes.string.isRequired,
-    useIdAsValue: PropTypes.bool,
-    useRelationshipId: PropTypes.bool,
+    ),
+    valueKey: PropTypes.string,
+    loadingText: PropTypes.string,
+    errorText: PropTypes.string,
 }
 
 export default Dropdown
