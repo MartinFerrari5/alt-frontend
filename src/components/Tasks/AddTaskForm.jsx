@@ -15,6 +15,10 @@ import { schema } from "../../util/validationSchema"
 import { statusMap } from "../../util/taskConstants"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
+/**
+ * Formulario para agregar una tarea
+ * @param {Function} onClose: Función para cerrar el formulario
+ */
 const AddTaskForm = ({ onClose }) => {
     const { addTaskMutation } = useTasks()
     const isAddingTask = addTaskMutation.isLoading
@@ -43,8 +47,9 @@ const AddTaskForm = ({ onClose }) => {
     // Flags de carga
     const isLoadingCompanies = !companies_table || companies_table.length === 0
     const isLoadingHourTypes = !hour_type_table || hour_type_table.length === 0
-    const isLoadingProjects = filteredProjects.length === 0
     const isLoadingTypesTable = !types_table || types_table.length === 0
+    // Se considera isLoadingProjects si aún no se han cargado los proyectos filtrados
+    const isLoadingProjects = filteredProjects.length === 0
 
     const {
         register,
@@ -67,6 +72,9 @@ const AddTaskForm = ({ onClose }) => {
         },
     })
 
+    // Obtenemos la compañía seleccionada (valor = relationship_id)
+    const selectedCompany = watch("company")
+
     // Asignar valores por defecto a los selects cuando se cargan las opciones
     useEffect(() => {
         reset({
@@ -88,8 +96,40 @@ const AddTaskForm = ({ onClose }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [companies_table, hour_type_table, types_table])
 
-    // Actualiza los proyectos al cambiar la compañía
-    const selectedCompany = watch("company")
+    /**
+     * Formatea la fecha en formato YYYYMMDD (sin guiones)
+     * @param {Date} date
+     * @returns {string} Fecha formateada
+     */
+    const formatDateForBackend = (date) => {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+        return `${year}${month}${day}`
+    }
+
+    /**
+     * Asegura que la hora tenga formato HH:MM:SS
+     *
+     * Si la hora viene en formato HH:MM:SS, extraer
+     * solo HH:MM y devolverlo.
+     *
+     * @param {string} timeStr Hora en formato HH:MM:SS
+     * @returns {string} Hora formateada
+     */
+    const formatTime = (timeStr) => {
+        // Si viene en formato HH:MM:SS, extraer
+        // solo HH:MM y devolverlo
+        if (timeStr.length === 8) {
+            return timeStr.slice(0, 5)
+        }
+        return timeStr
+    }
+
+    /**
+     * Carga los proyectos al cambiar la compañía seleccionada
+     * @param {string} selectedCompany: relationship_id de la compañía seleccionada
+     */
     useEffect(() => {
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
@@ -109,13 +149,9 @@ const AddTaskForm = ({ onClose }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
 
-    const formatDateForBackend = (date) => {
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, "0")
-        const day = String(date.getDate()).padStart(2, "0")
-        return `${year}-${month}-${day}`
-    }
-
+    /**
+     * Resetea el formulario
+     */
     const resetForm = () => {
         const currentValues = {
             company: watch("company"),
@@ -136,16 +172,31 @@ const AddTaskForm = ({ onClose }) => {
         setTaskDate(newDate)
     }
 
+    /**
+     * Maneja el guardado de la tarea
+     * @param {Object} data: Datos del formulario
+     */
     const handleSaveClick = (data) => {
         const formattedDate = formatDateForBackend(taskDate)
-        const { company, project, ...rest } = data
+        // Buscar el objeto de la compañía a partir del relationship_id para extraer el company_id real
+        const selectedCompanyObj = companies_table.find(
+            (comp) => comp.relationship_id === data.company
+        )
+        const company_id = selectedCompanyObj
+            ? selectedCompanyObj.company_id
+            : data.company
+
         const taskPayload = {
-            ...rest,
-            company_id: company,
-            project_id: project,
+            company_id, // Enviar el id real de la compañía
+            project_id: data.project, // Se espera que el dropdown de proyecto devuelva project_id
+            task_type: data.task_type.trim(),
             task_description: data.task_description.trim(),
+            entry_time: formatTime(data.entry_time),
+            exit_time: formatTime(data.exit_time),
+            hour_type: data.hour_type,
             lunch_hours: parseFloat(data.lunch_hours),
-            status: statusMap[data.status] || false,
+            // Para creación, se envía status "0" (según la documentación)
+            status: "0",
             task_date: formattedDate,
         }
 
@@ -171,6 +222,7 @@ const AddTaskForm = ({ onClose }) => {
         <form onSubmit={handleSubmit(handleSaveClick)}>
             <div className="mx-auto grid max-w-md gap-6">
                 <div className="grid md:grid-cols-2 md:gap-6">
+                    {/* Dropdown de compañías: utiliza "relationship_id" para el value */}
                     <Dropdown
                         id="company"
                         label="Empresa"
@@ -179,8 +231,9 @@ const AddTaskForm = ({ onClose }) => {
                         isLoading={isLoadingCompanies}
                         isError={false}
                         items={companies_table}
-                        valueKey="id"
+                        valueKey="relationship_id"
                     />
+                    {/* Dropdown de proyectos: utiliza "project_id" para el value */}
                     <Dropdown
                         id="project"
                         label="Proyecto"
@@ -189,7 +242,7 @@ const AddTaskForm = ({ onClose }) => {
                         isLoading={isLoadingProjects}
                         isError={false}
                         items={filteredProjects}
-                        valueKey="id"
+                        valueKey="project_id"
                     />
                     <Dropdown
                         id="hour_type"
