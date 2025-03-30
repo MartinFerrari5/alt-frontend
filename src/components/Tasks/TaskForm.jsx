@@ -3,8 +3,9 @@ import Input from "../Input"
 import DatePicker from "./DatePicker"
 import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
-import { getCompanyProjects } from "../../hooks/data/options/options"
+
 import { toast } from "react-toastify"
+import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
 const formatTimeForInput = (timeStr) => {
     if (!timeStr) return ""

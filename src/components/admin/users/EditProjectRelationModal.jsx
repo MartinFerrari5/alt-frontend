@@ -3,17 +3,18 @@ import { useState, useEffect } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
 import {
-    getRelatedOptions,
     getNotRelatedProjects,
-} from "../../../hooks/data/options/options"
+    getRelatedOptions,
+} from "../../../hooks/data/options/relationsService"
 
-const EditProjectRelationModal = ({
+export const EditProjectRelationModal = ({
     title,
     relatedCompanies, // Compañías relacionadas para extraer el relationship_id
     onAddRelation,
     onClose,
     userId,
 }) => {
+    console.log("relatedCompanies:", relatedCompanies)
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
 
@@ -33,7 +34,7 @@ const EditProjectRelationModal = ({
                 try {
                     const relatedData = await getRelatedOptions({
                         user_id: userId,
-                        related_table: "project_company_table",
+                        related_table: "projects_table",
                         individual_table: "projects_table",
                         relationship_id: selectedRelationshipId,
                     })
@@ -164,5 +165,3 @@ const EditProjectRelationModal = ({
         </div>
     )
 }
-
-export default EditProjectRelationModal

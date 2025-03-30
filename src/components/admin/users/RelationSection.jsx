@@ -3,7 +3,30 @@ import { useState } from "react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import EditRelationModal from "./EditRelationModal"
 
-const RelationSection = ({
+/**
+ * Componente que muestra una sección de relaciones entre un usuario y otra
+ * entidad (como compañías o proyectos). Permite editar la lista de relaciones
+ * asociadas y eliminar relaciones.
+ *
+ * @param {string} title - Título de la sección (por ejemplo "Proyectos")
+ * @param {Array} relatedItems - Arreglo de objetos con la información de las
+ * relaciones asociadas (por ejemplo un arreglo de objetos con un id y un nombre)
+ * @param {Array} availableItems - Arreglo de objetos con la información de las
+ * relaciones disponibles para asociar (por ejemplo un arreglo de objetos con un
+ * id y un nombre)
+ * @param {string} displayProp - Nombre de la propiedad en los objetos de relatedItems
+ * y availableItems que se utilizará para mostrar el nombre de la relación.
+ * @param {function} onAddRelation - Función que se llamará cuando se asocie una
+ * relación (recibe el id de la relación como parámetro)
+ * @param {function} onDeleteRelation - Función que se llamará cuando se elimine
+ * una relación (recibe el id de la relación como parámetro)
+ * @param {ReactNode} customModal - Componente personalizado para mostrar el
+ * formulario de edición de relaciones (opcional)
+ *
+ * @return {ReactNode} Componente que muestra la sección de relaciones y permite
+ * editar la lista de relaciones asociadas y eliminar relaciones.
+ */
+export const RelationSection = ({
     title,
     relatedItems,
     availableItems,
@@ -73,5 +96,3 @@ const RelationSection = ({
         </div>
     )
 }
-
-export default RelationSection

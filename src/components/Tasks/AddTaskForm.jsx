@@ -6,13 +6,14 @@ import { toast } from "react-toastify"
 import { LoaderIcon } from "../../assets/icons"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import { useOptionsStore } from "../../store/optionsStore"
-import { getCompanyProjects } from "../../hooks/data/options/options"
+
 import Dropdown from "../Dropdown/Dropdown"
 import DatePicker from "./DatePicker"
 import Input from "../Input"
 import Button from "../Button"
 import { schema } from "../../util/validationSchema"
 import { statusMap } from "../../util/taskConstants"
+import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
 const AddTaskForm = ({ onClose }) => {
     const { addTaskMutation } = useTasks()

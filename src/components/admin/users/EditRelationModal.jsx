@@ -40,7 +40,7 @@ const EditRelationModal = ({
                             {associatedItems && associatedItems.length > 0 ? (
                                 associatedItems.map((item) => (
                                     <li
-                                        key={item.id}
+                                        key={item.relationshipId || item.id}
                                         className="flex items-center justify-between border-b py-2"
                                     >
                                         <span>{item[displayProp]}</span>
@@ -64,14 +64,16 @@ const EditRelationModal = ({
                             isLoading={false}
                             isError={false}
                             items={availableItems.map((item) => ({
-                                id: item.id,
-                                option: item[displayProp],
+                                id:
+                                    item.id ||
+                                    item.company_id ||
+                                    item.project_id,
+                                option: item[displayProp] || item.options,
                             }))}
                             loadingText="Cargando..."
                             errorText="Error al cargar"
                             useIdAsValue={true} // Se usa el id como value
                         />
-
                         <Button
                             onClick={handleAddRelation}
                             disabled={!selectedItem}

@@ -65,7 +65,6 @@ const DisboardPage = () => {
     // Función para actualizar los filtros en la URL (se agrega hourtype)
     const updateFilter = useCallback(
         (filterData) => {
-            console.log("Actualizando filtros en URL:", filterData)
             const {
                 fullname,
                 company,

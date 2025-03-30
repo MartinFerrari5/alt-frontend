@@ -6,8 +6,8 @@ import { toast } from "react-toastify"
 import useAuthStore from "../../store/authStore"
 import { useOptionsStore } from "../../store/optionsStore"
 import Dropdown from "../Dropdown/Dropdown"
-import { getCompanyProjects } from "../../hooks/data/options/options"
 import Button from "../Button"
+import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
 const TaskFilter = ({ onFilter, currentPath }) => {
     const role = useAuthStore((state) => state.role)
@@ -84,9 +84,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     // Observar el valor de "company" para actualizar los proyectos relacionados.
     // Se espera que el valor de "company" sea el relationship_id, gracias a la prop "useRelationshipId" en el Dropdown.
     const selectedCompany = watch("company")
-    console.log("Selected Company:", selectedCompany)
     useEffect(() => {
-        console.log("Selected Company:", selectedCompany)
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
                 .then((projects) => {

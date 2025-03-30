@@ -1,4 +1,3 @@
-// src/store/optionsStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import {
@@ -6,21 +5,23 @@ import {
     addOption as apiAddOption,
     updateOption as apiUpdateOption,
     deleteOption as apiDeleteOption,
-    addCompanyUserRelation as apiAddCompanyUserRelation,
-    addProjectUserRelation as apiAddProjectUserRelation,
-    deleteCompanyUserRelation as apiDeleteCompanyUserRelation,
+} from "../hooks/data/options/optionsService"
+
+import {
     getRelatedOptions,
     getNotRelatedCompanies,
     getNotRelatedProjects,
-} from "../hooks/data/options/options"
+    addCompanyUserRelation as apiAddCompanyUserRelation,
+    addProjectUserRelation as apiAddProjectUserRelation,
+    deleteCompanyUserRelation as apiDeleteCompanyUserRelation,
+} from "../hooks/data/options/relationsService"
 
 const initialState = {
-    companies: [],
-    hourTypes: [],
-    projects: [],
-    typesTable: [],
+    companies_table: [],
+    hour_type_table: [],
+    projects_table: [],
+    types_table: [],
     relatedOptions: [],
-    // Se separa la información de no relacionadas para cada tipo:
     notRelatedOptions: { companies: [], projects: [] },
     isLoading: false,
     error: null,
@@ -31,11 +32,11 @@ export const useOptionsStore = create(
         (set, get) => ({
             ...initialState,
 
-            // Función para establecer loading y error de forma genérica
+            // Helpers para actualizar estado
             setLoading: (loading) => set({ isLoading: loading }),
             setError: (error) => set({ error }),
 
-            // Obtiene opciones de una tabla y actualiza el estado
+            // Opciones generales
             fetchOptions: async (table) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -50,7 +51,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Agrega una opción y la sincroniza en el estado
             addOption: async (table, option) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -69,7 +69,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Actualiza una opción y sincroniza el estado
             updateOption: async (table, id, updatedData) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -92,7 +91,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Elimina una opción y sincroniza el estado
             deleteOption: async (table, id) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -109,30 +107,38 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Reinicia todas las opciones
+            // Relaciones de usuario
             clearOptions: () => set(initialState),
 
-            // Actualiza (sincroniza) las relaciones de opciones para un usuario
+            /**
+             * Actualiza todas las relaciones para el usuario.
+             * Se obtienen las compañías relacionadas y, si existen, se utiliza el primer relationship_id para
+             * obtener los proyectos no relacionados.
+             */
             updateRelations: async (user_id) => {
                 get().setLoading(true)
                 get().setError(null)
                 try {
-                    const [relatedOptions, notRelatedCompanies] =
-                        await Promise.all([
-                            getRelatedOptions(user_id),
-                            getNotRelatedCompanies(user_id),
-                        ])
+                    // Se obtienen las compañías relacionadas
+                    const relatedCompanies = await getRelatedOptions({
+                        user_id,
+                        related_table: "company_users_table",
+                        individual_table: "companies_table",
+                    })
+                    // Se obtienen las compañías NO relacionadas
+                    const notRelatedCompanies =
+                        await getNotRelatedCompanies(user_id)
                     let notRelatedProjects = []
-                    if (relatedOptions && relatedOptions.length > 0) {
+                    if (relatedCompanies && relatedCompanies.length > 0) {
                         const relationship_id =
-                            relatedOptions[0].relationship_id
+                            relatedCompanies[0].relationship_id
                         notRelatedProjects = await getNotRelatedProjects(
                             user_id,
                             relationship_id
                         )
                     }
                     set({
-                        relatedOptions,
+                        relatedOptions: relatedCompanies,
                         notRelatedOptions: {
                             companies: notRelatedCompanies,
                             projects: notRelatedProjects,
@@ -149,12 +155,16 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Actualiza solo las opciones relacionadas para un usuario
             fetchRelatedOptions: async (user_id) => {
                 get().setLoading(true)
                 get().setError(null)
                 try {
-                    const relatedOptions = await getRelatedOptions(user_id)
+                    // Si se requiere filtrar por una tabla en específico, se pueden agregar los parámetros correspondientes.
+                    const relatedOptions = await getRelatedOptions({
+                        user_id,
+                        related_table: "company_users_table",
+                        individual_table: "companies_table",
+                    })
                     set({ relatedOptions })
                 } catch (error) {
                     console.error(
@@ -167,7 +177,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Actualiza solo las compañías no relacionadas para un usuario
             fetchNotRelatedCompanies: async (user_id) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -191,7 +200,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Actualiza solo los proyectos no relacionados para un usuario, dado un relationship_id
             fetchNotRelatedProjects: async (user_id, relationship_id) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -217,7 +225,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Crea la relación entre usuario y compañía y actualiza las relaciones
             addCompanyUserRelation: async (relationData, user_id) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -232,7 +239,6 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Crea la relación entre usuario y proyecto y actualiza las relaciones
             addProjectUserRelation: async (relationData, user_id) => {
                 get().setLoading(true)
                 get().setError(null)
@@ -247,12 +253,11 @@ export const useOptionsStore = create(
                 }
             },
 
-            // Elimina la(s) relación(es) y actualiza las relaciones
-            deleteCompanyUserRelation: async (ids, user_id) => {
+            deleteCompanyUserRelation: async (relationship_id, user_id) => {
                 get().setLoading(true)
                 get().setError(null)
                 try {
-                    await apiDeleteCompanyUserRelation(ids)
+                    await apiDeleteCompanyUserRelation(relationship_id)
                     await get().updateRelations(user_id)
                 } catch (error) {
                     console.error("Error en deleteCompanyUserRelation:", error)
