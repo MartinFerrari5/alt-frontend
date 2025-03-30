@@ -76,7 +76,7 @@ const DisboardPage = () => {
             } = filterData
             const dateRange =
                 startDate && endDate
-                    ? `${startDate}+${endDate}`
+                    ? `${startDate} ${endDate}`
                     : startDate || ""
             setSearchParams({
                 fullname: fullname || "",
@@ -96,7 +96,7 @@ const DisboardPage = () => {
             let startDate = ""
             let endDate = ""
             if (filterData.date) {
-                const dates = filterData.date.split("+")
+                const dates = filterData.date.split(" ")
                 if (dates.length === 2) {
                     startDate = dates[0]
                     endDate = dates[1]

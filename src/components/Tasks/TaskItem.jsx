@@ -97,7 +97,7 @@ const TaskItem = ({
     }, [updateTask, task, newStatus])
 
     const handleRowClick = () => {
-        if (currentPath !== "/") {
+        if (currentPath !== "/history") {
             navigate(`/task/${task.id}`)
         }
     }
@@ -143,18 +143,18 @@ const TaskItem = ({
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
-                {currentPath === "/history" && (
-                    <td className="group relative px-4 py-5">
-                        <span>
-                            {task.task_description.length > 10
-                                ? `${task.task_description.substring(0, 10)}...`
-                                : task.task_description}
-                        </span>
-                        <div className="absolute bottom-full left-0 z-50 mb-2 hidden w-64 rounded border border-gray-300 bg-white p-2 text-black shadow-lg group-hover:block">
-                            {task.task_description}
-                        </div>
-                    </td>
-                )}
+                <td className="group relative px-4 py-5">
+                    <span>
+                        {task.task_description.length > 10
+                            ? `${task.task_description.substring(0, 10)}...`
+                            : task.task_description}
+                    </span>
+                    <div className="absolute bottom-full left-0 z-50 mb-2 hidden w-64 rounded border border-gray-300 bg-white p-2 text-black shadow-lg group-hover:block">
+                        {task.task_description}
+                    </div>
+                </td>
+                {/* {currentPath === "/" && (
+                )} */}
 
                 <td className="flex gap-2 px-4 py-5 text-right">
                     {currentPath === "/history" && (

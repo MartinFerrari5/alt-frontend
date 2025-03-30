@@ -5,6 +5,18 @@ import { toast } from "react-toastify"
 
 /**
  * Dropdown reutilizable que muestra una lista de opciones con estados de carga y error.
+ *
+ * @param {object} props
+ * @param {string} props.id - El id del select.
+ * @param {string} props.label - El label del select.
+ * @param {function} props.register - La función de register de React Hook Form.
+ * @param {object} props.error - El objeto de error de React Hook Form.
+ * @param {boolean} props.isLoading - Indica si se esta cargando la lista de opciones.
+ * @param {boolean} props.isError - Indica si hubo un error al cargar la lista de opciones.
+ * @param {array} props.items - La lista de opciones.
+ * @param {string} [props.valueKey] - La clave de los objetos en la lista de opciones que se utiliza como valor del select.
+ * @param {string} [props.loadingText] - El texto que se muestra mientras se esta cargando la lista de opciones.
+ * @param {string} [props.errorText] - El texto que se muestra cuando hubo un error al cargar la lista de opciones.
  */
 const Dropdown = ({
     id,

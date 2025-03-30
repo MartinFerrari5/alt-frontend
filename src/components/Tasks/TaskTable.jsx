@@ -40,6 +40,7 @@ const TaskTable = ({
                                 <th className="px-4 py-3">TH</th>
                                 <th className="px-4 py-3">HD</th>
                                 <th className="px-4 py-3">HT</th>
+                                <th className="px-4 py-3">Descripción</th>
                                 <th className="px-4 py-3">Estado</th>
                             </tr>
                         </thead>

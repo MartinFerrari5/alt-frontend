@@ -52,7 +52,6 @@ const TaskFilter = ({ onFilter, currentPath }) => {
 
         let startDate = ""
         let endDate = ""
-        // Se usa el separador '+' porque la URL se arma de esa forma
         if (urlDate) {
             const dates = urlDate.split(" ")
             if (dates.length === 2) {
@@ -81,26 +80,44 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         })
     }, [searchParams, setValue, getUrlFilterValues])
 
-    // Observar el valor de "company" para actualizar los proyectos relacionados.
-    // Se espera que el valor de "company" sea el relationship_id, gracias a la prop "useRelationshipId" en el Dropdown.
-    const selectedCompany = watch("company")
+    // Actualizar los proyectos relacionados basado en la compañía seleccionada.
+    // En este caso, el dropdown de empresa envía el company_id (por eso usamos valueKey="company_id").
+    // Se busca en companies_table el objeto que corresponda para extraer el relationship_id y obtener los proyectos.
+    const selectedCompanyId = watch("company")
     useEffect(() => {
-        if (selectedCompany) {
-            getCompanyProjects(selectedCompany)
-                .then((projects) => {
-                    setFilteredProjects(projects)
-                    // Si hay proyectos, asigna el primer valor por defecto en el campo "project"
-                    setValue(
-                        "project",
-                        projects.length > 0 ? projects[0].option : ""
-                    )
-                })
-                .catch((error) => toast.error(error.message))
+        if (
+            selectedCompanyId &&
+            companies_table &&
+            companies_table.length > 0
+        ) {
+            // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
+            const companyObj = companies_table.find(
+                (c) => c.company_id === selectedCompanyId
+            )
+            if (companyObj && companyObj.relationship_id) {
+                getCompanyProjects(companyObj.relationship_id)
+                    .then((projects) => {
+                        setFilteredProjects(projects)
+                        // Si el usuario aún no ha seleccionado un proyecto, asignar el primer proyecto (usando project_id)
+                        if (!watch("project")) {
+                            setValue(
+                                "project",
+                                projects.length > 0
+                                    ? projects[0].project_id
+                                    : ""
+                            )
+                        }
+                    })
+                    .catch((error) => toast.error(error.message))
+            } else {
+                setFilteredProjects([])
+                setValue("project", "")
+            }
         } else {
             setFilteredProjects([])
             setValue("project", "")
         }
-    }, [selectedCompany, setValue])
+    }, [selectedCompanyId, companies_table, setValue, watch])
 
     // Función de envío del formulario
     const onSubmit = (data) => {
@@ -113,7 +130,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             endDate,
             hourtype,
         } = data
-        // Se usa el signo '+' como separador para la fecha
+        // Se usa un espacio como separador para la fecha
         const dateRange =
             startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
         onFilter({
@@ -149,7 +166,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={companies_table}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
-                useRelationshipId={true} // Se usará relationship_id como valor
+                valueKey="company_id" // Retorna el company_id
             />
             <Dropdown
                 id="project"
@@ -161,6 +178,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={filteredProjects}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
+                valueKey="project_id" // Retorna el project_id
             />
             <Dropdown
                 id="hourtype"
