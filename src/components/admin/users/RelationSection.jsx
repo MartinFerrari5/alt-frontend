@@ -33,7 +33,7 @@ export const RelationSection = ({
     displayProp,
     onAddRelation,
     onDeleteRelation,
-    customModal, // nuevo prop opcional
+    customModal,
 }) => {
     const [showModal, setShowModal] = useState(false)
 
@@ -60,9 +60,7 @@ export const RelationSection = ({
                                 <span>{item[displayProp]}</span>
                                 {onDeleteRelation && (
                                     <button
-                                        onClick={() =>
-                                            onDeleteRelation(item.id)
-                                        }
+                                        onClick={() => onDeleteRelation(item)}
                                         title="Eliminar relación"
                                     >
                                         <FaTrash className="text-red-500 hover:text-red-700" />

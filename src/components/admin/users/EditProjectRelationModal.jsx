@@ -14,7 +14,6 @@ export const EditProjectRelationModal = ({
     onClose,
     userId,
 }) => {
-    console.log("relatedCompanies:", relatedCompanies)
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
 

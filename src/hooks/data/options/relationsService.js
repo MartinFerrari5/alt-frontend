@@ -107,20 +107,25 @@ export const addProjectUserRelation = async (relationData) => {
  */
 export const deleteCompanyUserRelation = async (relationship_id) => {
     if (!relationship_id) {
-        throw new Error("relationship_id es obligatorio para eliminar la relación.");
+        throw new Error(
+            "relationship_id es obligatorio para eliminar la relación."
+        )
     }
     try {
         // Send a DELETE request to the API to remove the company-user relation
-        const { data } = await api.delete(`/companyUser?relationship_id=${relationship_id}`);
-        
+        const { data } = await api.delete(
+            `/companyUser?relationship_id=${relationship_id}`
+        )
+
         // Return the response data from the API
-        return data;
+        return data
     } catch (error) {
         // Throw a new error with a descriptive message if the API call fails
-        throw new Error(`Error eliminando relación con la compañía: ${error.message}`);
+        throw new Error(
+            `Error eliminando relación con la compañía: ${error.message}`
+        )
     }
-};
-
+}
 
 /**
  * Elimina la relación entre proyecto y usuario.
@@ -132,14 +137,17 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
  * @throws {Error} Si ocurre un error al eliminar la relación.
  */
 export const deleteProjectUserRelation = async (project_id) => {
-        if (!project_id) {
-        throw new Error("project_id es obligatorio para eliminar la relación.");
+    if (!project_id) {
+        throw new Error("project_id es obligatorio para eliminar la relación.")
     }
     try {
-        const { data } = await api.delete(`/projectUser?project_id=${project_id}`);
-        return data;
+        const { data } = await api.delete(
+            `/projectUser?project_id=${project_id}`
+        )
+        return data
     } catch (error) {
-        throw new Error(`Error eliminando relación con el proyecto: ${error.message}`);
+        throw new Error(
+            `Error eliminando relación con el proyecto: ${error.message}`
+        )
     }
-};
-
+}
