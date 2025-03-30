@@ -4,7 +4,6 @@ import Input from "../Input"
 import DatePicker from "./DatePicker"
 import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
-
 import { toast } from "react-toastify"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
@@ -42,7 +41,7 @@ const TaskForm = ({
             getCompanyProjects(selectedCompany)
                 .then((resp) => {
                     setFilteredProjects(resp)
-                    // Aquí podrías actualizar el campo "project" si lo deseas
+                    // Aquí podrías, si lo deseas, actualizar el campo "project"
                 })
                 .catch((error) => {
                     toast.error(error.message)
@@ -51,9 +50,6 @@ const TaskForm = ({
             setFilteredProjects([])
         }
     }, [selectedCompany])
-    if (!task) {
-        return <p>No hay tarea para editar.</p>
-    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -70,7 +66,7 @@ const TaskForm = ({
                         items={companies}
                         loadingText="Cargando empresas..."
                         errorText="Error cargando empresas"
-                        useRelationshipId={true}
+                        valueKey="company_id" // Usa el company_id como valor
                     />
                     <Dropdown
                         id="project"
@@ -82,6 +78,7 @@ const TaskForm = ({
                         items={filteredProjects}
                         loadingText="Cargando proyectos..."
                         errorText="Error cargando proyectos"
+                        valueKey="project_id" // Usa el project_id como valor
                     />
                     <Dropdown
                         id="hour_type"
@@ -93,6 +90,7 @@ const TaskForm = ({
                         items={hourTypes}
                         loadingText="Cargando tipos de hora..."
                         errorText="Error cargando tipos de hora"
+                        valueKey="option" // Asumiendo que en hourTypes el valor deseado está en "option"
                     />
                 </div>
 

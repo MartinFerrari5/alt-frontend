@@ -1,11 +1,10 @@
 export const ReadOnlyTaskDetails = ({ task }) => {
-    if (!task) {
-        return <p>No hay datos disponibles para esta tarea.</p>
-    }
+    if (!task) return <p>No hay datos disponibles para esta tarea.</p>
 
     const statusMap = {
         0: "En Progreso",
         1: "Completada",
+        2: "Finalizada",
     }
 
     const formatTime = (time) => (time ? time.slice(0, 5) : "-")

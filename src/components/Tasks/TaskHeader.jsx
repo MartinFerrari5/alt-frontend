@@ -19,11 +19,11 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
                 </Link>
                 <ChevronRightIcon className="text-brand-text-gray" />
                 <span className="font-semibold text-brand-custom-green">
-                    {task?.task?.[0]?.task_description}
+                    {task.task_description}
                 </span>
             </div>
             <h1 className="mt-2 text-xl font-semibold">
-                {task?.task?.[0]?.task_description}
+                {task.task_description}
             </h1>
         </div>
         <div className="flex gap-3">

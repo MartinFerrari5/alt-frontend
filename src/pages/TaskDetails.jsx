@@ -152,7 +152,7 @@ const TaskDetailsPage = () => {
             </div>
             <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
                 <TaskHeader
-                    task={currentTask} // TaskHeader sigue accediendo a currentTask.task[0] internamente
+                    task={currentTask}
                     onBack={() => navigate(-1)}
                     onDelete={handleDeleteClick}
                     onEdit={() => setIsEditing((prev) => !prev)}
@@ -167,7 +167,7 @@ const TaskDetailsPage = () => {
                         isSubmitting={isSubmitting}
                         taskDate={taskDate}
                         setTaskDate={setTaskDate}
-                        task={taskDetails} // Pasamos el objeto de tarea real
+                        task={taskDetails}
                         companies={companies_table}
                         projects={projects_table}
                         hourTypes={hour_type_table}
