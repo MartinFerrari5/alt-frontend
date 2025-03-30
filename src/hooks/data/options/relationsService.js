@@ -103,34 +103,43 @@ export const addProjectUserRelation = async (relationData) => {
  * Elimina la relación entre compañía y usuario.
  * @param {string} relationship_id - ID de la relación.
  * @returns {Promise<Object>} Resultado de la eliminación.
+ * @throws {Error} Si ocurre un error al eliminar la relación.
  */
 export const deleteCompanyUserRelation = async (relationship_id) => {
-    try {
-        const { data } = await api.delete("/companyUser", {
-            params: { relationship_id },
-        })
-        return data
-    } catch (error) {
-        throw new Error(
-            `Error eliminando relación con la compañía: ${error.message}`
-        )
+    if (!relationship_id) {
+        throw new Error("relationship_id es obligatorio para eliminar la relación.");
     }
-}
+    try {
+        // Send a DELETE request to the API to remove the company-user relation
+        const { data } = await api.delete(`/companyUser?relationship_id=${relationship_id}`);
+        
+        // Return the response data from the API
+        return data;
+    } catch (error) {
+        // Throw a new error with a descriptive message if the API call fails
+        throw new Error(`Error eliminando relación con la compañía: ${error.message}`);
+    }
+};
+
 
 /**
  * Elimina la relación entre proyecto y usuario.
- * @param {string} relationship_id - ID de la relación.
+ *
+ * @param {string} project_id - ID del proyecto.
+ *
  * @returns {Promise<Object>} Resultado de la eliminación.
+ *
+ * @throws {Error} Si ocurre un error al eliminar la relación.
  */
-export const deleteProjectUserRelation = async (relationship_id) => {
-    try {
-        const { data } = await api.delete(
-            `/projectUser?relationship_id=${relationship_id}`
-        )
-        return data
-    } catch (error) {
-        throw new Error(
-            `Error eliminando relación con el proyecto: ${error.message}`
-        )
+export const deleteProjectUserRelation = async (project_id) => {
+        if (!project_id) {
+        throw new Error("project_id es obligatorio para eliminar la relación.");
     }
-}
+    try {
+        const { data } = await api.delete(`/projectUser?project_id=${project_id}`);
+        return data;
+    } catch (error) {
+        throw new Error(`Error eliminando relación con el proyecto: ${error.message}`);
+    }
+};
+
