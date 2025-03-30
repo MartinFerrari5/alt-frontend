@@ -1,10 +1,25 @@
-// src\pages\auth\Register.jsx
+// src/pages/auth/Register.jsx
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
-import { api } from "../../lib/axios"
+
+// Esquema de validación con Zod
+const schema = z
+    .object({
+        firstName: z.string().min(2, "El nombre es obligatorio"),
+        lastName: z.string().min(2, "El apellido es obligatorio"),
+        email: z.string().email("Formato de correo inválido"),
+        password: z
+            .string()
+            .min(6, "La contraseña debe tener al menos 6 caracteres"),
+        confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Las contraseñas no coinciden",
+        path: ["confirmPassword"],
+    })
 
 // Componente LoadingSpinner reutilizable
 const LoadingSpinner = () => (
@@ -29,23 +44,12 @@ const LoadingSpinner = () => (
     </div>
 )
 
-// Esquema de validación con Zod
-const schema = z
-    .object({
-        firstName: z.string().min(2, "El nombre es obligatorio"),
-        lastName: z.string().min(2, "El apellido es obligatorio"),
-        email: z.string().email("Formato de correo inválido"),
-        password: z
-            .string()
-            .min(6, "La contraseña debe tener al menos 6 caracteres"),
-        confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Las contraseñas no coinciden",
-        path: ["confirmPassword"],
-    })
-
-// Componente auxiliar para renderizar campos de formulario
+/**
+ * Componente auxiliar para renderizar campos de formulario.
+ *
+ * @param {{id: string, label: string, type?: string, placeholder?: string, inputProps?: object, error?: string}} props
+ * @returns {JSX.Element}
+ */
 const FormField = ({
     id,
     label,
@@ -55,12 +59,14 @@ const FormField = ({
     error,
 }) => (
     <div className="mb-4">
+        {/* Label del campo */}
         <label
             htmlFor={id}
             className="mb-2 block text-sm font-medium text-gray-500"
         >
             {label}
         </label>
+        {/* Input del campo */}
         <input
             id={id}
             type={type}
@@ -70,7 +76,13 @@ const FormField = ({
                 error ? "border-red-500" : ""
             }`}
         />
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {/* Mostrar mensaje de error si existe */}
+        {error && (
+            <p className="mt-1 text-sm text-red-500">
+                {/* Mensaje de error */}
+                {error}
+            </p>
+        )}
     </div>
 )
 
@@ -84,27 +96,36 @@ const PageRegister = () => {
     const [message, setMessage] = useState(null)
 
     const onSubmit = async (data) => {
+        // Formatear los datos según la documentación
         const formattedData = {
             full_name: `${data.firstName} ${data.lastName}`,
             email: data.email,
             password: data.password,
+            role: "user", // Puedes ajustar el valor de role según tu lógica (ej. "user" o "admin")
         }
 
         try {
-            const response = await fetch(`${api}/users`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formattedData),
-            })
+            // Se envía la solicitud al endpoint correcto
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/users`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formattedData),
+                }
+            )
 
             if (!response.ok) {
-                throw new Error("Error al registrar usuario")
+                const errorData = await response.json()
+                throw new Error(
+                    errorData.message || "Error al registrar usuario"
+                )
             }
 
             setMessage({ type: "success", text: "¡Registro exitoso!" })
             setTimeout(() => navigate("/login"), 2000)
         } catch (error) {
-            setMessage({ type: "error", text: "Error al registrar usuario" })
+            setMessage({ type: "error", text: error.message })
         }
     }
 

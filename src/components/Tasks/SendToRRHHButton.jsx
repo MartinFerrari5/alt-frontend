@@ -25,15 +25,15 @@ const SendToRRHHButton = ({ tasks, queryParams }) => {
         }
 
         // Verificar si faltan los campos obligatorios
-        if (!queryParams.fullname || queryParams.fullname.trim() === "") {
-            toast.error("Falta el nombre completo.")
-            return
-        }
+        // if (!queryParams.fullname || queryParams.fullname.trim() === "") {
+        //     toast.error("Falta el nombre completo.")
+        //     return
+        // }
 
-        if (!queryParams.date || queryParams.date.trim() === "") {
-            toast.error("Falta la fecha.")
-            return
-        }
+        // if (!queryParams.date || queryParams.date.trim() === "") {
+        //     toast.error("Falta la fecha.")
+        //     return
+        // }
 
         // Limpiar los query params antes de enviarlos
         const cleanedParams = cleanQueryParams(queryParams)
