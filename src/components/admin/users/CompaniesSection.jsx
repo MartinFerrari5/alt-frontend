@@ -1,6 +1,6 @@
 // /src/components/admin/users/CompaniesSection.jsx
 import { useEffect, useState } from "react"
-import RelationSection from "./RelationSection"
+import {RelationSection} from "./RelationSection"
 import { getOptions } from "../../../hooks/data/options/optionsService"
 import {
     getRelatedOptions,
