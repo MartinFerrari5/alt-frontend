@@ -60,8 +60,12 @@ function Header({ subtitle, title, tasks }) {
                     />
                 )}
 
-                {role === "user" && currentPath === "/" && (
-                    <SendToRRHHButton queryParams={queryParams} tasks={tasks} />
+                {currentPath === "/" && (
+                    <SendToRRHHButton
+                        queryParams={queryParams}
+                        tasks={tasks}
+                        role={role}
+                    />
                 )}
             </div>
         </div>

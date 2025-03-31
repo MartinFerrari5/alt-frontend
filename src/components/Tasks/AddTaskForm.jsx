@@ -65,9 +65,9 @@ const AddTaskForm = ({ onClose }) => {
             task_type: "",
             hour_type: "",
             task_description: "Tarea de prueba",
-            entry_time: "10:30",
-            exit_time: "12:30",
-            lunch_hours: "2",
+            entry_time: "",
+            exit_time: "",
+            lunch_hours: "1",
             status: "progreso",
         },
     })

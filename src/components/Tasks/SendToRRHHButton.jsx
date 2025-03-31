@@ -6,7 +6,7 @@ import Button from "../Button"
 import { useSendStatusToRRHH } from "../../hooks/data/status/use-status-hooks"
 import { toast } from "react-toastify"
 
-const SendToRRHHButton = ({ tasks, queryParams }) => {
+const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isLoading } = useSendStatusToRRHH()
 
     // Función para eliminar parámetros vacíos del objeto queryParams
@@ -58,7 +58,7 @@ const SendToRRHHButton = ({ tasks, queryParams }) => {
 
     return (
         <Button onClick={handleClick} disabled={isLoading}>
-            Enviar a RRHH
+            {role === "admin" ? "finalizar tareas" : "Enviar a RRHH"}
         </Button>
     )
 }

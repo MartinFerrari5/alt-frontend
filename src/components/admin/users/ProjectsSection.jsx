@@ -116,7 +116,7 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
     const handleDeleteRelation = async (relation) => {
         try {
             // Eliminar la relación de proyecto con el usuario
-            await deleteProjectUserRelation(relation)
+            await deleteProjectUserRelation(relation.id)
             toast.success("Relación con el proyecto eliminada exitosamente")
 
             // Actualizar la lista de proyectos relacionados

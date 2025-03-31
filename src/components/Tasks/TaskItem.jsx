@@ -153,8 +153,6 @@ const TaskItem = ({
                         {task.task_description}
                     </div>
                 </td>
-                {/* {currentPath === "/" && (
-                )} */}
 
                 <td className="flex gap-2 px-4 py-5 text-right">
                     {currentPath === "/history" && (

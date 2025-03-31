@@ -137,6 +137,7 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
  * @throws {Error} Si ocurre un error al eliminar la relación.
  */
 export const deleteProjectUserRelation = async (project_id) => {
+    console.log("project_id:", project_id)
     if (!project_id) {
         throw new Error("project_id es obligatorio para eliminar la relación.")
     }
