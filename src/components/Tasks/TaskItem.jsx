@@ -155,7 +155,7 @@ const TaskItem = ({
                 </td>
 
                 <td className="flex gap-2 px-4 py-5 text-right">
-                    {currentPath === "/history" && (
+                    {role === "user" && currentPath === "/" &&  (
                         <Button
                             color="ghost"
                             onClick={handleDeleteButtonClick}
