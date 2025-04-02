@@ -28,18 +28,32 @@ export const createTask = async (task) => {
 }
 
 export const updateTaskApi = async ({ taskId, task }) => {
-    const payload = {
-        company_id: (task.company_id || task.company)?.trim(),
-        project_id: task.project?.trim(),
-        task_type: task.task_type?.trim(),
-        task_description: task.task_description?.trim(),
-        task_date: formatTaskDate(task.task_date),
-        entry_time: task.entry_time,
-        exit_time: task.exit_time,
-        lunch_hours: Number(task.lunch_hours),
-        hour_type: task.hour_type,
-        status: Number(task.status),
+    // Filtramos los campos que no sean undefined o null
+    const payload = Object.fromEntries(
+        Object.entries({
+            company_id: task.company_id?.trim() || task.company?.trim(),
+            project_id: task.project?.trim(),
+            task_type: task.task_type?.trim(),
+            task_description: task.task_description?.trim(),
+            task_date: task.task_date
+                ? formatTaskDate(task.task_date)
+                : undefined,
+            entry_time: task.entry_time,
+            exit_time: task.exit_time,
+            lunch_hours: task.lunch_hours
+                ? Number(parseFloat(task.lunch_hours).toFixed(1))
+                : undefined,
+            hour_type: task.hour_type,
+            status: task.status !== undefined ? Number(task.status) : undefined,
+        }).filter(([, value]) => value !== undefined)
+    )
+
+    // Si el payload está vacío, evitamos hacer la petición innecesaria
+    if (Object.keys(payload).length === 0) {
+        throw new Error("No hay campos para actualizar")
     }
+
+    // Hacemos la solicitud PUT solo con los campos modificados
     await api.put(`/tasks?task_id=${taskId}`, payload)
     return payload
 }
