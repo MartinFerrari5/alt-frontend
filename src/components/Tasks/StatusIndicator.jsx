@@ -1,31 +1,37 @@
 // /src/components/Tasks/StatusIndicator.jsx
 
 import PropTypes from "prop-types"
-import { FaCheck, FaSpinner, FaDollarSign, FaUndoAlt } from "react-icons/fa"
+import {
+    FaCheckCircle,
+    FaSpinner,
+    FaExclamationCircle,
+    FaUndoAlt,
+} from "react-icons/fa"
 
 const StatusIndicator = ({ status, isLoading, onChange }) => {
     let icon
     let statusClasses
 
     if (isLoading) {
-        icon = <FaSpinner className="text-white" />
+        icon = <FaSpinner className="animate-spin text-white" />
         statusClasses = "bg-gray-500"
     } else {
         switch (status) {
             case 0: // progreso
                 icon = <FaUndoAlt className="text-white" />
-                statusClasses = "bg-brand-process text-brand-process"
+                statusClasses = "bg-yellow-500"
                 break
-            case 1: // finalizado
-                icon = <FaCheck className="text-white" />
-                statusClasses = "bg-brand-custom-green text-brand-custom-green"
+            case 1: // revisión
+                icon = <FaExclamationCircle className="text-white" />
+                statusClasses = "bg-green-600"
                 break
-            case 2: // facturado
-                icon = <FaDollarSign className="text-white" />
+            case 2: // finalizado
+                icon = <FaCheckCircle className="text-white" />
+                // statusClasses = "bg-green-600"
                 statusClasses = "bg-purple-600"
                 break
             default:
-                icon = <FaSpinner className="text-white" />
+                icon = <FaSpinner className="animate-spin text-white" />
                 statusClasses = "bg-gray-500"
         }
     }
