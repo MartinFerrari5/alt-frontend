@@ -11,6 +11,19 @@ import {
 } from "../../../hooks/data/email/use-email-mutations"
 import Header from "../../layout/Header"
 
+// Mapeo de títulos a nombres de tabla para reutilizar en las llamadas a la API
+const TABLE_MAP = {
+    Compañías: "companies_table",
+    "Tipos de Hora": "hour_type_table",
+    Proyectos: "projects_table",
+    Emails: "emails",
+    "Tipos de Tarea": "types_table",
+}
+
+// Funciones auxiliares para los mensajes
+const showSuccess = (message) => toast.success(message)
+const showError = (message) => toast.error(message)
+
 const ManagementTables = () => {
     const {
         companies_table,
@@ -20,7 +33,6 @@ const ManagementTables = () => {
         fetchOptions,
     } = useOptionsStore()
 
-    // Se obtiene el estado de emails y sus indicadores mediante el hook
     const {
         emails,
         isLoading: emailsLoading,
@@ -65,11 +77,10 @@ const DataTable = ({
     error,
 }) => {
     const [showConfirm, setShowConfirm] = useState(false)
-    const [selectedItem, setSelectedItem] = useState(null) // Para eliminación
-    const [editingIndex, setEditingIndex] = useState(null) // Índice de la fila en edición
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [editingIndex, setEditingIndex] = useState(null)
     const [editValue, setEditValue] = useState("")
 
-    // Funciones para las tablas de opciones (no-email)
     const { updateOption, deleteOption } = useOptionsStore()
 
     const handleDeleteClick = (item, index) => {
@@ -108,11 +119,14 @@ const DataTable = ({
                     setEditValue("")
                 },
                 onError: (error) => {
-                    console.error("Error al actualizar:", error)
-                    toast.error("Error al actualizar. Inténtalo de nuevo.")
+                    console.error("Error al actualizar email:", error)
+                    const backendMsg =
+                        error.response?.data?.message || error.message
+                    toast.error(backendMsg)
                 },
             })
         } else {
+            // Manejamos el resto de las tablas de la misma forma que antes
             const tableMap = {
                 Compañías: "companies_table",
                 "Tipos de Hora": "hour_type_table",
@@ -149,60 +163,48 @@ const DataTable = ({
         setEditValue("")
     }
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
+        if (!selectedItem || !selectedItem.id) {
+            showError(
+                "No se pudo identificar el elemento a eliminar. Inténtalo de nuevo."
+            )
+            return
+        }
+
+        // Si es un email, usamos la mutación de emails
         if (isEmailTable) {
-            const idToDelete =
-                selectedItem && (selectedItem.id || selectedItem.email)
-            if (idToDelete === undefined) {
-                console.error("No se pudo identificar el elemento a eliminar.")
-                toast.error(
-                    "Error: No se pudo identificar el elemento a eliminar."
-                )
-                return
-            }
-            emailMutations.remove.mutate(idToDelete, {
+            emailMutations.remove.mutate(selectedItem.id, {
                 onSuccess: () => {
-                    toast.success("¡Elemento eliminado exitosamente!")
+                    showSuccess("Correo electrónico eliminado correctamente.")
                     setShowConfirm(false)
                     setSelectedItem(null)
                 },
                 onError: (error) => {
-                    console.error("Error al eliminar:", error)
-                    toast.error("Error al eliminar. Inténtalo de nuevo.")
+                    console.error("Error al eliminar el email:", error)
+                    const errorMessage =
+                        error.response?.data?.message || error.message
+                    showError(errorMessage)
                 },
             })
-        } else {
-            const tableMap = {
-                Compañías: "companies_table",
-                "Tipos de Hora": "hour_type_table",
-                Proyectos: "projects_table",
-                Emails: "emails",
-                "Tipos de Tarea": "types_table",
-            }
-            const table = tableMap[title]
+            return
+        }
+
+        // Para otras tablas, se usa deleteOption
+        try {
+            const table = TABLE_MAP[title]
             if (!table) {
-                console.error("Error: Tabla no definida")
-                toast.error("Error: Tabla no definida.")
+                showError("Error: La tabla no está definida. Contacta soporte.")
                 return
             }
-            const idToDelete = selectedItem.id
-            if (idToDelete === undefined) {
-                console.error("No se pudo identificar el elemento a eliminar.")
-                toast.error(
-                    "Error: No se pudo identificar el elemento a eliminar."
-                )
-                return
-            }
-            deleteOption(table, idToDelete)
-                .then(() => {
-                    toast.success("¡Elemento eliminado exitosamente!")
-                    setShowConfirm(false)
-                    setSelectedItem(null)
-                })
-                .catch((error) => {
-                    console.error("Error al eliminar:", error)
-                    toast.error("Error al eliminar. Inténtalo de nuevo.")
-                })
+
+            await deleteOption(table, selectedItem.id)
+            showSuccess("Elemento eliminado correctamente.")
+            setShowConfirm(false)
+            setSelectedItem(null)
+        } catch (error) {
+            console.error("Error al eliminar:", error)
+            const errorMessage = error.response?.data?.message || error.message
+            showError(errorMessage)
         }
     }
 
@@ -217,7 +219,9 @@ const DataTable = ({
                 <h2 className="mb-4 text-lg font-semibold text-gray-700">
                     {title}
                 </h2>
-                <div className="p-4 text-center">Cargando emails...</div>
+                <div className="p-4 text-center">
+                    Cargando correos electrónicos...
+                </div>
             </div>
         )
     }
@@ -229,13 +233,13 @@ const DataTable = ({
                     {title}
                 </h2>
                 <div className="p-4 text-center text-red-500">
-                    Error al cargar emails
+                    Error al cargar correos electrónicos
                 </div>
             </div>
         )
     }
 
-    // Construimos el nombre del elemento para personalizar el mensaje
+    // Se construye el nombre del elemento para personalizar los mensajes
     const itemName =
         selectedItem &&
         (selectedItem.option ||

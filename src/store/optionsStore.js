@@ -29,6 +29,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en fetchOptions para ${table}:`, error)
                     get().setError(error.message)
+                    throw error // Re-lanza el error
                 }
             },
 
@@ -41,6 +42,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en addOption para ${table}:`, error)
                     get().setError(error.message)
+                    throw error // Re-lanza el error
                 }
             },
 
@@ -59,6 +61,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en updateOption para ${table}:`, error)
                     get().setError(error.message)
+                    throw error // Re-lanza el error
                 }
             },
 
@@ -71,6 +74,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en deleteOption para ${table}:`, error)
                     get().setError(error.message)
+                    throw error // Re-lanza el error
                 }
             },
         }),
