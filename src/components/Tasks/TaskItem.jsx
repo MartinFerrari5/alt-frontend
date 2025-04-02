@@ -104,7 +104,7 @@ const TaskItem = ({
 
     const handleRowClick = () => {
         if (currentPath !== "/rraa/history") {
-            navigate(`/task/${task.id}`)
+            navigate(`/rraa/task/${task.id}`)
         }
     }
 

@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "rraa/task/:taskId",
+        path: "/rraa/task/:taskId",
         element: (
             <ProtectedRoute>
                 <TaskDetailsPage />

@@ -157,7 +157,7 @@ const TaskDetailsPage = () => {
         deleteTaskMutation.mutate(taskId, {
             onSuccess: () => {
                 toast.success("¡Tarea eliminada con éxito!")
-                navigate(-1)
+                navigate("/rraa")
             },
             onError: () =>
                 toast.error("Ocurrió un error al eliminar la tarea."),
