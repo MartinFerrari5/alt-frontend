@@ -14,6 +14,7 @@ import Button from "../Button"
 import { schema } from "../../util/validationSchema"
 import { statusMap } from "../../util/taskConstants"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import useAuthStore from "../../store/authStore"
 
 /**
  * Formulario para agregar una tarea
@@ -22,7 +23,8 @@ import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 const AddTaskForm = ({ onClose }) => {
     const { addTaskMutation } = useTasks()
     const isAddingTask = addTaskMutation.isLoading
-
+    const role = useAuthStore((state) => state.role)
+    console.log("role", role)
     // Fecha inicial (solo fecha sin hora)
     const [taskDate, setTaskDate] = useState(() => {
         const date = new Date()
@@ -186,7 +188,7 @@ const AddTaskForm = ({ onClose }) => {
         const company_id = selectedCompanyObj
             ? selectedCompanyObj.company_id
             : data.company
-
+        
         const taskPayload = {
             company_id, // Enviar el id real de la compañía
             project_id: data.project, // Se espera que el dropdown de proyecto devuelva project_id
@@ -200,6 +202,7 @@ const AddTaskForm = ({ onClose }) => {
             status: "0",
             task_date: formattedDate,
         }
+            console.log("taskPayload", taskPayload)
 
         addTaskMutation.mutate(taskPayload, {
             onSuccess: () => {
