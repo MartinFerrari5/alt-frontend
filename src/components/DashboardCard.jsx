@@ -6,7 +6,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
         <article className="rounded-lg bg-white p-4 shadow">
             {title && (
                 <header className="mb-2">
-                    <h3 className="text-lg font-bold text-brand-dark-blue">
+                    <h3 className="text-2xl font-bold text-brand-dark-blue">
                         {title}
                     </h3>
                 </header>
@@ -14,7 +14,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
 
             {total && (
                 <section className="mb-2">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-lg text-gray-500">
                         <strong>Total:</strong> {total}
                     </p>
                 </section>
@@ -22,7 +22,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
 
             {stats && stats.length > 0 && (
                 <section>
-                    <ul className="flex flex-col gap-1">
+                    <ul className="flex flex-col gap-2">
                         {stats.map((stat, index) => (
                             <li key={index}>
                                 <button
@@ -30,7 +30,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
                                     onClick={() =>
                                         onStatClick && onStatClick(stat)
                                     }
-                                    className="w-full cursor-pointer text-left text-sm text-brand-dark-blue focus:outline-none"
+                                    className="w-full cursor-pointer text-left text-lg text-brand-dark-blue focus:outline-none"
                                 >
                                     <strong className="font-semibold">
                                         {stat.label}:
