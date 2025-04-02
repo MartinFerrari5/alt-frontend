@@ -5,7 +5,11 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 
 import { toast } from "react-toastify"
 import UserEditForm from "../../components/admin/users/UserEditForm"
-import { useGetUsers, useUpdateUser } from "../../hooks/data/users/useUserHooks"
+import {
+    useGetUsers,
+    useUpdateUser,
+    useUpdateUserRole,
+} from "../../hooks/data/users/useUserHooks"
 import ProjectsSection from "../../components/admin/users/ProjectsSection"
 import CompaniesSection from "../../components/admin/users/CompaniesSection"
 import useNavigationStore from "../../store/navigationStore"
@@ -13,13 +17,13 @@ import Sidebar from "../../components/layout/Sidebar"
 
 const UsersDetail = () => {
     const { id } = useParams()
-    const navigate = useNavigate()
     const { setActiveRoute } = useNavigationStore()
     const [selectedCompanyRelId, setSelectedCompanyRelId] = useState("")
 
     // Se obtiene la data del usuario mediante un hook personalizado
     const { data: user, isLoading, error } = useGetUsers(id)
     const updateUserMutation = useUpdateUser(id)
+    const updateUserRoleMutation = useUpdateUserRole(id)
     const userData = Array.isArray(user) ? user[0] : user
 
     // Establece la ruta activa en el sidebar
@@ -53,6 +57,37 @@ const UsersDetail = () => {
     if (!userData)
         return <div>No se encontró información para este usuario.</div>
 
+    const handleSave = (updatedUser) => {
+        const promises = []
+
+        // Actualiza nombre y correo si han cambiado
+        if (
+            updatedUser.full_name !== userData.full_name ||
+            updatedUser.email !== userData.email
+        ) {
+            promises.push(
+                updateUserMutation.mutateAsync({
+                    full_name: updatedUser.full_name,
+                    email: updatedUser.email,
+                })
+            )
+        }
+
+        // Actualiza el rol si ha cambiado
+        if (updatedUser.role && updatedUser.role !== userData.role) {
+            promises.push(
+                updateUserRoleMutation.mutateAsync({ role: updatedUser.role })
+            )
+        }
+
+        Promise.all(promises)
+            .then(() => toast.success("User updated successfully"))
+            .catch((err) => {
+                console.error(err)
+                toast.error("Failed to update user")
+            })
+    }
+
     return (
         <div className="flex min-h-screen flex-col lg:flex-row">
             {/* Sidebar (se asume que se renderiza en una zona fija o se importa en otro lugar) */}
@@ -82,7 +117,7 @@ const UsersDetail = () => {
                                     <User className="h-10 w-10" />
                                 </div>
                                 <h2 className="text-main-color text-xl font-semibold">
-                                    {userData.name}
+                                    {userData.full_name}
                                 </h2>
                                 <p className="text-sm text-gray-500">
                                     {userData.email}
@@ -125,21 +160,7 @@ const UsersDetail = () => {
                             <h3 className="section-title mb-2 text-lg font-semibold">
                                 Edit User
                             </h3>
-                            <UserEditForm
-                                user={userData}
-                                onSave={(updatedUser) => {
-                                    updateUserMutation.mutate(updatedUser, {
-                                        onSuccess: () =>
-                                            toast.success(
-                                                "User updated successfully"
-                                            ),
-                                        onError: () =>
-                                            toast.error(
-                                                "Failed to update user"
-                                            ),
-                                    })
-                                }}
-                            />
+                            <UserEditForm user={userData} onSave={handleSave} />
                         </div>
                     </div>
 

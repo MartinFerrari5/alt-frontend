@@ -101,6 +101,30 @@ export const updateUser = async (user_id, payload) => {
 }
 
 /**
+ * Actualiza el rol del usuario.
+ * @param {string} user_id - ID del usuario a actualizar.
+ * @param {Object} payload - Datos a actualizar (por ejemplo, { role: "admin" }).
+ * @returns {Promise<Object>} - Promesa que resuelve con la respuesta del servidor.
+ * @throws {Error} - Si ocurre un error al actualizar el rol.
+ */
+export const updateUserRole = async (user_id, payload) => {
+    try {
+        // Se usa el endpoint de cambio de rol de acuerdo a la documentación
+        const { data } = await api.put(
+            `/reportes/users/role?user_id=${user_id}`,
+            payload
+        )
+        return data
+    } catch (error) {
+        console.error("Error al actualizar rol del usuario:", error)
+        throw new Error(
+            error.response?.data?.message ||
+                "Error al actualizar el rol del usuario"
+        )
+    }
+}
+
+/**
  * Obtiene todos los usuarios.
  * @returns {Promise<Array>} - Promesa que resuelve con la lista de usuarios.
  * @throws {Error} - Si ocurre un error al obtener los usuarios.

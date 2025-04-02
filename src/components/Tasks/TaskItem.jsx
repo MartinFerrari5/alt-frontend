@@ -174,7 +174,7 @@ const TaskItem = ({
                             )}
                         </Button>
                     )}
-                    {role === "admin" ? (
+                    {role === "admin" && currentPath === "/" ? (
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
                                 status={task.status}
