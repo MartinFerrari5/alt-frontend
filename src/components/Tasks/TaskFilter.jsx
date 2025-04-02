@@ -192,9 +192,11 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 isLoading={!hour_type_table || hour_type_table.length === 0}
                 isError={false}
                 items={hour_type_table}
+                valueKey="hour_type_id" // Asegúrate de usar la clave correcta aquí
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
             />
+
             {currentPath === "/history" && (
                 <div className="group relative z-0 mb-5 w-full">
                     <label className="mb-2 block text-sm font-medium">
