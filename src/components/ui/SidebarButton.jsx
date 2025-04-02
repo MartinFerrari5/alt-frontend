@@ -13,15 +13,16 @@ const sidebarStyle = tv({
     },
 })
 
-const SidebarButton = ({ children, to }) => (
+const SidebarButton = ({ children, to }) =>  (    
     <NavLink
         to={to}
+        end
         className={({ isActive }) =>
             sidebarStyle({ color: isActive ? "selected" : "unselected" })
         }
     >
         {children}
     </NavLink>
-)
+    )
 
 export default SidebarButton

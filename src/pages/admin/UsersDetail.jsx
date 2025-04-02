@@ -62,7 +62,7 @@ const UsersDetail = () => {
             <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
                 <div className="mb-6 flex items-center gap-2">
                     <Link
-                        to="/admin/users"
+                        to="/rraa/admin/users"
                         className="hover:text-green hover:bg-grey-bg rounded-full p-2 text-gray-500 transition-colors"
                     >
                         <ArrowLeft className="h-5 w-5" />

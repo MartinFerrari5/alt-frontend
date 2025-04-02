@@ -25,7 +25,7 @@ const UsersItem = ({ user }) => {
     }
 
     const handleRowClick = () => {
-        navigate(`/admin/users/${user.id}`)
+        navigate(`/rraa/admin/users/${user.id}`)
     }
 
     return (

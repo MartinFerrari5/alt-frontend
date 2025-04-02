@@ -68,7 +68,7 @@ const AdminDropdown = () => {
             >
                 <li>
                     <NavLink
-                        to="/admin/management"
+                        to="/rraa/admin/management"
                         onClick={closeAdminDropdown}
                         className={({ isActive }) =>
                             sidebarStyle({
@@ -81,7 +81,7 @@ const AdminDropdown = () => {
                 </li>
                 <li>
                     <NavLink
-                        to="/admin/users"
+                        to="/rraa/admin/users"
                         onClick={closeAdminDropdown}
                         className={({ isActive }) =>
                             sidebarStyle({

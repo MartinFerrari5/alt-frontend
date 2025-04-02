@@ -195,7 +195,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
             />
-            {currentPath === "/history" && (
+            {currentPath === "/rraa/history" && (
                 <div className="group relative z-0 mb-5 w-full">
                     <label className="mb-2 block text-sm font-medium">
                         Tipo de estado

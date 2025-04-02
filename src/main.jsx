@@ -27,11 +27,11 @@ import TasksPage from "./pages/TasksPage.jsx"
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <PageRegister /> },
-    { path: "/reset-password", element: <ResetPasswordPage /> },
+    { path: "/rraa/login", element: <Login /> },
+    { path: "/rraa/register", element: <PageRegister /> },
+    { path: "/rraa/reset-password", element: <ResetPasswordPage /> },
     {
-        path: "/",
+        path: "/rraa",
         element: (
             <ProtectedRoute>
                 <TasksPage />
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/user/user-profile",
+        path: "/rraa/user/user-profile",
         element: (
             <ProtectedRoute>
                 <UserProfilePage />
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/user/password",
+        path: "/rraa/user/password",
         element: (
             <ProtectedRoute>
                 <NewPasswordPage />
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/history",
+        path: "/rraa/history",
         element: (
             <ProtectedRoute>
                 <DisboardPage />
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/task/:taskId",
+        path: "rraa/task/:taskId",
         element: (
             <ProtectedRoute>
                 <TaskDetailsPage />
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/task/exported",
+        path: "/rraa/task/exported",
         element: (
             <ProtectedRoute>
                 <Status />
@@ -79,7 +79,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/admin/management",
+        path: "/rraa/admin/management",
         element: (
             <ProtectedRoute adminOnly>
                 <ManagementPage />
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/admin/users",
+        path: "/rraa/admin/users",
         element: (
             <ProtectedRoute adminOnly>
                 <UsersPage />
@@ -95,7 +95,7 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/admin/users/:id",
+        path: "/rraa/admin/users/:id",
         element: (
             <ProtectedRoute adminOnly>
                 <UsersDetail />
@@ -103,14 +103,14 @@ const router = createBrowserRouter([
         ),
     },
     {
-        path: "/admin/exported",
+        path: "/rraa/admin/exported",
         element: (
             <ProtectedRoute adminOnly>
                 <Status />
             </ProtectedRoute>
         ),
     },
-    { path: "*", element: <NotFoundPage /> },
+    { path: "/rraa/login", element: <Login /> },
 ])
 
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -95,7 +95,7 @@ const SignIn = () => {
             setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
 
             setTimeout(() => {
-                navigate("/")
+                navigate("/rraa")
             }, 1000)
         } catch (error) {
             console.error("Error de red o inesperado:", error)
@@ -180,7 +180,7 @@ const SignIn = () => {
                             <div>
                                 <a className="text-sm font-light">
                                     <Link
-                                        to="/reset-password"
+                                        to="/rraa/reset-password"
                                         className="text-primary-600 text-sm font-medium hover:underline"
                                     >
                                         ¿Olvidaste la contraseña?
@@ -238,7 +238,7 @@ const SignIn = () => {
                 <p className="text-sm font-light text-gray-500">
                     ¿No tienes cuenta?{" "}
                     <Link
-                        to="/register"
+                        to="/rraa/register"
                         className="text-primary-600 font-medium hover:underline"
                     >
                         Regístrate

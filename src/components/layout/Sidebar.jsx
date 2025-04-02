@@ -29,10 +29,10 @@ const Sidebar = () => {
                         <UserDetails />
                     </div>
                     <div className="flex flex-col gap-2 p-2">
-                        <SidebarButton to="/">
+                        <SidebarButton to="/rraa">
                             <FaHome /> Inicio
                         </SidebarButton>
-                        <SidebarButton to="/history">
+                        <SidebarButton to="/rraa/history">
                             <FaUndoAlt /> Historial
                         </SidebarButton>
                         {role === "admin" && <AdminDropdown />}

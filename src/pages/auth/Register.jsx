@@ -123,7 +123,7 @@ const PageRegister = () => {
             }
 
             setMessage({ type: "success", text: "¡Registro exitoso!" })
-            setTimeout(() => navigate("/login"), 2000)
+            setTimeout(() => navigate("/rraa/login"), 2000)
         } catch (error) {
             setMessage({ type: "error", text: error.message })
         }
@@ -228,7 +228,7 @@ const PageRegister = () => {
                 <p className="text-sm font-light text-gray-500">
                     ¿Ya tienes cuenta?{" "}
                     <Link
-                        to="/login"
+                        to="/rraa/login"
                         className="text-primary-600 font-medium hover:underline"
                     >
                         Login

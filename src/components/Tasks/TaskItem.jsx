@@ -97,7 +97,7 @@ const TaskItem = ({
     }, [updateTask, task, newStatus])
 
     const handleRowClick = () => {
-        if (currentPath !== "/history") {
+        if (currentPath !== "/rraa/history") {
             navigate(`/task/${task.id}`)
         }
     }

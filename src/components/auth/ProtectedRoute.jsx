@@ -8,11 +8,11 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     const role = useAuthStore((state) => state.role)
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" replace />
+        return <Navigate to="/rraa/login" replace />
     }
 
     if (adminOnly && role !== "admin") {
-        return <Navigate to="/" replace />
+        return <Navigate to="/rraa" replace />
     }
 
     return children

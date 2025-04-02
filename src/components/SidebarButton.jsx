@@ -18,6 +18,7 @@ const SidebarButton = ({ children, to }) => {
     return (
         <NavLink
             to={to}
+            end
             className={({ isActive }) =>
                 sidebar({ color: isActive ? "selected" : "unselected" })
             }
