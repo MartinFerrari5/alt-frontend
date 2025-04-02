@@ -29,7 +29,7 @@ export const createTask = async (task) => {
 
 export const updateTaskApi = async ({ taskId, task }) => {
     const payload = {
-        company_id: task.company?.trim(),
+        company_id: (task.company_id || task.company)?.trim(),
         project_id: task.project?.trim(),
         task_type: task.task_type?.trim(),
         task_description: task.task_description?.trim(),

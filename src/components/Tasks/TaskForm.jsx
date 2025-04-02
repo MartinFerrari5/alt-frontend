@@ -31,13 +31,13 @@ const TaskForm = ({
     // Observar el valor seleccionado en el Dropdown de "Empresa"
     const selectedCompany = watch("company")
 
-    // Al cambiar la compañía, cargar los proyectos relacionados de forma similar a AddTaskForm.jsx
+    // Al cambiar la compañía, se consultan los proyectos relacionados
     useEffect(() => {
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
                 .then((resp) => {
                     setFilteredProjects(resp)
-                    // Reinicia el campo project para que se asigne el primer proyecto (si existe)
+                    // Reiniciar el campo "project" asignando el primer proyecto (si existe)
                     reset({
                         ...watch(),
                         project: resp.length > 0 ? resp[0].project_id : "",

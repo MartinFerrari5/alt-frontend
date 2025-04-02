@@ -36,7 +36,7 @@ const TaskDetailsPage = () => {
         formState: { errors, isSubmitting },
         handleSubmit,
         reset,
-        setValue, // extraemos setValue para actualizar campos de forma programática
+        setValue, // para actualizar campos programáticamente
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -83,8 +83,8 @@ const TaskDetailsPage = () => {
                 : null
             setTaskDate(taskDateValue)
 
-            // Encontrar en companies_table la compañía cuyo company_id coincide con la tarea
-            // y extraer su relationship_id
+            // Buscamos en companies_table la compañía cuyo company_id coincide con la tarea
+            // y extraemos su relationship_id para asignarlo en el formulario.
             const selectedCompanyObj = companies_table.find(
                 (comp) => comp.company_id === taskDetails.company_id
             )
@@ -92,7 +92,6 @@ const TaskDetailsPage = () => {
                 ? selectedCompanyObj.relationship_id
                 : ""
             reset({
-                // Se usan los IDs adecuados para que los Dropdowns (que usan valueKey) puedan seleccionar la opción correcta
                 company: companyValue,
                 project: taskDetails.project_id || "",
                 task_type: taskDetails.task_type || "",
@@ -118,11 +117,26 @@ const TaskDetailsPage = () => {
             return
         }
 
+        // Convertir el relationship_id (valor del campo "company") en el company_id real
+        const selectedCompanyObj = companies_table.find(
+            (comp) => comp.relationship_id === data.company
+        )
+        const company_id = selectedCompanyObj
+            ? selectedCompanyObj.company_id
+            : data.company
+
         const updateData = {
             ...data,
+            // Se reemplaza la propiedad "company" por company_id real para el payload
+            company_id,
+            project_id: data.project,
+            task_type: data.task_type?.trim(),
+            task_description: data.task_description?.trim(),
+            entry_time: data.entry_time,
+            exit_time: data.exit_time,
             lunch_hours: Number(data.lunch_hours),
-            status: Number(data.status),
             hour_type: data.hour_type,
+            status: Number(data.status),
             task_date: taskDate ? formatDateForBackend(taskDate) : null,
         }
 
@@ -182,7 +196,8 @@ const TaskDetailsPage = () => {
                         companies={companies_table}
                         projects={projects_table}
                         hourTypes={hour_type_table}
-                        setValue={setValue} // Se pasa setValue para poder actualizar el campo "project"
+                        setValue={setValue} // Se pasa para actualizar "project"
+                        reset={reset}
                     />
                 ) : (
                     <ReadOnlyTaskDetails task={taskDetails} />
