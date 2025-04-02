@@ -110,14 +110,14 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                     .then((projects) => {
                         setFilteredProjects(projects)
                         // Si el usuario aún no ha seleccionado un proyecto, asignar el primer proyecto (usando project_id)
-                        if (!watch("project")) {
-                            setValue(
-                                "project",
-                                projects.length > 0
-                                    ? projects[0].project_id
-                                    : ""
-                            )
-                        }
+                        // if (!watch("project")) {
+                        //     setValue(
+                        //         "project",
+                        //         projects.length > 0
+                        //             ? projects[0].project_id
+                        //             : ""
+                        //     )
+                        // }
                     })
                     .catch((error) => toast.error(error.message))
             } else {

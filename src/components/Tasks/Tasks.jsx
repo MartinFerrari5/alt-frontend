@@ -9,7 +9,6 @@ import DashboardCards from "../DashboardCards"
 import TaskTable from "./TaskTable"
 
 const Tasks = () => {
-    const { useFilterTasks } = useTasks()
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.role)
@@ -31,27 +30,82 @@ const Tasks = () => {
         [searchParams, role]
     )
 
-    const {
-        data: filteredTasks = [],
-        isLoading,
-        isError,
-    } = useFilterTasks(filters)
+    const { getTasks, useFilterTasks } = useTasks({ all: true })
+    const filterQuery = useFilterTasks(filters)
+    const hasActiveFilters = useMemo(
+        () => Object.values(filters).some((value) => value !== ""),
+        [filters]
+    )
 
-    // Actualiza los parámetros de búsqueda con los filtros
-    const handleFilter = useCallback(
+    const displayedTasks = hasActiveFilters ? filterQuery.data : getTasks.data
+    const isLoading = hasActiveFilters
+        ? filterQuery.isLoading
+        : getTasks.isLoading
+    const isError = hasActiveFilters ? filterQuery.isError : getTasks.isError
+
+    // Filtramos las tareas válidas (con id)
+    const validTasks = useMemo(
+        () => (displayedTasks || []).filter((task) => task?.id),
+        [displayedTasks]
+    )
+
+    // Función para actualizar los filtros en la URL (se agrega hourtype)
+    const updateFilter = useCallback(
         (filterData) => {
-            const { fullname, company, project, status, date, hourtype } =
-                filterData
-            setSearchParams({
+            const {
                 fullname,
                 company,
                 project,
                 status,
-                date,
+                startDate,
+                endDate,
                 hourtype,
+            } = filterData
+            const dateRange =
+                startDate && endDate
+                    ? `${startDate} ${endDate}`
+                    : startDate || ""
+            setSearchParams({
+                fullname: fullname || "",
+                company: company || "",
+                project: project || "",
+                hourtype: hourtype || "",
+                status: status || "",
+                date: dateRange,
             })
         },
         [setSearchParams]
+    )
+
+    // Función que adapta el objeto recibido desde TaskFilter
+    const handleFilter = useCallback(
+        (filterData) => {
+            let startDate = ""
+            let endDate = ""
+            if (filterData.date) {
+                const dates = filterData.date.split(" ")
+                if (dates.length === 2) {
+                    startDate = dates[0]
+                    endDate = dates[1]
+                } else {
+                    startDate = filterData.date
+                }
+            }
+            const status =
+                filterData.status !== ""
+                    ? Number(filterData.status).toString()
+                    : ""
+            updateFilter({
+                fullname: filterData.fullname,
+                company: filterData.company,
+                project: filterData.project || "",
+                hourtype: filterData.hourtype,
+                status,
+                startDate,
+                endDate,
+            })
+        },
+        [updateFilter]
     )
 
     // Estados para la selección de tareas
@@ -64,11 +118,11 @@ const Tasks = () => {
             setSelectedTasks([])
             setAllSelected(false)
         } else {
-            const allTaskIds = filteredTasks.map((task) => task.id)
+            const allTaskIds = validTasks.map((task) => task.id)
             setSelectedTasks(allTaskIds)
             setAllSelected(true)
         }
-    }, [allSelected, filteredTasks])
+    }, [allSelected, validTasks])
 
     // Selección individual
     const handleSelectTask = useCallback((taskId) => {
@@ -80,7 +134,7 @@ const Tasks = () => {
     }, [])
 
     // Items de tareas seleccionadas
-    const selectedTaskItems = filteredTasks.filter((task) =>
+    const selectedTaskItems = validTasks.filter((task) =>
         selectedTasks.includes(task.id)
     )
 
@@ -98,7 +152,7 @@ const Tasks = () => {
                     Error al cargar las tareas.
                 </p>
             )
-        if (!filteredTasks || filteredTasks.length === 0)
+        if (!validTasks || validTasks.length === 0)
             return (
                 <p className="text-sm text-brand-text-gray">
                     No hay tareas disponibles.
@@ -106,7 +160,7 @@ const Tasks = () => {
             )
         return (
             <TaskTable
-                tasks={filteredTasks}
+                tasks={validTasks}
                 isInicio={isInicio}
                 selectedTasks={selectedTasks}
                 onSelectTask={handleSelectTask}
