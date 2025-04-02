@@ -1,26 +1,27 @@
+// /src/components/admin/users/CompaniesSection.jsx
 import { useEffect, useState } from "react"
 import { RelationSection } from "./RelationSection"
 import { getOptions } from "../../../hooks/data/options/optionsService"
-import {
-    getRelatedOptions,
-    getNotRelatedCompanies,
-    deleteCompanyUserRelation,
-    addCompanyUserRelation,
-} from "../../../hooks/data/options/relationsService"
 import { toast } from "react-toastify"
 import { Building } from "lucide-react"
+import { useRelationsStore } from "../../../store/relationsStore"
 
 const CompaniesSection = ({
     userId,
     selectedCompanyRelId,
     setSelectedCompanyRelId,
 }) => {
-    // Almacena todas las compañías (tabla de opciones)
+    // Estado local para la tabla de compañías (opciones generales)
     const [companiesTable, setCompaniesTable] = useState([])
-    // Compañías ya relacionadas al usuario
-    const [relatedCompanies, setRelatedCompanies] = useState([])
-    // Compañías que aún no están relacionadas
-    const [notRelatedCompanies, setNotRelatedCompanies] = useState([])
+
+    // Extraemos del store global los estados y métodos relacionados con las relaciones
+    const {
+        relatedCompanies,
+        notRelatedCompanies,
+        updateRelations,
+        addCompanyUserRelation,
+        deleteCompanyUserRelation,
+    } = useRelationsStore()
 
     // Cargar opciones generales de compañías
     useEffect(() => {
@@ -35,105 +36,55 @@ const CompaniesSection = ({
         fetchCompanies()
     }, [])
 
-    // Cargar compañías relacionadas al usuario
+    // Actualizar relaciones (compañías) en el store global
     useEffect(() => {
         if (userId) {
-            const fetchRelatedCompanies = async () => {
-                try {
-                    const companiesData = await getRelatedOptions({
-                        user_id: userId,
-                        related_table: "company_users_table",
-                        individual_table: "companies_table",
-                    })
-                    setRelatedCompanies(companiesData)
-                } catch (error) {
-                    console.error(
-                        "Error al obtener compañías relacionadas:",
-                        error
-                    )
-                    toast.error("Error al obtener compañías relacionadas")
-                }
-            }
-            fetchRelatedCompanies()
+            updateRelations(userId)
         }
-    }, [userId])
+    }, [userId, updateRelations])
 
-    // Asignar el primer relationship_id como seleccionado si aún no hay
+    // Si hay relaciones y no se ha seleccionado ninguna, se asigna la primera por defecto
     useEffect(() => {
         if (relatedCompanies.length > 0 && !selectedCompanyRelId) {
             setSelectedCompanyRelId(relatedCompanies[0].relationship_id)
         }
     }, [relatedCompanies, selectedCompanyRelId, setSelectedCompanyRelId])
 
-    // Cargar compañías que no están relacionadas con el usuario
-    useEffect(() => {
-        if (userId) {
-            const fetchNotRelated = async () => {
-                try {
-                    const companiesNotRelated =
-                        await getNotRelatedCompanies(userId)
-                    setNotRelatedCompanies(companiesNotRelated)
-                } catch (error) {
-                    console.error(
-                        "Error al obtener opciones no relacionadas:",
-                        error
-                    )
-                    toast.error("Error al obtener opciones no relacionadas")
-                }
-            }
-            fetchNotRelated()
-        }
-    }, [userId])
-
-    // Mapea las compañías relacionadas a un formato que use el diseño
+    // Mapeo para el diseño de compañías relacionadas
     const mappedRelatedCompanies = relatedCompanies.map((r) => ({
         id: r.company_id,
         relationship_id: r.relationship_id,
         option: r.option,
     }))
 
-    // Mapea las compañías disponibles (no relacionadas)
+    // Mapeo para compañías disponibles (no relacionadas)
     const availableCompanies = notRelatedCompanies.map((item) => ({
         id: item.company_id,
         option: item.options,
     }))
 
-    // Función para agregar una relación. En este caso se recibe el id de la compañía.
+    // Función para agregar relación utilizando el store global
     const handleAddRelation = async (companyId) => {
         try {
             const relationData = { user_id: userId, company_id: companyId }
-            await addCompanyUserRelation(relationData)
+            await addCompanyUserRelation(relationData, userId)
             toast.success("Relación con la compañía creada exitosamente")
-            const updatedCompanies = await getRelatedOptions({
-                user_id: userId,
-                related_table: "company_users_table",
-                individual_table: "companies_table",
-            })
-            setRelatedCompanies(updatedCompanies)
-            const updatedNotRelated = await getNotRelatedCompanies(userId)
-            setNotRelatedCompanies(updatedNotRelated)
         } catch (error) {
             console.error("Error al agregar relación de compañía:", error)
             toast.error("Error al agregar relación de compañía")
         }
     }
 
+    // Función para eliminar relación utilizando el store global
     const handleDeleteRelation = async (relation) => {
         try {
-            await deleteCompanyUserRelation(relation.relationship_id)
+            await deleteCompanyUserRelation(relation.relationship_id, userId)
             toast.success("Relación con la compañía eliminada exitosamente")
-            const updatedCompanies = await getRelatedOptions({
-                user_id: userId,
-                related_table: "company_users_table",
-                individual_table: "companies_table",
-            })
-            setRelatedCompanies(updatedCompanies)
-            const updatedNotRelated = await getNotRelatedCompanies(userId)
-            setNotRelatedCompanies(updatedNotRelated)
+            // Si la relación eliminada era la seleccionada, se actualiza el selectedCompanyRelId
             if (relation.relationship_id === selectedCompanyRelId) {
                 setSelectedCompanyRelId(
-                    updatedCompanies.length > 0
-                        ? updatedCompanies[0].relationship_id
+                    relatedCompanies.length > 0
+                        ? relatedCompanies[0].relationship_id
                         : ""
                 )
             }
@@ -143,7 +94,7 @@ const CompaniesSection = ({
         }
     }
 
-    // Renderiza cada elemento relacionado con diseño similar al propuesto
+    // Renderizado de cada elemento de la compañía
     const renderItemContent = (company) => (
         <div
             className={`flex w-full cursor-pointer items-center gap-2 ${
@@ -158,11 +109,6 @@ const CompaniesSection = ({
             </div>
             <div>
                 <p className="text-main-color font-medium">{company.option}</p>
-                {company.role && (
-                    <p className="text-xs text-gray-500">
-                        Role: {company.role}
-                    </p>
-                )}
             </div>
         </div>
     )
@@ -171,13 +117,11 @@ const CompaniesSection = ({
         <div className="mb-8">
             <RelationSection
                 title="Compañías"
-                // Se pasan las compañías relacionadas y disponibles
                 relatedItems={mappedRelatedCompanies}
                 availableItems={availableCompanies}
                 displayProp="option"
                 onAddRelation={handleAddRelation}
                 onDeleteRelation={handleDeleteRelation}
-                // Opciones de texto para botones y mensajes
                 addLabel="Agregar Compañía"
                 emptyText="El usuario no está asociado a ninguna compañía"
                 renderItemContent={renderItemContent}

@@ -1,4 +1,3 @@
-// /src/pages/TaskDetails.jsx
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -37,6 +36,7 @@ const TaskDetailsPage = () => {
         formState: { errors, isSubmitting },
         handleSubmit,
         reset,
+        setValue, // extraemos setValue para actualizar campos de forma programática
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -65,14 +65,15 @@ const TaskDetailsPage = () => {
         return `${year}-${month}-${day} 00:00:00`
     }
 
-    // Obtener la tarea (ahora currentTask.task es un array)
+    // Obtener la tarea (acepta tanto objeto como array)
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
 
-    // Extraer el objeto real de la tarea (primer elemento del array)
     const taskDetails =
-        currentTask && currentTask.task && currentTask.task.length > 0
-            ? currentTask.task[0]
+        currentTask && currentTask.task
+            ? Array.isArray(currentTask.task)
+                ? currentTask.task[0]
+                : currentTask.task
             : null
 
     useEffect(() => {
@@ -81,9 +82,19 @@ const TaskDetailsPage = () => {
                 ? new Date(taskDetails.task_date)
                 : null
             setTaskDate(taskDateValue)
+
+            // Encontrar en companies_table la compañía cuyo company_id coincide con la tarea
+            // y extraer su relationship_id
+            const selectedCompanyObj = companies_table.find(
+                (comp) => comp.company_id === taskDetails.company_id
+            )
+            const companyValue = selectedCompanyObj
+                ? selectedCompanyObj.relationship_id
+                : ""
             reset({
-                company: taskDetails.company || "",
-                project: taskDetails.project || "",
+                // Se usan los IDs adecuados para que los Dropdowns (que usan valueKey) puedan seleccionar la opción correcta
+                company: companyValue,
+                project: taskDetails.project_id || "",
                 task_type: taskDetails.task_type || "",
                 task_description: taskDetails.task_description || "",
                 entry_time: taskDetails.entry_time
@@ -97,7 +108,7 @@ const TaskDetailsPage = () => {
                 status: taskDetails.status?.toString() || "0",
             })
         }
-    }, [taskDetails, reset])
+    }, [taskDetails, reset, companies_table])
 
     const handleSaveClick = (data) => {
         if (data.entry_time >= data.exit_time) {
@@ -171,6 +182,7 @@ const TaskDetailsPage = () => {
                         companies={companies_table}
                         projects={projects_table}
                         hourTypes={hour_type_table}
+                        setValue={setValue} // Se pasa setValue para poder actualizar el campo "project"
                     />
                 ) : (
                     <ReadOnlyTaskDetails task={taskDetails} />

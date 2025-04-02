@@ -1,4 +1,3 @@
-// /src/components/Tasks/TaskForm.jsx
 import { useEffect, useState } from "react"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
@@ -6,11 +5,6 @@ import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
 import { toast } from "react-toastify"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
-
-const formatTimeForInput = (timeStr) => {
-    if (!timeStr) return ""
-    return timeStr.length > 5 ? timeStr.slice(0, 5) : timeStr
-}
 
 const TaskForm = ({
     register,
@@ -24,6 +18,8 @@ const TaskForm = ({
     companies,
     projects,
     hourTypes,
+    setValue,
+    reset,
 }) => {
     if (!task) return null
 
@@ -32,23 +28,29 @@ const TaskForm = ({
     const isLoadingProjects = filteredProjects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
 
-    const taskData = task || {}
-
     // Observar el valor seleccionado en el Dropdown de "Empresa"
     const selectedCompany = watch("company")
+
+    // Al cambiar la compañía, cargar los proyectos relacionados de forma similar a AddTaskForm.jsx
     useEffect(() => {
         if (selectedCompany) {
             getCompanyProjects(selectedCompany)
                 .then((resp) => {
                     setFilteredProjects(resp)
-                    // Aquí podrías, si lo deseas, actualizar el campo "project"
+                    // Reinicia el campo project para que se asigne el primer proyecto (si existe)
+                    reset({
+                        ...watch(),
+                        project: resp.length > 0 ? resp[0].project_id : "",
+                    })
                 })
                 .catch((error) => {
                     toast.error(error.message)
                 })
         } else {
             setFilteredProjects([])
+            reset({ ...watch(), project: "" })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
 
     return (
@@ -66,7 +68,7 @@ const TaskForm = ({
                         items={companies}
                         loadingText="Cargando empresas..."
                         errorText="Error cargando empresas"
-                        valueKey="company_id" // Usa el company_id como valor
+                        valueKey="relationship_id"
                     />
                     <Dropdown
                         id="project"
@@ -78,7 +80,7 @@ const TaskForm = ({
                         items={filteredProjects}
                         loadingText="Cargando proyectos..."
                         errorText="Error cargando proyectos"
-                        valueKey="project_id" // Usa el project_id como valor
+                        valueKey="project_id"
                     />
                     <Dropdown
                         id="hour_type"
@@ -90,7 +92,7 @@ const TaskForm = ({
                         items={hourTypes}
                         loadingText="Cargando tipos de hora..."
                         errorText="Error cargando tipos de hora"
-                        valueKey="option" // Asumiendo que en hourTypes el valor deseado está en "option"
+                        valueKey="option"
                     />
                 </div>
 
@@ -99,7 +101,6 @@ const TaskForm = ({
                     id="task_type"
                     label="Tipo de Tarea"
                     {...register("task_type")}
-                    defaultValue={taskData.task_type}
                     errorMessage={errors.task_type?.message}
                 />
 
@@ -108,7 +109,6 @@ const TaskForm = ({
                     id="task_description"
                     label="Descripción"
                     {...register("task_description")}
-                    defaultValue={taskData.task_description}
                     errorMessage={errors.task_description?.message}
                 />
 
@@ -125,9 +125,6 @@ const TaskForm = ({
                             label="Hora de Entrada"
                             type="time"
                             {...register("entry_time")}
-                            defaultValue={formatTimeForInput(
-                                taskData.entry_time
-                            )}
                             errorMessage={errors.entry_time?.message}
                         />
                     </div>
@@ -137,9 +134,6 @@ const TaskForm = ({
                             label="Hora de Salida"
                             type="time"
                             {...register("exit_time")}
-                            defaultValue={formatTimeForInput(
-                                taskData.exit_time
-                            )}
                             errorMessage={errors.exit_time?.message}
                         />
                     </div>
@@ -149,9 +143,6 @@ const TaskForm = ({
                             label="Horas de Almuerzo"
                             type="number"
                             {...register("lunch_hours")}
-                            defaultValue={
-                                taskData.lunch_hours?.toString() || "1"
-                            }
                             errorMessage={errors.lunch_hours?.message}
                         />
                     </div>

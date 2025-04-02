@@ -5,9 +5,9 @@ import { api } from "../../../lib/axios"
  * Obtiene las opciones relacionadas para un usuario.
  * @param {Object} params - Parámetros necesarios.
  * @param {string|number} params.user_id - ID del usuario.
- * @param {string} params.related_table - Tabla de relaciones (ej.: "company_users_table").
- * @param {string} params.individual_table - Tabla individual (ej.: "companies_table").
- * @param {string} [params.relationship_id] - (Opcional) relationship_id.
+ * @param {string} params.related_table - Tabla de relaciones (ej.: "company_users_table" o "projects_table").
+ * @param {string} params.individual_table - Tabla individual (ej.: "companies_table" o "projects_table").
+ * @param {string} [params.relationship_id] - (Opcional) ID de la relación para filtrar.
  * @returns {Promise<Array>} Array de opciones relacionadas.
  */
 export const getRelatedOptions = async ({
@@ -74,6 +74,7 @@ export const getNotRelatedProjects = async (user_id) => {
 export const addCompanyUserRelation = async (relationData) => {
     try {
         const { data } = await api.post("/companyUser", relationData)
+        console.log("addCompanyUserRelation:", data)
         return data
     } catch (error) {
         const backendMessage = error.response?.data?.message || error.message
@@ -91,6 +92,7 @@ export const addCompanyUserRelation = async (relationData) => {
 export const addProjectUserRelation = async (relationData) => {
     try {
         const { data } = await api.post("/projectUser", relationData)
+        console.log("addProjectUserRelation:", data)
         return data
     } catch (error) {
         throw new Error(
@@ -103,7 +105,6 @@ export const addProjectUserRelation = async (relationData) => {
  * Elimina la relación entre compañía y usuario.
  * @param {string} relationship_id - ID de la relación.
  * @returns {Promise<Object>} Resultado de la eliminación.
- * @throws {Error} Si ocurre un error al eliminar la relación.
  */
 export const deleteCompanyUserRelation = async (relationship_id) => {
     if (!relationship_id) {
@@ -112,15 +113,12 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
         )
     }
     try {
-        // Send a DELETE request to the API to remove the company-user relation
         const { data } = await api.delete(
             `/companyUser?relationship_id=${relationship_id}`
         )
-
-        // Return the response data from the API
+        console.log("deleteCompanyUserRelation:", data)
         return data
     } catch (error) {
-        // Throw a new error with a descriptive message if the API call fails
         throw new Error(
             `Error eliminando relación con la compañía: ${error.message}`
         )
@@ -129,12 +127,8 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
 
 /**
  * Elimina la relación entre proyecto y usuario.
- *
  * @param {string} project_id - ID del proyecto.
- *
  * @returns {Promise<Object>} Resultado de la eliminación.
- *
- * @throws {Error} Si ocurre un error al eliminar la relación.
  */
 export const deleteProjectUserRelation = async (project_id) => {
     console.log("project_id:", project_id)
@@ -145,6 +139,7 @@ export const deleteProjectUserRelation = async (project_id) => {
         const { data } = await api.delete(
             `/projectUser?project_id=${project_id}`
         )
+        console.log("deleteProjectUserRelation:", data)
         return data
     } catch (error) {
         throw new Error(
