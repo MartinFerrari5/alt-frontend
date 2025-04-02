@@ -1,106 +1,179 @@
-// /src/components/admin/users/UserEditForm.jsx
 import { useState, useEffect } from "react"
+import { Loader2, Save } from "lucide-react"
 import { FaEdit } from "react-icons/fa"
 import Button from "../../Button"
+import { toast } from "../../../components/ui/sonner"
 
-const UserEditForm = ({ userData, updateUser, onUserUpdated }) => {
+const UserEditForm = ({ user, onSave }) => {
+    // Si el objeto usuario tiene full_name o name, se utiliza ese valor
+    const initialName = user.full_name || user.name || ""
+    const [name, setName] = useState(initialName)
+    const [email, setEmail] = useState(user.email || "")
+    const [role, setRole] = useState(user.role || "user")
+
+    // Banderas para activar la edición de cada campo
+    const [editingName, setEditingName] = useState(false)
     const [editingEmail, setEditingEmail] = useState(false)
     const [editingRole, setEditingRole] = useState(false)
-    const [emailValue, setEmailValue] = useState("")
-    const [roleValue, setRoleValue] = useState("")
-    const [originalEmail, setOriginalEmail] = useState("")
-    const [originalRole, setOriginalRole] = useState("")
 
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    // Actualiza el estado local si cambian los datos del usuario
     useEffect(() => {
-        if (userData && !editingEmail && !editingRole) {
-            setEmailValue(userData.email)
-            setRoleValue(userData.role)
-            setOriginalEmail(userData.email)
-            setOriginalRole(userData.role)
+        setName(user.full_name || user.name || "")
+        setEmail(user.email || "")
+        setRole(user.role || "user")
+        setEditingName(false)
+        setEditingEmail(false)
+        setEditingRole(false)
+    }, [user])
+
+    const roles = [
+        { id: "user", label: "User" },
+        { id: "admin", label: "Administrator" },
+        { id: "manager", label: "Task Manager" },
+    ]
+
+    const handleSave = async () => {
+        if (!name.trim() || !email.trim()) {
+            toast.error("Name and email are required")
+            return
         }
-    }, [userData, editingEmail, editingRole])
 
-    const handleSave = () => {
+        // Prepara el payload sólo con los campos modificados
         const payload = {}
-        if (emailValue !== originalEmail) payload.email = emailValue
-        if (roleValue !== originalRole) payload.role = roleValue
-        if (Object.keys(payload).length === 0) return
+        if (name !== (user.full_name || user.name)) payload.name = name
+        if (email !== user.email) payload.email = email
+        if (role !== user.role) payload.role = role
 
-        updateUser(payload, {
-            onSuccess: () => {
-                setEditingEmail(false)
-                setEditingRole(false)
-                setOriginalEmail(emailValue)
-                setOriginalRole(roleValue)
-                if (onUserUpdated) onUserUpdated()
-            },
-            onError: () => {
-                // Manejo de error (por ejemplo, notificación)
-            },
-        })
+        if (Object.keys(payload).length === 0) {
+            toast.info("No changes to save")
+            cancelEditing()
+            return
+        }
+
+        setIsSubmitting(true)
+        try {
+            // Simula un retardo de llamada API
+            await new Promise((resolve) => setTimeout(resolve, 800))
+            const updatedUser = { ...user, ...payload }
+            onSave(updatedUser)
+            toast.success("User updated successfully")
+            cancelEditing()
+        } catch (error) {
+            toast.error("Failed to update user: " + error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
-    const handleCancel = () => {
-        if (userData) {
-            setEmailValue(userData.email)
-            setRoleValue(userData.role)
-        }
+    const cancelEditing = () => {
+        setName(user.full_name || user.name || "")
+        setEmail(user.email || "")
+        setRole(user.role || "user")
+        setEditingName(false)
         setEditingEmail(false)
         setEditingRole(false)
     }
 
+    const anyEditing = editingName || editingEmail || editingRole
+
     return (
-        <div className="rounded bg-white p-4 shadow">
-            <p>
-                <strong>Nombre Completo:</strong> {userData.full_name}
-            </p>
-            <div className="mt-2 flex items-center">
-                <strong>Email:</strong>
-                {editingEmail ? (
+        <div className="space-y-4 rounded bg-white p-4 shadow">
+            <div>
+                <label className="text-main-color block text-sm font-medium">
+                    Full Name:
+                </label>
+                {editingName ? (
                     <input
                         type="text"
-                        value={emailValue}
-                        onChange={(e) => setEmailValue(e.target.value)}
-                        className="ml-2 rounded border p-1"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="mt-1 w-full rounded border p-2"
                     />
                 ) : (
-                    <span className="ml-2">{userData.email}</span>
+                    <div className="flex items-center">
+                        <span className="mr-2">{name}</span>
+                        <button
+                            onClick={() => setEditingName(true)}
+                            title="Edit name"
+                        >
+                            <FaEdit className="cursor-pointer" />
+                        </button>
+                    </div>
                 )}
-                <button
-                    onClick={() => setEditingEmail((prev) => !prev)}
-                    className="ml-2"
-                    title="Editar email"
-                >
-                    <FaEdit className="cursor-pointer" />
-                </button>
             </div>
-            <div className="mt-2 flex items-center">
-                <strong>Rol:</strong>
+
+            <div>
+                <label className="text-main-color block text-sm font-medium">
+                    Email:
+                </label>
+                {editingEmail ? (
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="mt-1 w-full rounded border p-2"
+                    />
+                ) : (
+                    <div className="flex items-center">
+                        <span className="mr-2">{email}</span>
+                        <button
+                            onClick={() => setEditingEmail(true)}
+                            title="Edit email"
+                        >
+                            <FaEdit className="cursor-pointer" />
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <div>
+                <label className="text-main-color block text-sm font-medium">
+                    Role:
+                </label>
                 {editingRole ? (
                     <select
-                        value={roleValue}
-                        onChange={(e) => setRoleValue(e.target.value)}
-                        className="ml-2 rounded border p-1"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="mt-1 w-full rounded border p-2"
                     >
-                        <option value="admin">admin</option>
-                        <option value="user">user</option>
+                        {roles.map((r) => (
+                            <option key={r.id} value={r.id}>
+                                {r.label}
+                            </option>
+                        ))}
                     </select>
                 ) : (
-                    <span className="ml-2">{userData.role}</span>
+                    <div className="flex items-center">
+                        <span className="mr-2">{role}</span>
+                        <button
+                            onClick={() => setEditingRole(true)}
+                            title="Edit role"
+                        >
+                            <FaEdit className="cursor-pointer" />
+                        </button>
+                    </div>
                 )}
-                <button
-                    onClick={() => setEditingRole((prev) => !prev)}
-                    className="ml-2"
-                    title="Editar rol"
-                >
-                    <FaEdit className="cursor-pointer" />
-                </button>
             </div>
-            {(editingEmail || editingRole) && (
-                <div className="mt-4 flex gap-3">
-                    <Button onClick={handleSave}>Guardar cambios</Button>
-                    <Button onClick={handleCancel} color="ghost">
-                        Cancelar
+
+            {anyEditing && (
+                <div className="flex gap-3 pt-2">
+                    <Button onClick={handleSave} disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Saving...</span>
+                            </>
+                        ) : (
+                            <>
+                                <Save className="h-4 w-4" />
+                                <span>Save Changes</span>
+                            </>
+                        )}
+                    </Button>
+                    <Button onClick={cancelEditing} color="ghost">
+                        Cancel
                     </Button>
                 </div>
             )}

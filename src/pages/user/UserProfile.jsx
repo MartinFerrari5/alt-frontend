@@ -1,128 +1,248 @@
-// /src/pages/user/UserProfile.jsx
-import { useState } from "react"
-import Button from "../../components/Button"
-import { useUpdateUser } from "../../hooks/data/users/useUserHooks"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import {
+    User,
+    Mail,
+    Shield,
+    IdCard,
+    Pencil,
+    Save,
+    X,
+    Loader2,
+} from "lucide-react"
+
 import useAuthStore from "../../store/authStore"
+import { useUpdateUser } from "../../hooks/data/users/useUserHooks"
 import Sidebar from "../../components/layout/Sidebar"
+import { useNavigate } from "react-router-dom"
+import { toast } from "../../components/ui/sonner"
 
-const UserProfilePage = () => {
+const UserProfile = () => {
     const navigate = useNavigate()
+    const {
+        userId,
+        email,
+        role,
+        fullName: authFullName,
+    } = useAuthStore((state) => state)
 
-    // Datos del usuario desde el store de autenticación
-    const authFullName = useAuthStore((state) => state.fullName)
-    const userId = useAuthStore((state) => state.userId)
-    const email = useAuthStore((state) => state.email)
-    const role = useAuthStore((state) => state.role)
-
-    // Estados locales para el nombre
-    const [fullName, setFullName] = useState(authFullName || "")
-    const [originalFullName, setOriginalFullName] = useState(authFullName || "")
-    const [isEditingName, setIsEditingName] = useState(false)
+    const [editedName, setEditedName] = useState(authFullName || "")
+    const [isEditing, setIsEditing] = useState(false)
 
     const updateUserMutation = useUpdateUser(userId)
 
-    const handleSave = () => {
-        // Se usa el valor original si el input queda vacío
-        const newFullName = fullName.trim() === "" ? originalFullName : fullName
+    useEffect(() => {
+        setEditedName(authFullName || "")
+    }, [authFullName])
 
-        if (newFullName === originalFullName) {
-            setIsEditingName(false)
+    const handleStartEditing = () => setIsEditing(true)
+    const handleCancelEditing = () => {
+        setEditedName(authFullName || "")
+        setIsEditing(false)
+    }
+
+    const handleSave = () => {
+        if (!editedName.trim()) {
+            toast.error("Name cannot be empty")
+            return
+        }
+        if (editedName.trim() === authFullName) {
+            setIsEditing(false)
             return
         }
 
-        const payload = { full_name: newFullName }
-
+        const payload = { full_name: editedName.trim() }
         updateUserMutation.mutate(payload, {
             onSuccess: () => {
-                useAuthStore.setState({ fullName: newFullName })
-                setOriginalFullName(newFullName)
-                setIsEditingName(false)
+                useAuthStore.setState({ fullName: editedName.trim() })
+                toast.success("Profile updated successfully")
+                setIsEditing(false)
             },
-            onError: () => {
-                // Manejo de error (ej: mostrar una notificación)
+            onError: (err) => {
+                toast.error(
+                    "Failed to update profile: " +
+                        (err.message || "Unknown error")
+                )
             },
         })
     }
 
+    if (!userId) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="text-green h-10 w-10 animate-spin" />
+            </div>
+        )
+    }
+
+    const userInfoItems = [
+        { icon: IdCard, label: "User ID", value: userId },
+        { icon: Mail, label: "Email", value: email },
+        { icon: Shield, label: "Role", value: role },
+    ]
+
     return (
         <div className="flex min-h-screen flex-col bg-gray-100 lg:flex-row">
+            {/* Sidebar */}
             <div className="hidden lg:block lg:w-72">
                 <Sidebar />
             </div>
+
             <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
+                {/* Header con botones de navegación */}
                 <div className="mb-4 flex items-center justify-between">
-                    <Button
+                    <button
                         onClick={() => navigate(-1)}
                         className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
                     >
                         Volver
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                         onClick={() => navigate("/user/password")}
                         className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
                     >
                         Cambiar Contraseña
-                    </Button>
+                    </button>
                 </div>
-                <div className="rounded bg-white p-6 shadow">
-                    <h1 className="mb-6 text-3xl font-extrabold text-gray-800">
-                        Mi Perfil
+
+                {/* Contenido principal */}
+                <div className="mx-auto max-w-4xl px-4 py-8">
+                    <h1 className="text-main-color mb-6 text-2xl font-bold">
+                        User Profile
                     </h1>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block font-semibold text-gray-700">
-                                ID:
-                            </label>
-                            <span className="text-gray-900">{userId}</span>
+
+                    <div className="card-container mb-8 rounded-lg bg-white p-6 shadow">
+                        <div className="mb-6 flex items-center gap-4">
+                            <div className="bg-green flex h-16 w-16 items-center justify-center rounded-full text-white">
+                                <User className="h-8 w-8" />
+                            </div>
+
+                            <div className="flex-1">
+                                {isEditing ? (
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            value={editedName}
+                                            onChange={(e) =>
+                                                setEditedName(e.target.value)
+                                            }
+                                            className="input-field w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter your name"
+                                            autoFocus
+                                        />
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={handleSave}
+                                                disabled={
+                                                    updateUserMutation.isLoading
+                                                }
+                                                className="bg-green rounded-md p-2 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
+                                            >
+                                                {updateUserMutation.isLoading ? (
+                                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                                ) : (
+                                                    <Save className="h-5 w-5" />
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={handleCancelEditing}
+                                                disabled={
+                                                    updateUserMutation.isLoading
+                                                }
+                                                className="rounded-md bg-gray-300 p-2 text-black transition-colors hover:bg-gray-400 disabled:opacity-50"
+                                            >
+                                                <X className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h2 className="text-main-color text-xl font-semibold">
+                                                {editedName || "No Name Set"}
+                                            </h2>
+                                            <p className="text-sm text-gray-500">
+                                                {email}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={handleStartEditing}
+                                            className="hover:text-green rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-200"
+                                            title="Editar nombre"
+                                        >
+                                            <Pencil className="h-5 w-5" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div>
-                            <label className="block font-semibold text-gray-700">
-                                Email:
-                            </label>
-                            <span className="text-gray-900">{email}</span>
+
+                        {updateUserMutation.error && (
+                            <p className="mt-2 text-sm text-red-500">
+                                {updateUserMutation.error.message ||
+                                    "Error updating profile"}
+                            </p>
+                        )}
+
+                        <div className="grid gap-4 md:grid-cols-3">
+                            {userInfoItems.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="rounded-lg bg-gray-50 p-4"
+                                >
+                                    <div className="mb-2 flex items-center gap-2 text-green-500">
+                                        <item.icon className="h-5 w-5" />
+                                        <span className="text-sm font-medium">
+                                            {item.label}
+                                        </span>
+                                    </div>
+                                    <p className="font-medium text-gray-900">
+                                        {item.value}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
-                        <div>
-                            <label className="block font-semibold text-gray-700">
-                                Role:
-                            </label>
-                            <span className="text-gray-900">{role}</span>
-                        </div>
-                        <div>
-                            <label className="block font-semibold text-gray-700">
-                                Nombre Completo:
-                            </label>
-                            {isEditingName ? (
-                                <div className="flex items-center">
+                    </div>
+
+                    <div className="card-container rounded-lg bg-white p-6 shadow">
+                        <h3 className="text-main-color mb-4 text-xl font-semibold">
+                            Account Preferences
+                        </h3>
+
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between border-b border-gray-200 py-3">
+                                <div>
+                                    <p className="text-main-color font-medium">
+                                        Email Notifications
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        Receive email notifications for task
+                                        updates
+                                    </p>
+                                </div>
+                                <label className="relative inline-flex cursor-pointer items-center">
                                     <input
-                                        type="text"
-                                        value={fullName}
-                                        onChange={(e) =>
-                                            setFullName(e.target.value)
-                                        }
-                                        className="w-full rounded border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        type="checkbox"
+                                        className="peer sr-only"
+                                        defaultChecked
                                     />
-                                    <Button
-                                        onClick={handleSave}
-                                        className="ml-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                                    >
-                                        Guardar
-                                    </Button>
+                                    <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
+                                </label>
+                            </div>
+
+                            <div className="flex items-center justify-between py-3">
+                                <div>
+                                    <p className="text-main-color font-medium">
+                                        Two-Factor Authentication
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        Enable additional security for your
+                                        account
+                                    </p>
                                 </div>
-                            ) : (
-                                <div className="flex items-center">
-                                    <span className="text-gray-900">
-                                        {fullName}
-                                    </span>
-                                    <button
-                                        onClick={() => setIsEditingName(true)}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                        title="Editar nombre"
-                                    >
-                                        ✏️
-                                    </button>
-                                </div>
-                            )}
+                                <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                                    Enable
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -131,4 +251,4 @@ const UserProfilePage = () => {
     )
 }
 
-export default UserProfilePage
+export default UserProfile

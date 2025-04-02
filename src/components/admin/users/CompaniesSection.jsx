@@ -1,4 +1,3 @@
-// /src/components/admin/users/CompaniesSection.jsx
 import { useEffect, useState } from "react"
 import { RelationSection } from "./RelationSection"
 import { getOptions } from "../../../hooks/data/options/optionsService"
@@ -9,17 +8,21 @@ import {
     addCompanyUserRelation,
 } from "../../../hooks/data/options/relationsService"
 import { toast } from "react-toastify"
+import { Building } from "lucide-react"
 
 const CompaniesSection = ({
     userId,
     selectedCompanyRelId,
     setSelectedCompanyRelId,
 }) => {
+    // Almacena todas las compañías (tabla de opciones)
     const [companiesTable, setCompaniesTable] = useState([])
+    // Compañías ya relacionadas al usuario
     const [relatedCompanies, setRelatedCompanies] = useState([])
+    // Compañías que aún no están relacionadas
     const [notRelatedCompanies, setNotRelatedCompanies] = useState([])
 
-    // Cargar opciones disponibles de compañías
+    // Cargar opciones generales de compañías
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
@@ -62,7 +65,7 @@ const CompaniesSection = ({
         }
     }, [relatedCompanies, selectedCompanyRelId, setSelectedCompanyRelId])
 
-    // Cargar compañías que aún no están relacionadas
+    // Cargar compañías que no están relacionadas con el usuario
     useEffect(() => {
         if (userId) {
             const fetchNotRelated = async () => {
@@ -82,17 +85,20 @@ const CompaniesSection = ({
         }
     }, [userId])
 
+    // Mapea las compañías relacionadas a un formato que use el diseño
     const mappedRelatedCompanies = relatedCompanies.map((r) => ({
         id: r.company_id,
         relationship_id: r.relationship_id,
         option: r.option,
     }))
 
+    // Mapea las compañías disponibles (no relacionadas)
     const availableCompanies = notRelatedCompanies.map((item) => ({
         id: item.company_id,
         option: item.options,
     }))
 
+    // Función para agregar una relación. En este caso se recibe el id de la compañía.
     const handleAddRelation = async (companyId) => {
         try {
             const relationData = { user_id: userId, company_id: companyId }
@@ -137,15 +143,44 @@ const CompaniesSection = ({
         }
     }
 
+    // Renderiza cada elemento relacionado con diseño similar al propuesto
+    const renderItemContent = (company) => (
+        <div
+            className={`flex w-full cursor-pointer items-center gap-2 ${
+                selectedCompanyRelId === company.relationship_id
+                    ? "bg-green bg-opacity-5"
+                    : ""
+            }`}
+            onClick={() => setSelectedCompanyRelId(company.relationship_id)}
+        >
+            <div className="bg-blue-bg text-main-color rounded-md p-1.5">
+                <Building className="h-4 w-4" />
+            </div>
+            <div>
+                <p className="text-main-color font-medium">{company.option}</p>
+                {company.role && (
+                    <p className="text-xs text-gray-500">
+                        Role: {company.role}
+                    </p>
+                )}
+            </div>
+        </div>
+    )
+
     return (
         <div className="mb-8">
             <RelationSection
                 title="Compañías"
+                // Se pasan las compañías relacionadas y disponibles
                 relatedItems={mappedRelatedCompanies}
                 availableItems={availableCompanies}
                 displayProp="option"
                 onAddRelation={handleAddRelation}
                 onDeleteRelation={handleDeleteRelation}
+                // Opciones de texto para botones y mensajes
+                addLabel="Agregar Compañía"
+                emptyText="El usuario no está asociado a ninguna compañía"
+                renderItemContent={renderItemContent}
             />
             {mappedRelatedCompanies.length > 0 && (
                 <div className="mb-4">
