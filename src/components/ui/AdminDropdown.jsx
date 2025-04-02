@@ -9,7 +9,7 @@ const sidebarStyle = tv({
     variants: {
         color: {
             selected:
-                "bg-brand-custom-green bg-opacity-15 text-brand-custom-green",
+                "bg-brand-custom-green text-brand-custom-green bg-opacity-15",
             unselected: "text-brand-dark-blue",
         },
     },

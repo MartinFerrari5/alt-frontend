@@ -33,7 +33,7 @@ function Header({ subtitle, title, tasks }) {
     return (
         <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
             <div>
-                <span className="text-xs font-semibold text-brand-custom-green">
+                <span className="text-brand-custom-green text-xs font-semibold">
                     {subtitle}
                 </span>
                 <h2 className="text-xl font-semibold text-gray-800">{title}</h2>

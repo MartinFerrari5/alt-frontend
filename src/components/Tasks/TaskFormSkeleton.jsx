@@ -2,7 +2,7 @@
 import Loader from "./Loader"
 
 const TaskFormSkeleton = () => (
-    <div className="animate-pulse space-y-6 rounded-xl bg-brand-white p-6">
+    <div className="bg-brand-white animate-pulse space-y-6 rounded-xl p-6">
         <div className="h-10 rounded-md bg-gray-300"></div>
         <div className="h-10 rounded-md bg-gray-300"></div>
         <div className="h-10 rounded-md bg-gray-300"></div>

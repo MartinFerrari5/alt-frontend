@@ -1,13 +1,13 @@
 // /src/pages/Tasks.jsx
-import Sidebar from "../components/layout/Sidebar"
+import MainLayout from "../components/layout/MainLayout"
 import Tasks from "../components/Tasks/Tasks"
 
 const TasksPage = () => (
     <div className="flex h-screen">
-        <Sidebar />
-        <main className="w-full lg:ml-72">
+        {/* <Sidebar /> */}
+        <MainLayout>
             <Tasks />
-        </main>
+        </MainLayout>
     </div>
 )
 

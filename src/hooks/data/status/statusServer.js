@@ -1,4 +1,4 @@
-// /src/api/statusServer.js
+// /src/hooks/data/status/statusServer.js
 import { api } from "../../../lib/axios"
 
 /**

@@ -9,16 +9,16 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
         <div>
             <button
                 onClick={onBack}
-                className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-brand-custom-green"
+                className="bg-brand-custom-green mb-3 flex h-8 w-8 items-center justify-center rounded-full"
             >
                 <ArrowLeftIcon />
             </button>
             <div className="flex items-center gap-1 text-xs">
-                <Link className="cursor-pointer text-brand-text-gray" to="/">
+                <Link className="text-brand-text-gray cursor-pointer" to="/">
                     Mis tareas
                 </Link>
                 <ChevronRightIcon className="text-brand-text-gray" />
-                <span className="font-semibold text-brand-custom-green">
+                <span className="text-brand-custom-green font-semibold">
                     {task.task_description}
                 </span>
             </div>

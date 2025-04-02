@@ -168,7 +168,7 @@ const TaskItem = ({
                             disabled={deleteTaskIsLoading}
                         >
                             {deleteTaskIsLoading ? (
-                                <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
+                                <AiOutlineLoading3Quarters className="text-brand-text-gray animate-spin" />
                             ) : (
                                 <FaTrash className="h-5 w-5" />
                             )}

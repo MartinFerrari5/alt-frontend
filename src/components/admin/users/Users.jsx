@@ -26,7 +26,6 @@ const Users = () => {
                                 <th className="px-6 py-3">Nombre</th>
                                 <th className="px-6 py-3">Email</th>
                                 <th className="px-6 py-3">Rol</th>
-                                <th className="px-6 py-3">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +33,7 @@ const Users = () => {
                                 <tr>
                                     <td
                                         colSpan="4"
-                                        className="px-6 py-4 text-center text-sm text-brand-text-gray"
+                                        className="text-brand-text-gray px-6 py-4 text-center text-sm"
                                     >
                                         No hay usuarios disponibles.
                                     </td>

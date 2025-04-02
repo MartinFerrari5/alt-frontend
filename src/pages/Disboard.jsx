@@ -9,6 +9,7 @@ import { useTasks } from "../hooks/data/task/useTasks"
 import useAuthStore from "../store/authStore"
 import Sidebar from "../components/layout/Sidebar"
 import Header from "../components/layout/Header"
+import MainLayout from "../components/layout/MainLayout"
 
 const TABLE_HEADERS = [
     "Nombre",
@@ -137,7 +138,7 @@ const DisboardPage = () => {
                 <tr>
                     <td
                         colSpan={tableHeaders.length}
-                        className="px-6 py-5 text-center text-sm text-brand-text-gray"
+                        className="text-brand-text-gray px-6 py-5 text-center text-sm"
                     >
                         Cargando tareas...
                     </td>
@@ -161,7 +162,7 @@ const DisboardPage = () => {
                 <tr>
                     <td
                         colSpan={tableHeaders.length}
-                        className="px-6 py-5 text-center text-sm text-brand-text-gray"
+                        className="text-brand-text-gray px-6 py-5 text-center text-sm"
                     >
                         No hay tareas disponibles.
                     </td>
@@ -178,9 +179,8 @@ const DisboardPage = () => {
     }, [isLoading, isError, validTasks, tableHeaders, currentPath])
 
     return (
-        <div className="flex h-screen">
-            <Sidebar />
-            <div className="w-full space-y-6 px-8 py-10 lg:ml-72">
+        <MainLayout>
+            <div className="space-y-6">
                 <Header subtitle="Panel" title="Panel" tasks={validTasks} />
                 <DashboardCards filters={filters} currentPath={currentPath} />
                 <div className="space-y-3 rounded-xl bg-white p-1">
@@ -211,7 +211,7 @@ const DisboardPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </MainLayout>
     )
 }
 

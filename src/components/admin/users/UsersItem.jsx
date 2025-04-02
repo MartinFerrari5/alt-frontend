@@ -36,7 +36,7 @@ const UsersItem = ({ user }) => {
             <td className="px-4 py-5">{user.full_name}</td>
             <td className="px-4 py-5">{user.email}</td>
             <td className="px-4 py-5">{user.role}</td>
-            <td className="flex gap-2 px-4 py-5 text-right">
+            {/* <td className="flex gap-2 px-4 py-5 text-right">
                 {role === "admin" && (
                     <Button
                         color="ghost"
@@ -44,13 +44,13 @@ const UsersItem = ({ user }) => {
                         disabled={deleteUserIsLoading}
                     >
                         {deleteUserIsLoading ? (
-                            <LoaderIcon className="animate-spin text-brand-text-gray" />
+                            <LoaderIcon className="text-brand-text-gray animate-spin" />
                         ) : (
                             <TrashIcon className="text-brand-text-gray" />
                         )}
                     </Button>
                 )}
-            </td>
+            </td> */}
         </tr>
     )
 }

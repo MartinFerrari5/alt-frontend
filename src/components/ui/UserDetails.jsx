@@ -10,7 +10,7 @@ const UserDetails = () => {
     return (
         <NavLink
             to={`/user/user-profile`}
-            className="flex items-center rounded-full transition-colors hover:bg-brand-custom-green"
+            className="hover:bg-brand-custom-green flex items-center rounded-full transition-colors"
         >
             <img
                 className="h-10 w-10 rounded-full"

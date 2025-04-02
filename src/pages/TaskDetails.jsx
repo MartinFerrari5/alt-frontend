@@ -13,6 +13,7 @@ import { schema } from "../util/validationSchema"
 
 import { useOptionsStore } from "../store/optionsStore"
 import Sidebar from "../components/layout/Sidebar"
+import MainLayout from "../components/layout/MainLayout"
 
 const TaskDetailsPage = () => {
     const { taskId } = useParams()
@@ -170,40 +171,42 @@ const TaskDetailsPage = () => {
     if (!taskDetails) return <p>No se encontraron detalles de la tarea.</p>
 
     return (
-        <div className="flex min-h-screen flex-col lg:flex-row">
-            {/* Sidebar solo visible en pantallas grandes */}
-            <div className="hidden lg:block lg:w-72">
-                <Sidebar />
-            </div>
-            <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
-                <TaskHeader
-                    task={currentTask}
-                    onBack={() => navigate(-1)}
-                    onDelete={handleDeleteClick}
-                    onEdit={() => setIsEditing((prev) => !prev)}
-                    isEditing={isEditing}
-                />
-                {isEditing ? (
-                    <TaskForm
-                        register={register}
-                        watch={watch}
-                        errors={errors}
-                        handleSubmit={handleSubmit(handleSaveClick)}
-                        isSubmitting={isSubmitting}
-                        taskDate={taskDate}
-                        setTaskDate={setTaskDate}
-                        task={taskDetails}
-                        companies={companies_table}
-                        projects={projects_table}
-                        hourTypes={hour_type_table}
-                        setValue={setValue} // Se pasa para actualizar "project"
-                        reset={reset}
+        <MainLayout>
+            <div className="flex min-h-screen flex-col lg:flex-row">
+                {/* Sidebar solo visible en pantallas grandes */}
+                <div className="hidden lg:block lg:w-72">
+                    <Sidebar />
+                </div>
+                <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
+                    <TaskHeader
+                        task={currentTask}
+                        onBack={() => navigate(-1)}
+                        onDelete={handleDeleteClick}
+                        onEdit={() => setIsEditing((prev) => !prev)}
+                        isEditing={isEditing}
                     />
-                ) : (
-                    <ReadOnlyTaskDetails task={taskDetails} />
-                )}
+                    {isEditing ? (
+                        <TaskForm
+                            register={register}
+                            watch={watch}
+                            errors={errors}
+                            handleSubmit={handleSubmit(handleSaveClick)}
+                            isSubmitting={isSubmitting}
+                            taskDate={taskDate}
+                            setTaskDate={setTaskDate}
+                            task={taskDetails}
+                            companies={companies_table}
+                            projects={projects_table}
+                            hourTypes={hour_type_table}
+                            setValue={setValue} // Se pasa para actualizar "project"
+                            reset={reset}
+                        />
+                    ) : (
+                        <ReadOnlyTaskDetails task={taskDetails} />
+                    )}
+                </div>
             </div>
-        </div>
+        </MainLayout>
     )
 }
 

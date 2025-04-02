@@ -142,7 +142,7 @@ const Tasks = () => {
     const renderContent = () => {
         if (isLoading)
             return (
-                <p className="text-sm text-brand-text-gray">
+                <p className="text-brand-text-gray text-sm">
                     Cargando tareas...
                 </p>
             )
@@ -154,7 +154,7 @@ const Tasks = () => {
             )
         if (!validTasks || validTasks.length === 0)
             return (
-                <p className="text-sm text-brand-text-gray">
+                <p className="text-brand-text-gray text-sm">
                     No hay tareas disponibles.
                 </p>
             )
@@ -172,7 +172,7 @@ const Tasks = () => {
     }
 
     return (
-        <div className="space-y-6 overflow-hidden px-8 py-9">
+        <div className="space-y-6">
             <Header
                 subtitle="Mis Tareas"
                 title="Mis Tareas"
