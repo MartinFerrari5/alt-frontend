@@ -1,7 +1,6 @@
 // src/components/admin/management/ManagementTables.jsx
 import { useEffect, useState } from "react"
 import { useOptionsStore } from "../../../store/optionsStore"
-
 import TableItemView from "./TableItemView"
 import TableItemEdit from "./TableItemEdit"
 import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
@@ -109,7 +108,7 @@ const DataTable = ({
                     setEditValue("")
                 },
                 onError: (error) => {
-                    console.error("🔴 Error al actualizar:", error)
+                    console.error("Error al actualizar:", error)
                     toast.error("Error al actualizar. Inténtalo de nuevo.")
                 },
             })
@@ -123,7 +122,7 @@ const DataTable = ({
             }
             const table = tableMap[title]
             if (!table) {
-                console.error("🔴 Error: Tabla no definida")
+                console.error("Error: Tabla no definida")
                 toast.error("Error: Tabla no definida.")
                 return
             }
@@ -139,7 +138,7 @@ const DataTable = ({
                     setEditValue("")
                 })
                 .catch((error) => {
-                    console.error("🔴 Error al actualizar:", error)
+                    console.error("Error al actualizar:", error)
                     toast.error("Error al actualizar. Inténtalo de nuevo.")
                 })
         }
@@ -155,9 +154,7 @@ const DataTable = ({
             const idToDelete =
                 selectedItem && (selectedItem.id || selectedItem.email)
             if (idToDelete === undefined) {
-                console.error(
-                    "🔴 Error: No se pudo identificar el elemento a eliminar."
-                )
+                console.error("No se pudo identificar el elemento a eliminar.")
                 toast.error(
                     "Error: No se pudo identificar el elemento a eliminar."
                 )
@@ -170,7 +167,7 @@ const DataTable = ({
                     setSelectedItem(null)
                 },
                 onError: (error) => {
-                    console.error("🔴 Error al eliminar:", error)
+                    console.error("Error al eliminar:", error)
                     toast.error("Error al eliminar. Inténtalo de nuevo.")
                 },
             })
@@ -184,15 +181,13 @@ const DataTable = ({
             }
             const table = tableMap[title]
             if (!table) {
-                console.error("🔴 Error: Tabla no definida")
+                console.error("Error: Tabla no definida")
                 toast.error("Error: Tabla no definida.")
                 return
             }
             const idToDelete = selectedItem.id
             if (idToDelete === undefined) {
-                console.error(
-                    "🔴 Error: No se pudo identificar el elemento a eliminar."
-                )
+                console.error("No se pudo identificar el elemento a eliminar.")
                 toast.error(
                     "Error: No se pudo identificar el elemento a eliminar."
                 )
@@ -205,7 +200,7 @@ const DataTable = ({
                     setSelectedItem(null)
                 })
                 .catch((error) => {
-                    console.error("🔴 Error al eliminar:", error)
+                    console.error("Error al eliminar:", error)
                     toast.error("Error al eliminar. Inténtalo de nuevo.")
                 })
         }
@@ -240,6 +235,18 @@ const DataTable = ({
         )
     }
 
+    // Construimos el nombre del elemento para personalizar el mensaje
+    const itemName =
+        selectedItem &&
+        (selectedItem.option ||
+            selectedItem.name ||
+            selectedItem.value ||
+            (isEmailTable
+                ? typeof selectedItem.email === "object"
+                    ? selectedItem.email.email
+                    : selectedItem.email
+                : ""))
+
     return (
         <div className="rounded-xl bg-white p-6 shadow-md">
             <h2 className="mb-4 text-lg font-semibold text-gray-700">
@@ -249,7 +256,6 @@ const DataTable = ({
                 <table className="w-full text-left text-sm text-gray-500">
                     <thead className="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-600">
                         <tr>
-                            {/* <th className="px-6 py-3">Id</th> */}
                             <th className="px-6 py-3">{title}</th>
                             <th className="px-6 py-3 text-right">Acciones</th>
                         </tr>
@@ -310,6 +316,9 @@ const DataTable = ({
                 <DeleteConfirmationModal
                     onConfirm={confirmDelete}
                     onCancel={cancelDelete}
+                    message={`¿Estás seguro de eliminar el elemento "${itemName}"?`}
+                    confirmText="Sí, eliminar"
+                    cancelText="Cancelar"
                 />
             )}
         </div>

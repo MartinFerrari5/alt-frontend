@@ -31,7 +31,7 @@ function Header({ subtitle, title, tasks }) {
     const showDownloadExcel = currentPath === "/" || currentPath === "/history"
 
     return (
-        <div className="flex w-full justify-between items-center py-4 px-6 bg-white shadow-md rounded-lg">
+        <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
             <div>
                 <span className="text-xs font-semibold text-brand-custom-green">
                     {subtitle}
@@ -41,7 +41,6 @@ function Header({ subtitle, title, tasks }) {
 
             <div className="flex items-center gap-3">
                 <div>
-
                     {isAdminPath ? (
                         <>
                             <AddOptionDialog
@@ -60,13 +59,10 @@ function Header({ subtitle, title, tasks }) {
                 </div>
                 {showDownloadExcel && <DownloadExcelButton tasks={tasks} />}
 
-                <Button
-                    onClick={() => setAddDialogIsOpen(true)}
-                >
+                <Button onClick={() => setAddDialogIsOpen(true)}>
                     <AddIcon />
                     {adminPath ? "" : "Nueva tarea"}
                 </Button>
-
 
                 {currentPath === "/" && (
                     <SendToRRHHButton

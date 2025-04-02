@@ -148,9 +148,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
 
         // Se crea un string con la fecha de inicio y fin (si se ha proporcionado)
         const dateRange =
-            startDate && endDate
-                ? `${startDate} ${endDate}`
-                : startDate || ""
+            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
 
         // Se llama a la función onFilter con los datos procesados
         onFilter({

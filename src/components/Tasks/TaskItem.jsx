@@ -196,6 +196,7 @@ const TaskItem = ({
                 <DeleteConfirmationModal
                     onConfirm={confirmDelete}
                     onCancel={() => setShowConfirm(false)}
+                    message="¿Estás seguro de que deseas eliminar esta tarea?"
                 />
             )}
 
