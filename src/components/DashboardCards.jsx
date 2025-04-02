@@ -5,6 +5,7 @@ import { useGetKpiReport } from "../hooks/data/reportes/use-kpi-hooks"
 
 const DashboardCards = ({ filters, currentPath, role }) => {
     // Consultas a la API para cada grupo, pasando los filtros recibidos por props
+
     const {
         data: statusKpiData,
         isLoading: isLoadingStatus,
@@ -89,12 +90,11 @@ const DashboardCards = ({ filters, currentPath, role }) => {
         : hourError
           ? { stats: [{ label: "Error", value: "" }], total: null }
           : transformHourStats(hourKpiData, "hour_type")
-
-    // Si el rol no es admin, eliminamos la entrada "Facturado" de los datos de status
+    // Si el rol no es admin, eliminamos la entrada "Finalizado" de los datos de status
     let statusDataFiltered = statusData
     if (role !== "admin" && statusData && statusData.stats) {
         const filteredStats = statusData.stats.filter(
-            (item) => item.label !== "Facturado"
+            (item) => item.label !== "Finalizado"
         )
         const totalFiltered = filteredStats.reduce(
             (sum, item) => sum + Number(item.value),
