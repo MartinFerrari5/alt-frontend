@@ -18,8 +18,8 @@ function Header({ subtitle, title, tasks }) {
     const fullNameFromStore = useAuthStore((state) => state.fullName)
 
     const currentPath = location.pathname
-    const isAdminPath = currentPath.startsWith("/admin/")
-    const adminPath = isAdminPath ? currentPath.replace("/admin/", "") : ""
+    const isAdminPath = currentPath.startsWith("/rraa/admin/")
+    const adminPath = isAdminPath ? currentPath.replace("/rraa/admin/", "") : ""
 
     // Extracción y normalización de parámetros de búsqueda
     const queryParams = {
@@ -29,7 +29,7 @@ function Header({ subtitle, title, tasks }) {
         date: (searchParams.get("date") || "").trim(),
     }
 
-    const showDownloadExcel = currentPath === "/" || currentPath === "/history"
+    const showDownloadExcel = currentPath === "/rraa" || currentPath === "/rraa/history"
 
     return (
         <div className="flex w-full justify-between">
@@ -60,7 +60,7 @@ function Header({ subtitle, title, tasks }) {
                     />
                 )}
 
-                {currentPath === "/" && (
+                {currentPath === "/rraa" && (
                     <SendToRRHHButton
                         queryParams={queryParams}
                         tasks={tasks}

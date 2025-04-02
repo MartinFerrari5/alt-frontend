@@ -15,7 +15,7 @@ const Tasks = () => {
     const role = useAuthStore((state) => state.role)
 
     // Se muestra la selección de tareas solo en la ruta "/"
-    const isInicio = currentPath === "/"
+    const isInicio = currentPath === "/rraa"
 
     // Filtros obtenidos de la URL
     const filters = useMemo(

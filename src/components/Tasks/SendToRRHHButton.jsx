@@ -8,7 +8,7 @@ import { toast } from "react-toastify"
 
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isLoading } = useSendStatusToRRHH()
-
+    console.log(role)
     // Función para eliminar parámetros vacíos del objeto queryParams
     const cleanQueryParams = (params) =>
         Object.entries(params).reduce((acc, [key, value]) => {

@@ -177,6 +177,7 @@ const AddTaskForm = ({ onClose }) => {
      * @param {Object} data: Datos del formulario
      */
     const handleSaveClick = (data) => {
+        console.log("data", data)
         const formattedDate = formatDateForBackend(taskDate)
         // Buscar el objeto de la compañía a partir del relationship_id para extraer el company_id real
         const selectedCompanyObj = companies_table.find(
