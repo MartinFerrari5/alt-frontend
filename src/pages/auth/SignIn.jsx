@@ -4,7 +4,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
+
 
 // Componente LoadingSpinner reutilizable
 const LoadingSpinner = () => (

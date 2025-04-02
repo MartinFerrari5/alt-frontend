@@ -1,7 +1,7 @@
 // /src/hooks/data/status/use-status-hooks.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import useAuthStore from "../../../store/authStore"
-import useStatusStore from "../../../store/statusStore"
+
+
 import {
     getStatuses,
     postStatus,
@@ -10,6 +10,8 @@ import {
     getFilteredExportedTasks,
     postStatusRRHH,
 } from "./statusServer.js"
+import useAuthStore from "../../../store/modules/authStore.js"
+import useStatusStore from "../../../store/modules/statusStore.js"
 
 // Claves de consulta para React Query relacionadas con "status"
 const statusQueryKeys = {

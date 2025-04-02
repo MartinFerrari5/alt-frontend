@@ -8,7 +8,7 @@ import {
     getNotRelatedCompanies,
     getNotRelatedProjects,
     getRelatedOptions,
-} from "../hooks/data/options/relationsService"
+} from "../../hooks/data/options/relationsService"
 
 const initialState = {
     // Relaciones de compañías

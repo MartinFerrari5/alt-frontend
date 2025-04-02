@@ -5,7 +5,7 @@ import { Home, Clock, LogOut, User } from "lucide-react"
 import UserAvatar from "../ui/UserAvatar"
 import SidebarNavItem from "../ui/SidebarNavItem"
 import AdminSubmenu from "../ui/AdminSubmenu"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
     const location = useLocation()

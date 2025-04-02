@@ -2,10 +2,9 @@
 import PropTypes from "prop-types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { TrashIcon, LoaderIcon } from "../../../assets/icons"
 import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
-import Button from "../../Button"
-import useAuthStore from "../../../store/authStore"
+import useAuthStore from "../../../store/modules/authStore"
+
 
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()

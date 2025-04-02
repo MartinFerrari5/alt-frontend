@@ -1,6 +1,6 @@
 // src/components/ui/UserDetails.jsx
 import { NavLink } from "react-router-dom"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 
 const UserDetails = () => {
     const fullNameFromStore = useAuthStore((state) => state.fullName)

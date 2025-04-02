@@ -1,7 +1,7 @@
 // src/hooks/data/use-get-users.js
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../lib/axios"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 
 /**
  * Claves de consulta para usuarios.

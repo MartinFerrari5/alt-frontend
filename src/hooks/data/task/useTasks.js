@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { taskMutationKeys } from "../../../keys/mutations"
 import { taskQueryKeys } from "../../../keys/queries"
-import useTaskStore from "../../../store/taskStore"
+import useTaskStore from "../../../store/modules/taskStore"
 import { handleApiError } from "../../../lib/errorHandler"
 import {
     getAllTasks,

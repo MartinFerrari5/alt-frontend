@@ -11,12 +11,13 @@ import {
     Loader2,
 } from "lucide-react"
 
-import useAuthStore from "../../store/authStore"
+
 import { useUpdateUser } from "../../hooks/data/users/useUserHooks"
-import Sidebar from "../../components/layout/Sidebar"
+
 import { useNavigate } from "react-router-dom"
 import { toast } from "../../components/ui/sonner"
 import MainLayout from "../../components/layout/MainLayout"
+import useAuthStore from "../../store/modules/authStore"
 
 const UserProfile = () => {
     const navigate = useNavigate()

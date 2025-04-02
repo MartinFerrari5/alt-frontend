@@ -9,7 +9,7 @@ import { FaTrash } from "react-icons/fa"
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 import { useTasks } from "../../hooks/data/task/useTasks"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 import Button from "../Button"
 
 const formatDate = (dateString) => {

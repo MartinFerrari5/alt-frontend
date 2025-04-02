@@ -9,7 +9,7 @@ import {
     putEmail,
     deleteEmail,
 } from "./emailServer.js"
-import { useEmailStore } from "../../../store/emailStore.js"
+import { useEmailStore } from "../../../store/modules/emailStore.js"
 
 /**
  * Hook para obtener todos los emails.

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
 import { LoaderIcon } from "../../assets/icons"
 import { useTasks } from "../../hooks/data/task/useTasks"
-import { useOptionsStore } from "../../store/optionsStore"
+import { useOptionsStore } from "../../store/modules/optionsStore"
 
 import Dropdown from "../Dropdown/Dropdown"
 import DatePicker from "./DatePicker"

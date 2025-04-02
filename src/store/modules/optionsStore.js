@@ -1,11 +1,13 @@
+// /src/store/optionsStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import {
+import { 
     addOption,
     deleteOption,
     getOptions,
     updateOption,
-} from "../hooks/data/options/optionsService"
+} from "../../hooks/data/options/optionsService"
+
 
 const initialState = {
     companies_table: [],

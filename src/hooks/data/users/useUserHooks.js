@@ -12,7 +12,6 @@ import {
     deleteUser,
     updateUserRole,
 } from "./usersAlt"
-// import useAuthStore from "../../../store/authStore"
 
 /**
  * Claves de consulta para usuarios.

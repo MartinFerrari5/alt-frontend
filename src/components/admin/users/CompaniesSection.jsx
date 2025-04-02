@@ -4,7 +4,7 @@ import { RelationSection } from "./RelationSection"
 import { getOptions } from "../../../hooks/data/options/optionsService"
 import { toast } from "react-toastify"
 import { Building } from "lucide-react"
-import { useRelationsStore } from "../../../store/relationsStore"
+import { useRelationsStore } from "../../../store/modules/relationsStore"
 
 const CompaniesSection = ({
     userId,

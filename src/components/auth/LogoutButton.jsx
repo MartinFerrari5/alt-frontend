@@ -1,8 +1,9 @@
 // /src/components/auth/LogoutButton.jsx
 
 import { useNavigate } from "react-router-dom"
-import useAuthStore from "../../store/authStore"
+
 import { Children } from "react"
+import useAuthStore from "../../store/modules/authStore"
 
 const LogoutButton = () => {
     const logout = useAuthStore((state) => state.logout)

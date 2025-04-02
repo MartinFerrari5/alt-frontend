@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useLocation, useSearchParams } from "react-router-dom"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 import { AddIcon } from "../../assets/icons"
 import AddOptionDialog from "../email/AddOptionDialog"
 import DownloadExcelButton from "../admin/DownloadExcelButton"

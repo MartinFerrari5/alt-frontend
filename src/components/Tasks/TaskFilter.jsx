@@ -3,11 +3,11 @@ import { useEffect, useCallback, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useAuthStore from "../../store/authStore"
-import { useOptionsStore } from "../../store/optionsStore"
+import useAuthStore from "../../store/modules/authStore"
 import Dropdown from "../Dropdown/Dropdown"
 import Button from "../Button"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import { useOptionsStore } from "../../store/modules/optionsStore"
 
 /**
  * Componente para filtrar tareas. Permite seleccionar empresa, proyecto,

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
-import { useRelationsStore } from "../../../store/relationsStore"
+import { useRelationsStore } from "../../../store/modules/relationsStore"
 
 export const EditProjectRelationModal = ({
     title,

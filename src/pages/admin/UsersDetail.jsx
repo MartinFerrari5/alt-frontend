@@ -1,7 +1,7 @@
 // /src/pages/admin/UsersDetail.jsx
 import { useState, useEffect } from "react"
 import { ArrowLeft, User, Calendar, Loader2 } from "lucide-react"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import { toast } from "react-toastify"
 import UserEditForm from "../../components/admin/users/UserEditForm"
@@ -12,8 +12,7 @@ import {
 } from "../../hooks/data/users/useUserHooks"
 import ProjectsSection from "../../components/admin/users/ProjectsSection"
 import CompaniesSection from "../../components/admin/users/CompaniesSection"
-import useNavigationStore from "../../store/navigationStore"
-import Sidebar from "../../components/layout/Sidebar"
+import useNavigationStore from "../../store/ui/navigationStore"
 import MainLayout from "../../components/layout/MainLayout"
 
 const UsersDetail = () => {

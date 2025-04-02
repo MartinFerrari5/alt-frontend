@@ -1,6 +1,6 @@
 // src/components/admin/management/ManagementTables.jsx
 import { useEffect, useState } from "react"
-import { useOptionsStore } from "../../../store/optionsStore"
+import { useOptionsStore } from "../../../store/modules/optionsStore"
 import TableItemView from "./TableItemView"
 import TableItemEdit from "./TableItemEdit"
 import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"

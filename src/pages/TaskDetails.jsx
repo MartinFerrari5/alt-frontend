@@ -11,9 +11,10 @@ import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
 import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
 
-import { useOptionsStore } from "../store/optionsStore"
+
 import Sidebar from "../components/layout/Sidebar"
 import MainLayout from "../components/layout/MainLayout"
+import { useOptionsStore } from "../store/modules/optionsStore"
 
 const TaskDetailsPage = () => {
     const { taskId } = useParams()

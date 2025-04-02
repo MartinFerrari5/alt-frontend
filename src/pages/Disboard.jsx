@@ -6,10 +6,10 @@ import DashboardCards from "../components/DashboardCards"
 import TaskItem from "../components/Tasks/TaskItem"
 import TaskFilter from "../components/Tasks/TaskFilter"
 import { useTasks } from "../hooks/data/task/useTasks"
-import useAuthStore from "../store/authStore"
-import Sidebar from "../components/layout/Sidebar"
+
 import Header from "../components/layout/Header"
 import MainLayout from "../components/layout/MainLayout"
+import useAuthStore from "../store/modules/authStore"
 
 const TABLE_HEADERS = [
     "Nombre",

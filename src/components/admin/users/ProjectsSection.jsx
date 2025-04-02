@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { RelationSection } from "./RelationSection"
 import { EditProjectRelationModal } from "./EditProjectRelationModal"
 import { toast } from "react-toastify"
-import { useRelationsStore } from "../../../store/relationsStore"
+import { useRelationsStore } from "../../../store/modules/relationsStore"
 
 const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
     const {

@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "../../lib/axios"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 
 export const useAddUser = () => {
     const queryClient = useQueryClient()
