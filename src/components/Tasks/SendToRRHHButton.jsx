@@ -5,7 +5,6 @@ import { useSendStatusToRRHH } from "../../hooks/data/status/use-status-hooks"
 import { toast } from "react-toastify"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 
-
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isLoading } = useSendStatusToRRHH()
 
@@ -47,7 +46,7 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
 
     return (
         <>
-            {isLoading && <LoadingSpinner />} 
+            {isLoading && <LoadingSpinner />}
             <Button onClick={handleClick} disabled={isLoading}>
                 {role === "admin" ? "finalizar tareas" : "Enviar a RRHH"}
             </Button>
