@@ -10,6 +10,7 @@ import {
     getUsers,
     getUserById,
     deleteUser,
+    updateUserRole,
 } from "./usersAlt"
 // import useAuthStore from "../../../store/authStore"
 
@@ -100,6 +101,26 @@ export const useUpdateUser = (user_id) => {
         },
         onSuccess: () => {
             // Actualiza la lista global de usuarios y la caché del usuario específico
+            queryClient.invalidateQueries(userQueryKeys.getAll())
+            queryClient.invalidateQueries(userQueryKeys.getById(user_id))
+        },
+    })
+}
+
+/**
+ * Hook para actualizar el rol del usuario.
+ * @param {string} user_id - ID del usuario a actualizar.
+ * @returns {Object} - Objeto con la función de mutación para actualizar el rol.
+ */
+export const useUpdateUserRole = (user_id) => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (payload) => {
+            return await updateUserRole(user_id, payload)
+        },
+        onSuccess: () => {
+            // Invalida la caché para refrescar la información del usuario
             queryClient.invalidateQueries(userQueryKeys.getAll())
             queryClient.invalidateQueries(userQueryKeys.getById(user_id))
         },

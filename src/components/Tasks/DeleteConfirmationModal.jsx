@@ -1,8 +1,13 @@
 // /src/components/Tasks/DeleteConfirmationModal.jsx
-
 import PropTypes from "prop-types"
 
-const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
+const DeleteConfirmationModal = ({
+    onConfirm,
+    onCancel,
+    message,
+    confirmText,
+    cancelText,
+}) => {
     return (
         <div
             id="popup-modal"
@@ -50,21 +55,21 @@ const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
                             />
                         </svg>
                         <h3 className="mb-5 text-lg font-normal text-gray-500">
-                            ¿Estás seguro de que deseas eliminar esta tarea?
+                            {message}
                         </h3>
                         <button
                             type="button"
                             className="inline-flex items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300"
                             onClick={onConfirm}
                         >
-                            Si, estoy seguro
+                            {confirmText}
                         </button>
                         <button
                             type="button"
                             className="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100"
                             onClick={onCancel}
                         >
-                            No, cancel
+                            {cancelText}
                         </button>
                     </div>
                 </div>
@@ -76,6 +81,15 @@ const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
 DeleteConfirmationModal.propTypes = {
     onConfirm: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    message: PropTypes.string,
+    confirmText: PropTypes.string,
+    cancelText: PropTypes.string,
+}
+
+DeleteConfirmationModal.defaultProps = {
+    message: "¿Estás seguro de que deseas eliminar esta tarea?",
+    confirmText: "Si, estoy seguro",
+    cancelText: "No, cancel",
 }
 
 export default DeleteConfirmationModal

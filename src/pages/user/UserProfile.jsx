@@ -1,3 +1,4 @@
+// /src/pages/user/UserProfile.jsx
 import { useState, useEffect } from "react"
 import {
     User,
@@ -50,9 +51,11 @@ const UserProfile = () => {
             return
         }
 
+        // Preparamos el payload de acuerdo a la documentación
         const payload = { full_name: editedName.trim() }
         updateUserMutation.mutate(payload, {
             onSuccess: () => {
+                // Actualizamos el estado de autenticación
                 useAuthStore.setState({ fullName: editedName.trim() })
                 toast.success("Profile updated successfully")
                 setIsEditing(false)
@@ -135,12 +138,17 @@ const UserProfile = () => {
                                                 disabled={
                                                     updateUserMutation.isLoading
                                                 }
-                                                className="bg-green rounded-md p-2 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
+                                                className="bg-green flex items-center gap-2 rounded-md p-2 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
                                             >
                                                 {updateUserMutation.isLoading ? (
                                                     <Loader2 className="h-5 w-5 animate-spin" />
                                                 ) : (
-                                                    <Save className="h-5 w-5" />
+                                                    <>
+                                                        <Save className="h-5 w-5" />
+                                                        <span className="hidden sm:inline">
+                                                            Guardar
+                                                        </span>
+                                                    </>
                                                 )}
                                             </button>
                                             <button
@@ -200,49 +208,6 @@ const UserProfile = () => {
                                     </p>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-
-                    <div className="card-container rounded-lg bg-white p-6 shadow">
-                        <h3 className="text-main-color mb-4 text-xl font-semibold">
-                            Account Preferences
-                        </h3>
-
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between border-b border-gray-200 py-3">
-                                <div>
-                                    <p className="text-main-color font-medium">
-                                        Email Notifications
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Receive email notifications for task
-                                        updates
-                                    </p>
-                                </div>
-                                <label className="relative inline-flex cursor-pointer items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="peer sr-only"
-                                        defaultChecked
-                                    />
-                                    <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-green-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
-                                </label>
-                            </div>
-
-                            <div className="flex items-center justify-between py-3">
-                                <div>
-                                    <p className="text-main-color font-medium">
-                                        Two-Factor Authentication
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Enable additional security for your
-                                        account
-                                    </p>
-                                </div>
-                                <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-                                    Enable
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>

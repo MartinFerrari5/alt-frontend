@@ -31,7 +31,7 @@ const UserEditForm = ({ user, onSave }) => {
     const roles = [
         { id: "user", label: "User" },
         { id: "admin", label: "Administrator" },
-        { id: "manager", label: "Task Manager" },
+        // { id: "manager", label: "Task Manager" },
     ]
 
     const handleSave = async () => {

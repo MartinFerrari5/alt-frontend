@@ -174,7 +174,7 @@ const TaskItem = ({
                             )}
                         </Button>
                     )}
-                    {role === "admin" ? (
+                    {role === "admin" && currentPath === "/" ? (
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
                                 status={task.status}
@@ -196,6 +196,7 @@ const TaskItem = ({
                 <DeleteConfirmationModal
                     onConfirm={confirmDelete}
                     onCancel={() => setShowConfirm(false)}
+                    message="¿Estás seguro de que deseas eliminar esta tarea?"
                 />
             )}
 

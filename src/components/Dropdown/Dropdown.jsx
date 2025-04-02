@@ -36,6 +36,14 @@ const Dropdown = ({
         }
     }, [isError, errorText])
 
+    /**
+     * Obtiene las opciones del select.
+     * Si isLoading es true, devuelve un option disabled con el texto de carga.
+     * Si isError es true, devuelve un option disabled con el texto de error.
+     * Si isLoading y isError son false, devuelve una lista de options con las opciones de la lista de items.
+     *
+     * @returns {JSX.Element} Un JSX.Element con las opciones del select.
+     */
     const getOptions = () => {
         if (isLoading) {
             return <option disabled>{loadingText}</option>
