@@ -9,6 +9,14 @@ import Dropdown from "../Dropdown/Dropdown"
 import Button from "../Button"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 
+/**
+ * Componente para filtrar tareas. Permite seleccionar empresa, proyecto,
+ * tipo de hora y rango de fechas para filtrar las tareas.
+ *
+ * @param {function} onFilter - Función que se llamará cuando se envíe el formulario.
+ * @param {string} currentPath - Ruta actual en la que se encuentra el componente.
+ * @returns {ReactElement}
+ */
 const TaskFilter = ({ onFilter, currentPath }) => {
     const role = useAuthStore((state) => state.role)
     const [searchParams] = useSearchParams()
@@ -90,7 +98,6 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             companies_table &&
             companies_table.length > 0
         ) {
-            console.log("selectedCompanyId", selectedCompanyId)
             // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
             const companyObj = companies_table.find(
                 (c) =>
@@ -123,20 +130,29 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         }
     }, [selectedCompanyId, companies_table, setValue, watch])
 
-    // Función de envío del formulario
+    /**
+     * Función que se encarga de procesar la búsqueda de tareas cuando se envía el formulario.
+     *
+     * @param {Object} data - Objeto con los valores del formulario.
+     */
     const onSubmit = (data) => {
         const {
-            fullname,
-            company,
-            project,
-            status,
-            startDate,
-            endDate,
-            hourtype,
+            fullname, // Nombre del usuario
+            company, // ID de la compañía
+            project, // ID del proyecto
+            status, // ID del estado
+            startDate, // Fecha de inicio
+            endDate, // Fecha de fin
+            hourtype, // Tipo de hora (morning, afternoon, evening)
         } = data
-        // Se usa un espacio como separador para la fecha
+
+        // Se crea un string con la fecha de inicio y fin (si se ha proporcionado)
         const dateRange =
-            startDate && endDate ? `${startDate} ${endDate}` : startDate || ""
+            startDate && endDate
+                ? `${startDate} ${endDate}`
+                : startDate || ""
+
+        // Se llama a la función onFilter con los datos procesados
         onFilter({
             fullname,
             company,
@@ -192,7 +208,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 isLoading={!hour_type_table || hour_type_table.length === 0}
                 isError={false}
                 items={hour_type_table}
-                valueKey="hour_type_id" // Asegúrate de usar la clave correcta aquí
+                valueKey="hour_type_id"
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
             />
