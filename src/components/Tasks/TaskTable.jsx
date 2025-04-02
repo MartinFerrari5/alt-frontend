@@ -48,7 +48,7 @@ const TaskTable = ({
                             {tasks.map((task) => (
                                 <TaskItem
                                     key={task.id}
-                                    task={task}
+                                    task={task || []}
                                     showCheckbox={isInicio}
                                     isSelected={selectedTasks.includes(task.id)}
                                     onSelectTask={onSelectTask}

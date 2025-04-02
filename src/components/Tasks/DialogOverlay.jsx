@@ -14,7 +14,7 @@ const DialogOverlay = ({ isOpen, nodeRef, children }) => {
         >
             <div
                 ref={nodeRef}
-                className="fixed inset-0 flex items-center justify-center backdrop-blur"
+                className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur"
             >
                 {children}
             </div>

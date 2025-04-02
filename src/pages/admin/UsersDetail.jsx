@@ -1,3 +1,4 @@
+// /src/pages/admin/UsersDetail.jsx
 import { useState, useEffect } from "react"
 import { ArrowLeft, User, Calendar, Loader2 } from "lucide-react"
 import { Link, useParams, useNavigate } from "react-router-dom"

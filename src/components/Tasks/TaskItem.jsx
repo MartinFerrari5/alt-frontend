@@ -74,13 +74,19 @@ const TaskItem = ({
         setShowStatusModal(false)
     }, [])
 
+    // Dentro de TaskItem.jsx, en la función handleStatusConfirm:
+
     const handleStatusConfirm = useCallback(() => {
         if (!task.task_date || isNaN(new Date(task.task_date).getTime())) {
             toast.error("Fecha de tarea inválida. Verifica los datos.")
             return
         }
+        // Se incluye task_date en la actualización para que updateTaskApi la formatee correctamente
         updateTask(
-            { taskId: task.id, task: { status: newStatus } },
+            {
+                taskId: task.id,
+                task: { status: newStatus, task_date: task.task_date },
+            },
             {
                 onSuccess: () => {
                     toast.success("¡Estado de la tarea actualizado!")
@@ -213,8 +219,7 @@ const TaskItem = ({
                                 className="mb-4 w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="0">progreso</option>
-                                <option value="1">finalizado</option>
-                                <option value="2">facturado</option>
+                                <option value="2">Finalizado</option>
                             </select>
                             <div className="flex justify-end gap-2">
                                 <Button
