@@ -29,7 +29,6 @@ export const getCompanyProjects = async (relationship_id) => {
         const { data } = await api.get("/options", {
             params: { table, relationship_id },
         })
-        console.log(data)
         return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message

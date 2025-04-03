@@ -130,7 +130,7 @@ const TaskDetailsPage = () => {
         const updateData = {
             ...data,
             // Se reemplaza la propiedad "company" por company_id real para el payload
-            company_id,
+            company_id: data.company ? company_id : null,
             project_id: data.project,
             task_type: data.task_type?.trim(),
             task_description: data.task_description?.trim(),

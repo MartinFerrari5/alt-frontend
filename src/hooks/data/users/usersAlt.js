@@ -111,7 +111,7 @@ export const updateUserRole = async (user_id, payload) => {
     try {
         // Se usa el endpoint de cambio de rol de acuerdo a la documentación
         const { data } = await api.put(
-            `/reportes/users/role?user_id=${user_id}`,
+            `/users?user_id=${user_id}`,
             payload
         )
         return data
