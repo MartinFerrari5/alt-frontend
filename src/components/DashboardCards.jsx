@@ -90,6 +90,7 @@ const DashboardCards = ({ filters, currentPath, role }) => {
         : hourError
           ? { stats: [{ label: "Error", value: "" }], total: null }
           : transformHourStats(hourKpiData, "hour_type")
+
     // Si el rol no es admin, eliminamos la entrada "Finalizado" de los datos de status
     let statusDataFiltered = statusData
     if (role !== "admin" && statusData && statusData.stats) {
@@ -113,24 +114,20 @@ const DashboardCards = ({ filters, currentPath, role }) => {
             </section>
             <section className="grid grid-cols-4 gap-9">
                 <DashboardCard
-                    icon={<FaTasks className="text-2xl text-brand-dark-blue" />}
+                    icon={<FaTasks className="text-5x2 text-brand-dark-blue" />}
                     title="Estado de Tareas"
                     stats={statusDataFiltered.stats}
                     total={statusDataFiltered.total}
                 />
                 <>
                     <DashboardCard
-                        icon={
-                            <FaChartBar className="text-2xl text-brand-dark-blue" />
-                        }
+                        icon={<FaChartBar className="text-5x2 text-brand-dark-blue" />}
                         title="Tipo de Tarea"
                         stats={taskData.stats}
                         total={taskData.total}
                     />
                     <DashboardCard
-                        icon={
-                            <FaChartBar className="text-2xl text-brand-dark-blue" />
-                        }
+                        icon={<FaChartBar className="text-5x2 text-brand-dark-blue" />}
                         title="Tipo de Hora"
                         stats={hourData.stats}
                         total={hourData.total}
