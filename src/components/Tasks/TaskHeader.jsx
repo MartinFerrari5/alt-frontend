@@ -5,7 +5,6 @@ import Button from "../Button"
 import { Link } from "react-router-dom"
 import useAuthStore from "../../store/modules/authStore"
 
-
 const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => {
     const role = useAuthStore((state) => state.role)
 
@@ -14,16 +13,19 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => {
             <div>
                 <button
                     onClick={onBack}
-                    className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-brand-custom-green"
+                    className="bg-brand-custom-green mb-3 flex h-8 w-8 items-center justify-center rounded-full"
                 >
                     <ArrowLeftIcon />
                 </button>
                 <div className="flex items-center gap-1 text-xs">
-                    <Link className="cursor-pointer text-brand-text-gray" to="/">
+                    <Link
+                        className="text-brand-text-gray cursor-pointer"
+                        to="/"
+                    >
                         Mis tareas
                     </Link>
                     <ChevronRightIcon className="text-brand-text-gray" />
-                    <span className="font-semibold text-brand-custom-green">
+                    <span className="text-brand-custom-green font-semibold">
                         {task.task_description}
                     </span>
                 </div>
@@ -33,10 +35,22 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => {
             </div>
             {role !== "admin" && (
                 <div className="flex gap-3">
-                    <Button className="h-fit self-end" color="ghost" onClick={onEdit}>
-                        {isEditing ? "Cancelar" : <FaEdit className="h-5 w-5" />}
+                    <Button
+                        className="h-fit self-end"
+                        color="ghost"
+                        onClick={onEdit}
+                    >
+                        {isEditing ? (
+                            "Cancelar"
+                        ) : (
+                            <FaEdit className="h-5 w-5" />
+                        )}
                     </Button>
-                    <Button className="h-fit self-end" color="danger" onClick={onDelete}>
+                    <Button
+                        className="h-fit self-end"
+                        color="danger"
+                        onClick={onDelete}
+                    >
                         <TrashIcon /> Eliminar tarea
                     </Button>
                 </div>

@@ -5,7 +5,6 @@ import { toast } from "sonner"
 import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
 import useAuthStore from "../../../store/modules/authStore"
 
-
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()
     const role = useAuthStore((state) => state.role)

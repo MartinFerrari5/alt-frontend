@@ -9,7 +9,6 @@ import {
 } from "../../hooks/data/status/statusServer"
 import useAuthStore from "./authStore"
 
-
 const initialState = {
     statuses: [],
     currentTaskStatus: null,

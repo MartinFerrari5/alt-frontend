@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom"
 import StatusItem from "./StatusItem"
 import TaskFilter from "../../Tasks/TaskFilter"
 
-
 import {
     getFilteredExportedTasks,
     getStatuses,

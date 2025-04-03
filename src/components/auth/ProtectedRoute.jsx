@@ -3,7 +3,6 @@
 import { Navigate } from "react-router-dom"
 import useAuthStore from "../../store/modules/authStore"
 
-
 const ProtectedRoute = ({ children, adminOnly = false }) => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
     const role = useAuthStore((state) => state.role)

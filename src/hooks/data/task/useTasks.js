@@ -37,7 +37,6 @@ export const useGetTask = (taskId) => {
     })
 }
 
-
 export const useTasks = ({ all = false } = {}) => {
     const queryClient = useQueryClient()
     const { tasks, addTask, deleteTask, updateTask, setTasks } = useTaskStore()
