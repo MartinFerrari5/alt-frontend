@@ -3,7 +3,8 @@ import { FaEdit } from "react-icons/fa"
 import { ArrowLeftIcon, ChevronRightIcon, TrashIcon } from "../../assets/icons"
 import Button from "../Button"
 import { Link } from "react-router-dom"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
+
 
 const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => {
     const role = useAuthStore((state) => state.role)
