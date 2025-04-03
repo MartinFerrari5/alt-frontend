@@ -28,7 +28,8 @@ function Header({ subtitle, title, tasks }) {
         date: (searchParams.get("date") || "").trim(),
     }
 
-    const showDownloadExcel = currentPath === "/rraa" || currentPath === "/rraa/history"
+    const showDownloadExcel =
+        currentPath === "/rraa" || currentPath === "/rraa/history"
 
     return (
         <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
@@ -64,7 +65,7 @@ function Header({ subtitle, title, tasks }) {
                     {adminPath ? "" : "Nueva tarea"}
                 </Button>
 
-                {isAdminPath ? (
+                {/*  {isAdminPath ? (
                     <AddOptionDialog
                         isOpen={addDialogIsOpen}
                         handleClose={() => setAddDialogIsOpen(false)}
@@ -74,7 +75,7 @@ function Header({ subtitle, title, tasks }) {
                         isOpen={addDialogIsOpen}
                         handleClose={() => setAddDialogIsOpen(false)}
                     />
-                )}
+                )} */}
 
                 {currentPath === "/rraa" && (
                     <SendToRRHHButton
