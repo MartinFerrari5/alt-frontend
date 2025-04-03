@@ -13,6 +13,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     const role = useAuthStore((state) => state.role)
     const logout = useAuthStore((state) => state.logout)
     const navigate = useNavigate()
+
     const handleLogout = () => {
         logout()
         navigate("/login")
@@ -37,14 +38,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             )}
 
             <aside
-                className={`fixed z-30 flex h-full flex-col bg-mainColor text-white shadow-lg transition-all duration-300 md:relative ${isOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full md:w-20 md:translate-x-0"}`}
+                className={`fixed z-30 flex h-full flex-col bg-mainColor text-white shadow-lg transition-all duration-300 md:relative ${
+                    isOpen
+                        ? "w-64 translate-x-0"
+                        : "w-0 -translate-x-full md:w-20 md:translate-x-0"
+                }`}
                 aria-label="Main navigation"
             >
                 {/* Encabezado / Logo */}
                 <div className="flex h-16 items-center justify-center border-b border-white border-opacity-20 p-4">
                     {isOpen ? (
                         <h1 className="text-xl font-bold">
-                            Administrador de Tareas
+                            {role === "admin" ? "Administrador de Tareas" : "Mis Tareas"}
                         </h1>
                     ) : (
                         <div className="hidden h-8 w-8 items-center justify-center md:flex">
@@ -55,7 +60,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
                 {/* Sección de perfil de usuario */}
                 <div
-                    className={`border-b border-white border-opacity-20 px-4 py-6 ${isOpen ? "flex items-center space-x-4" : "flex justify-center"}`}
+                    className={`border-b border-white border-opacity-20 px-4 py-6 ${
+                        isOpen ? "flex items-center space-x-4" : "flex justify-center"
+                    }`}
                 >
                     <UserAvatar
                         name={user?.name || "Usuario"}
@@ -70,12 +77,17 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                             <p className="truncate text-xs text-white/70">
                                 {user?.email || "correo@ejemplo.com"}
                             </p>
-                            <Link
-                                to="/user/user-profile"
-                                className="text-xs text-greenApp transition-colors hover:text-darkGreen2"
-                            >
-                                Ver Perfil
-                            </Link>
+                            <div className="mt-1 flex items-center gap-2">
+                                <span className="inline-block rounded bg-blue-600 px-2 py-0.5 text-[10px] font-semibold uppercase leading-none text-white">
+                                    {role === "admin" ? "Admin" : "User"}
+                                </span>
+                                <Link
+                                    to="/user/user-profile"
+                                    className="text-xs text-greenApp transition-colors hover:text-darkGreen2"
+                                >
+                                    Ver Perfil
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -104,9 +116,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                                 to="/user/user-profile"
                                 icon={User}
                                 label="Perfil"
-                                isActive={
-                                    location.pathname === "/user/user-profile"
-                                }
+                                isActive={location.pathname === "/user/user-profile"}
                                 showLabel={false}
                             />
                         )}

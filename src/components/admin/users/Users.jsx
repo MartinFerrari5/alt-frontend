@@ -16,7 +16,7 @@ const Users = () => {
     }
 
     return (
-        <div className="w-full space-y-6 px-8 py-9">
+        <div className="w-full space-y-6">
             <Header subtitle="Lista de Usuarios" title="Usuarios" />
             <div className="rounded-xl bg-white p-6">
                 <div className="relative max-h-[900px] overflow-y-auto shadow-md sm:rounded-lg">

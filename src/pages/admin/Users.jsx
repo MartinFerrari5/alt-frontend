@@ -5,9 +5,7 @@ import MainLayout from "../../components/layout/MainLayout"
 function UsersPage() {
     return (
         <MainLayout>
-            <div>
-                <Users />
-            </div>
+            <Users />
         </MainLayout>
     )
 }

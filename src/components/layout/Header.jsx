@@ -1,3 +1,4 @@
+// /src/components/layout/Header.jsx
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useLocation, useSearchParams } from "react-router-dom"
@@ -8,6 +9,7 @@ import DownloadExcelButton from "../admin/DownloadExcelButton"
 import Button from "../Button"
 import SendToRRHHButton from "../Tasks/SendToRRHHButton"
 import AddTaskDialog from "../Tasks/AddTaskDialog"
+import { LoadingSpinner } from "../../util/LoadingSpinner" // Importamos el spinner
 
 function Header({ subtitle, title, tasks }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
@@ -24,11 +26,21 @@ function Header({ subtitle, title, tasks }) {
     const queryParams = {
         company: (searchParams.get("company") || "").trim(),
         project: (searchParams.get("project") || "").trim(),
-        fullname: (searchParams.get("fullname") || fullNameFromStore).trim(),
+        fullname: (searchParams.get("fullname") || fullNameFromStore || "").trim(),
         date: (searchParams.get("date") || "").trim(),
     }
 
     const showDownloadExcel = currentPath === "/" || currentPath === "/history"
+
+    // Si alguno de los parámetros esenciales aún no está disponible,
+    // mostramos un spinner de carga.
+    if (!tasks || !role || !queryParams.fullname) {
+        return (
+            <div className="flex w-full items-center justify-center py-4">
+                <LoadingSpinner />
+            </div>
+        )
+    }
 
     return (
         <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
@@ -42,19 +54,15 @@ function Header({ subtitle, title, tasks }) {
             <div className="flex items-center gap-3">
                 <div>
                     {isAdminPath ? (
-                        <>
-                            <AddOptionDialog
-                                isOpen={addDialogIsOpen}
-                                handleClose={() => setAddDialogIsOpen(false)}
-                            />
-                        </>
+                        <AddOptionDialog
+                            isOpen={addDialogIsOpen}
+                            handleClose={() => setAddDialogIsOpen(false)}
+                        />
                     ) : (
-                        <>
-                            <AddTaskDialog
-                                isOpen={addDialogIsOpen}
-                                handleClose={() => setAddDialogIsOpen(false)}
-                            />
-                        </>
+                        <AddTaskDialog
+                            isOpen={addDialogIsOpen}
+                            handleClose={() => setAddDialogIsOpen(false)}
+                        />
                     )}
                 </div>
                 {showDownloadExcel && <DownloadExcelButton tasks={tasks} />}
