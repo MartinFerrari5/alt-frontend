@@ -5,6 +5,7 @@ import { z } from "zod"
 import { toast } from "react-toastify"
 import { changePassword } from "../../hooks/data/users/usersAlt"
 import { FaSpinner } from "react-icons/fa"
+import Button from "../Button"
 
 const schema = z
     .object({
@@ -141,14 +142,14 @@ const ChangePassword = () => {
                     </p>
                 )}
             </div>
-            <button
+            <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex w-full items-center justify-center rounded bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-75"
+                className="flex w-full items-center justify-center rounded px-4 py-3 font-semibold text-white transition disabled:opacity-75"
             >
                 {isSubmitting && <FaSpinner className="mr-2 animate-spin" />}
-                {isSubmitting ? "Procesando..." : "Cambiar contraseña"}
-            </button>
+                {isSubmitting ? "" : "Cambiar contraseña"}
+            </Button>
         </form>
     )
 }
