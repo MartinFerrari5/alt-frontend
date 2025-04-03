@@ -108,8 +108,6 @@ export const updateUser = async (user_id, payload) => {
  * @throws {Error} - Si ocurre un error al actualizar el rol.
  */
 export const updateUserRole = async (user_id, payload) => {
-    console.log("user_id", user_id)
-    console.log("payload", payload)
     try {
         // Se usa el endpoint de cambio de rol de acuerdo a la documentación
         const { data } = await api.put(

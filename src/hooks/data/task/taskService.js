@@ -22,7 +22,6 @@ export const getAllTasksAll = async () => {
 }
 
 export const createTask = async (task) => {
-    console.log("createTask: ", task)
     const { data } = await api.post("/tasks", task)
     return data
 }
@@ -80,6 +79,5 @@ export const filterTasksApi = async (filters) => {
 
 export const getTaskByIdApi = async (taskId) => {
     const { data } = await api.get(`/tasks/task?task_id=${taskId}`)
-    console.log("getTaskByIdApi: ", data)
     return data
 }

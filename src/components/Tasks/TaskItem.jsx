@@ -103,7 +103,7 @@ const TaskItem = ({
     }, [updateTask, task, newStatus])
 
     const handleRowClick = () => {
-        if (currentPath !== "/history" && role === "user") {
+        if (currentPath !== "/history") {
             navigate(`/task/${task.id}`)
         }
     }

@@ -22,15 +22,13 @@ const mutationFactory = (queryClient) => (config) => ({
 })
 
 export const useGetTask = (taskId) => {
-    const { tasks } = useTaskStore()
-
+    // const { tasks } = useTaskStore()
     return useQuery({
         queryKey: taskQueryKeys.getOne(taskId),
         queryFn: async () => {
-            const existingTask = tasks.find(
-                (t) => t.id.toString() === taskId.toString()
-            )
-            return existingTask || getTaskByIdApi(taskId)
+            // const existingTask = tasks.find((t) => t.id.toString() === taskId.toString())
+            // return existingTask || getTaskByIdApi(taskId)
+            return getTaskByIdApi(taskId)
         },
         onError: (error) => handleApiError(error, "Error al obtener la tarea"),
         enabled: !!taskId,
@@ -38,6 +36,7 @@ export const useGetTask = (taskId) => {
         staleTime: 300000,
     })
 }
+
 
 export const useTasks = ({ all = false } = {}) => {
     const queryClient = useQueryClient()
