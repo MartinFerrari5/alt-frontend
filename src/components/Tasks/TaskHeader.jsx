@@ -3,8 +3,11 @@ import { FaEdit } from "react-icons/fa"
 import { ArrowLeftIcon, ChevronRightIcon, TrashIcon } from "../../assets/icons"
 import Button from "../Button"
 import { Link } from "react-router-dom"
+import useAuthStore from "../../store/authStore"
 
-const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
+const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) =>{
+    const role = useAuthStore((state) => state.role)
+ return (
     <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
             <button
@@ -27,9 +30,10 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
             </h1>
         </div>
         <div className="flex gap-3">
-            <Button className="h-fit self-end" color="ghost" onClick={onEdit}>
+        {role === "user"  &&(
+                <Button className="h-fit self-end" color="ghost" onClick={onEdit}>
                 {isEditing ? "Cancelar" : <FaEdit className="h-5 w-5" />}
-            </Button>
+            </Button>)}
             <Button
                 className="h-fit self-end"
                 color="danger"
@@ -40,5 +44,6 @@ const TaskHeader = ({ task, onBack, onDelete, onEdit, isEditing }) => (
         </div>
     </div>
 )
+}
 
 export default TaskHeader

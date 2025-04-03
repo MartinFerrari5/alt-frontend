@@ -66,6 +66,7 @@ const TaskItem = ({
     }, [deleteTask, task.id])
 
     const openStatusModal = useCallback(() => {
+        
         setNewStatus(task.status)
         setShowStatusModal(true)
     }, [task.status])
@@ -174,7 +175,7 @@ const TaskItem = ({
                             )}
                         </Button>
                     )}
-                    {role === "admin" && currentPath === "/" ? (
+                    {role === "admin" && currentPath === "/rraa" ? (
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
                                 status={task.status}
@@ -219,6 +220,7 @@ const TaskItem = ({
                                 }
                                 className="mb-4 w-full rounded-lg border p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
+                                <option>Selecciona un estado</option>
                                 <option value="0">progreso</option>
                                 <option value="2">Finalizado</option>
                             </select>
