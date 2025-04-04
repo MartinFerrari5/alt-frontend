@@ -43,14 +43,14 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
         }
     }
 
-    const handleAddRelation = async (projectId, relationshipId) => {
+    const handleAddRelation = async (projectId, companyId) => {
         try {
             const relationData = {
                 user_id: userId,
                 project_id: projectId,
-                relationship_id: relationshipId,
+                company_id: companyId,
             }
-            await addProjectUserRelation(relationData, userId, relationshipId)
+            await addProjectUserRelation(relationData, userId, companyId)
             toast.success("Relación con el proyecto creada exitosamente")
         } catch (error) {
             console.error("Error al agregar relación de proyecto:", error)
