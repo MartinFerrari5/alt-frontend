@@ -167,7 +167,7 @@ const AddTaskForm = ({ onClose }) => {
             task_description: "Tarea de prueba",
             entry_time: "",
             exit_time: "",
-            lunch_hours: "2",
+            lunch_hours: "1",
         })
         const newDate = new Date()
         newDate.setHours(0, 0, 0, 0)
