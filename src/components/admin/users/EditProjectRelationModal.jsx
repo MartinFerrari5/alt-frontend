@@ -81,7 +81,7 @@ export const EditProjectRelationModal = ({
                             isLoading={false}
                             isError={false}
                             items={relatedCompanies.map((item) => ({
-                                id: item.relationship_id,
+                                id: item.company_id,
                                 option: item.option,
                             }))}
                             loadingText="Cargando..."
