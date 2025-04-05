@@ -105,7 +105,7 @@ const UsersDetail = () => {
                     </div>
 
                     <div className="grid gap-6 md:grid-cols-3">
-                        {/* Columna de información del usuario */}
+                        {/* User information column */}
                         <div className="md:col-span-1">
                             <div className="card-container mb-6 rounded-lg bg-white p-4 shadow">
                                 <div className="mb-4 flex flex-col items-center text-center">
@@ -136,7 +136,10 @@ const UsersDetail = () => {
                                         <div className="text-main-color flex items-center gap-1">
                                             <Calendar className="h-4 w-4" />
                                             <span>
-                                                {formatDate(userData.createdAt)}
+                                                {formatDate(
+                                                    userData.createdAt ||
+                                                        userData.created_at
+                                                )}
                                             </span>
                                         </div>
                                     </div>
@@ -147,7 +150,11 @@ const UsersDetail = () => {
                                         <div className="text-main-color flex items-center gap-1">
                                             <Calendar className="h-4 w-4" />
                                             <span>
-                                                {formatDate(userData.lastLogin)}
+                                                {formatDate(
+                                                    userData.lastLogin ||
+                                                        userData.last_login ||
+                                                        "N/A"
+                                                )}
                                             </span>
                                         </div>
                                     </div>
@@ -168,13 +175,17 @@ const UsersDetail = () => {
                         {/* Columna de relaciones (empresas y proyectos) */}
                         <div className="md:col-span-2">
                             <div className="card-container rounded-lg bg-white p-4 shadow">
-                                <CompaniesSection
-                                    userId={id}
-                                    selectedCompanyRelId={selectedCompanyRelId}
-                                    setSelectedCompanyRelId={
-                                        setSelectedCompanyRelId
-                                    }
-                                />
+                                <div>
+                                    <CompaniesSection
+                                        userId={id}
+                                        selectedCompanyRelId={
+                                            selectedCompanyRelId
+                                        }
+                                        setSelectedCompanyRelId={
+                                            setSelectedCompanyRelId
+                                        }
+                                    />
+                                </div>
                                 <ProjectsSection
                                     userId={id}
                                     selectedCompanyRelId={selectedCompanyRelId}

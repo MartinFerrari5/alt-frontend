@@ -49,7 +49,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 <div className="flex h-16 items-center justify-center border-b border-white border-opacity-20 p-4">
                     {isOpen ? (
                         <h1 className="text-xl font-bold">
-                            {role === "admin" ? "Administrador de Tareas" : "Mis Tareas"}
+                            {role === "admin"
+                                ? "Administrador de Tareas"
+                                : "Mis Tareas"}
                         </h1>
                     ) : (
                         <div className="hidden h-8 w-8 items-center justify-center md:flex">
@@ -61,7 +63,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 {/* Sección de perfil de usuario */}
                 <div
                     className={`border-b border-white border-opacity-20 px-4 py-6 ${
-                        isOpen ? "flex items-center space-x-4" : "flex justify-center"
+                        isOpen
+                            ? "flex items-center space-x-4"
+                            : "flex justify-center"
                     }`}
                 >
                     <UserAvatar
@@ -116,7 +120,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                                 to="/user/user-profile"
                                 icon={User}
                                 label="Perfil"
-                                isActive={location.pathname === "/user/user-profile"}
+                                isActive={
+                                    location.pathname === "/user/user-profile"
+                                }
                                 showLabel={false}
                             />
                         )}

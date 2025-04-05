@@ -6,7 +6,6 @@ import { useSendStatusToRRHH } from "../../hooks/data/status/use-status-hooks"
 import { toast } from "react-toastify"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 
-
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isLoading } = useSendStatusToRRHH()
 
@@ -35,25 +34,35 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
         if (role === "admin") {
             // Para admin se envía un flag 'finalize'
             sendToRRHH(
-                { queryParams: cleanedParams, payload: { tasks: payloadTasks, finalize: true } },
+                {
+                    queryParams: cleanedParams,
+                    payload: { tasks: payloadTasks, finalize: true },
+                },
                 {
                     onSuccess: () => {
                         toast.success("Tareas finalizadas exitosamente!")
                     },
                     onError: (error) => {
-                        toast.error(`Error al finalizar tareas: ${error.message}`)
+                        toast.error(
+                            `Error al finalizar tareas: ${error.message}`
+                        )
                     },
                 }
             )
         } else if (role === "user") {
             sendToRRHH(
-                { queryParams: cleanedParams, payload: { tasks: payloadTasks } },
+                {
+                    queryParams: cleanedParams,
+                    payload: { tasks: payloadTasks },
+                },
                 {
                     onSuccess: () => {
                         toast.success("Tareas enviadas a RRHH exitosamente!")
                     },
                     onError: (error) => {
-                        toast.error(`Error al enviar tareas a RRHH: ${error.message}`)
+                        toast.error(
+                            `Error al enviar tareas a RRHH: ${error.message}`
+                        )
                     },
                 }
             )

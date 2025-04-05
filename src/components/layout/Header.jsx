@@ -26,7 +26,11 @@ function Header({ subtitle, title, tasks }) {
     const queryParams = {
         company: (searchParams.get("company") || "").trim(),
         project: (searchParams.get("project") || "").trim(),
-        fullname: (searchParams.get("fullname") || fullNameFromStore || "").trim(),
+        fullname: (
+            searchParams.get("fullname") ||
+            fullNameFromStore ||
+            ""
+        ).trim(),
         date: (searchParams.get("date") || "").trim(),
     }
 
