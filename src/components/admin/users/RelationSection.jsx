@@ -2,6 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa"
 import EditRelationModal from "./EditRelationModal"
 import Button from "../../Button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog"
+import { Trash } from "lucide-react"
 
 export const RelationSection = ({
     title,
@@ -52,30 +53,35 @@ export const RelationSection = ({
                 </Dialog>
             </div>
 
-            <div className="rounded bg-white p-4 shadow">
+            <div className="bg-grey-bg rounded border p-2">
                 {relatedItems && relatedItems.length > 0 ? (
-                    <ul>
+                    <ul 
+                    className="divide-grey-strong-bg divide-y"
+                    >
                         {relatedItems.map((item) => (
                             <li
                                 key={item.id}
-                                className="flex items-center justify-between border-b py-1"
+                                className="flex items-center justify-between py-2"
                             >
                                 <span>{item[displayProp]}</span>
                                 {onDeleteRelation && (
-                                    <Button
+                                    <button
                                         onClick={() =>
                                             onDeleteRelation(item)
                                         }
                                         title="Eliminar relación"
+                                        className="text-red-500 hover:text-red-700"
                                     >
-                                        <FaTrash className="text-red-500 hover:text-red-700" />
-                                    </Button>
+                                        <Trash className="h-4 w-4" />
+                                    </button>
                                 )}
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p>No hay {title.toLowerCase()} asociadas.</p>
+                    <div className="py-2 text-center text-sm text-gray-500">
+                        No {title.toLowerCase()} associated with this user
+                    </div>
                 )}
             </div>
         </div>

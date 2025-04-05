@@ -1,6 +1,6 @@
 // /src/pages/admin/UsersDetail.jsx
 import { useState, useEffect } from "react"
-import { ArrowLeft, User, Calendar, Loader2 } from "lucide-react"
+import { ArrowLeft, User, Calendar, Loader2, Building } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 
 import { toast } from "react-toastify"
@@ -175,6 +175,12 @@ const UsersDetail = () => {
                         {/* Columna de relaciones (empresas y proyectos) */}
                         <div className="md:col-span-2">
                             <div className="card-container rounded-lg bg-white p-4 shadow">
+                                <div className="mb-6 flex items-center justify-between">
+                                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                                        <Building className="h-5 w-5 text-green-600" />
+                                        Associated Companies
+                                    </h3>
+                                </div>
                                 <div>
                                     <CompaniesSection
                                         userId={id}
