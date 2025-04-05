@@ -4,6 +4,7 @@ import { RelationSection } from "./RelationSection"
 import { EditProjectRelationModal } from "./EditProjectRelationModal"
 import { toast } from "react-toastify"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
+import { Briefcase } from "lucide-react"
 
 const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
     const {
@@ -58,13 +59,7 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
         }
     }
 
-    return (
-        <RelationSection
-            title="Proyectos"
-            relatedItems={mappedRelatedProjects}
-            displayProp="option"
-            onDeleteRelation={handleDeleteRelation}
-            customModal={({ onClose }) => (
+        const ProjectModal = ({ onClose }) => (
                 <EditProjectRelationModal
                     title="Proyectos"
                     relatedCompanies={relatedCompanies}
@@ -72,7 +67,16 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
                     onClose={onClose}
                     userId={userId}
                 />
-            )}
+    )
+
+    return (
+        <RelationSection
+            icon={ <Briefcase className="h-5 w-5 text-blue-600" />}
+            title="Proyectos"
+            relatedItems={mappedRelatedProjects}
+            displayProp="option"
+            onDeleteRelation={handleDeleteRelation}
+            customModal={ProjectModal}
         />
     )
 }

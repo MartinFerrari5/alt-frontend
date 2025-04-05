@@ -29,9 +29,7 @@ const EditRelationModal = ({
             <div className="flex gap-4">
                 {/* Panel de elementos ya asociados */}
                 <div className="w-1/2">
-                    <h4 className="mb-2 text-lg font-semibold">
-                        Asociados
-                    </h4>
+                    <h4 className="mb-2 text-lg font-semibold">Asociados</h4>
                     <ul className="max-h-64 overflow-y-auto">
                         {associatedItems && associatedItems.length > 0 ? (
                             associatedItems.map((item) => (
@@ -77,7 +75,7 @@ const EditRelationModal = ({
             </div>
             <div className="mt-4 flex justify-end">
                 <DialogClose asChild>
-                    <Button className="bg-red-500 hover:bg-red-600 text-white">
+                    <Button className="bg-red-500 text-white hover:bg-red-600">
                         Cerrar
                     </Button>
                 </DialogClose>

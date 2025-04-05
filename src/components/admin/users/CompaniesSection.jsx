@@ -115,7 +115,9 @@ const CompaniesSection = ({
 
     return (
         <div className="mb-8">
+            
             <RelationSection
+                icon={<Building className="h-5 w-5 text-green-600" />}
                 title="Compañías"
                 relatedItems={mappedRelatedCompanies}
                 availableItems={availableCompanies}
