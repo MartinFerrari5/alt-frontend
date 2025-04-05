@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
+import { DialogClose } from "../../ui/dialog"
 
 export const EditProjectRelationModal = ({
     title,
@@ -12,6 +13,7 @@ export const EditProjectRelationModal = ({
 }) => {
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
+    const [loading, setLoading] = useState(false);
 
     // Extraemos las propiedades del store para compañías y proyectos
     const {
@@ -20,6 +22,20 @@ export const EditProjectRelationModal = ({
         notRelatedProjects,
         updateRelations,
     } = useRelationsStore()
+
+        const handleSave = async () => {
+        try {
+            setLoading(true)
+            if (selectedRelationshipId && selectedProject) {
+                await handleAddRelation()
+            }
+            onClose?.()
+        } catch (error) {
+            console.error("Error al guardar:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     // Actualiza proyectos asociados y disponibles cuando cambia la compañía seleccionada
     useEffect(() => {
@@ -37,8 +53,8 @@ export const EditProjectRelationModal = ({
     }
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-11/12 rounded bg-white p-6 shadow-lg md:w-2/3 lg:w-1/2">
+        <div>
+            <div>
                 <h3 className="mb-4 text-xl font-bold">Editar {title}</h3>
                 <div className="flex gap-4">
                     {/* Panel de proyectos ya asociados */}
@@ -118,9 +134,22 @@ export const EditProjectRelationModal = ({
                         </Button>
                     </div>
                 </div>
-                <div className="mt-4 flex justify-end">
-                    <Button onClick={onClose}>Cerrar</Button>
-                </div>
+            <div className="mt-6 flex justify-end gap-3">
+                <DialogClose asChild>
+                    <Button 
+                        variant="outline" 
+                        disabled={loading}
+                    >
+                        Cancelar
+                    </Button>
+                </DialogClose>
+                <Button
+                    disabled={loading || !selectedProject || !selectedRelationshipId}
+                    onClick={handleSave}
+                >
+                    {loading ? "Guardando..." : "Guardar"}
+                </Button>
+            </div>
             </div>
         </div>
     )
