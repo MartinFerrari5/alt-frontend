@@ -54,14 +54,14 @@ const AdminSubmenu = ({ showLabels }) => {
                                     Users
                                 </Link>
                             </DropdownMenuItem>
-                            {/* <DropdownMenuItem asChild>
+                            <DropdownMenuItem asChild>
                                 <Link
-                                    to="/admin/tasks"
+                                    to="/admin/companies"
                                     className="cursor-pointer hover:bg-sidebar-accent"
                                 >
-                                    Tasks
+                                    Companias
                                 </Link>
-                            </DropdownMenuItem> */}
+                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link
                                     to="/admin/management"
