@@ -1,13 +1,6 @@
 // /src/pages/admin/UsersDetail.jsx
 import { useState, useEffect } from "react"
-import {
-    ArrowLeft,
-    User,
-    Calendar,
-    Loader2,
-    Building,
-    Plus,
-} from "lucide-react"
+import { ArrowLeft, User, Calendar, Loader2 } from "lucide-react"
 import { Link, useParams } from "react-router-dom"
 
 import { toast } from "react-toastify"
@@ -189,14 +182,12 @@ const UsersDetail = () => {
                                         setSelectedCompanyRelId
                                     }
                                 />
-
                             </div>
-                            <div className="card-container rounded-lg bg-white p-4 mt-4 shadow">
+                            <div className="card-container mt-4 rounded-lg bg-white p-4 shadow">
                                 <ProjectsSection
                                     userId={id}
                                     selectedCompanyRelId={selectedCompanyRelId}
                                 />
-
                             </div>
                         </div>
                     </div>

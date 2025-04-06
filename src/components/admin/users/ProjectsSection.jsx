@@ -22,6 +22,7 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
         }
     }, [userId, selectedCompanyRelId, updateRelations])
 
+    console.log("Proyectos relacionados:", relatedProjects)
     // Mapea los proyectos relacionados para el diseño
     const mappedRelatedProjects = relatedProjects.map((r) => ({
         id: r.project_id,
@@ -59,19 +60,19 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
         }
     }
 
-        const ProjectModal = ({ onClose }) => (
-                <EditProjectRelationModal
-                    title="Proyectos"
-                    relatedCompanies={relatedCompanies}
-                    onAddRelation={handleAddRelation}
-                    onClose={onClose}
-                    userId={userId}
-                />
+    const ProjectModal = ({ onClose }) => (
+        <EditProjectRelationModal
+            title="Proyectos"
+            relatedCompanies={relatedCompanies}
+            onAddRelation={handleAddRelation}
+            onClose={onClose}
+            userId={userId}
+        />
     )
 
     return (
         <RelationSection
-            icon={ <Briefcase className="h-5 w-5 text-blue-600" />}
+            icon={<Briefcase className="h-5 w-5 text-blue-600" />}
             title="Proyectos"
             relatedItems={mappedRelatedProjects}
             displayProp="option"

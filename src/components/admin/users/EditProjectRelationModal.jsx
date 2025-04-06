@@ -13,7 +13,7 @@ export const EditProjectRelationModal = ({
 }) => {
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     // Extraemos las propiedades del store para compañías y proyectos
     const {
@@ -23,7 +23,7 @@ export const EditProjectRelationModal = ({
         updateRelations,
     } = useRelationsStore()
 
-        const handleSave = async () => {
+    const handleSave = async () => {
         try {
             setLoading(true)
             if (selectedRelationshipId && selectedProject) {
@@ -134,22 +134,23 @@ export const EditProjectRelationModal = ({
                         </Button>
                     </div>
                 </div>
-            <div className="mt-6 flex justify-end gap-3">
-                <DialogClose asChild>
-                    <Button 
-                        variant="outline" 
-                        disabled={loading}
+                <div className="mt-6 flex justify-end gap-3">
+                    <DialogClose asChild>
+                        <Button variant="outline" disabled={loading}>
+                            Cancelar
+                        </Button>
+                    </DialogClose>
+                    <Button
+                        disabled={
+                            loading ||
+                            !selectedProject ||
+                            !selectedRelationshipId
+                        }
+                        onClick={handleSave}
                     >
-                        Cancelar
+                        {loading ? "Guardando..." : "Guardar"}
                     </Button>
-                </DialogClose>
-                <Button
-                    disabled={loading || !selectedProject || !selectedRelationshipId}
-                    onClick={handleSave}
-                >
-                    {loading ? "Guardando..." : "Guardar"}
-                </Button>
-            </div>
+                </div>
             </div>
         </div>
     )

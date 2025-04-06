@@ -25,7 +25,9 @@ export const RelationSection = ({
             <div className="mb-2 flex items-center justify-between">
                 <div className="mb-6 flex items-center justify-between">
                     <h3 className="flex items-center gap-2 text-lg font-semibold">
-                        {icon && <span className="text-main-color">{icon}</span>}
+                        {icon && (
+                            <span className="text-main-color">{icon}</span>
+                        )}
                         Associated {title}
                     </h3>
                 </div>

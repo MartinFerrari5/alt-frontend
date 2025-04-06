@@ -9,7 +9,7 @@ import DownloadExcelButton from "../admin/DownloadExcelButton"
 import Button from "../Button"
 import SendToRRHHButton from "../Tasks/SendToRRHHButton"
 import AddTaskDialog from "../Tasks/AddTaskDialog"
-import { LoadingSpinner } from "../../util/LoadingSpinner" // Importamos el spinner
+// import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 function Header({ subtitle, title, tasks }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
@@ -38,13 +38,13 @@ function Header({ subtitle, title, tasks }) {
 
     // Si alguno de los parámetros esenciales aún no está disponible,
     // mostramos un spinner de carga.
-    if (!tasks || !role || !queryParams.fullname) {
-        return (
-            <div className="flex w-full items-center justify-center py-4">
-                <LoadingSpinner />
-            </div>
-        )
-    }
+    // if (!tasks || !role || !queryParams.fullname) {
+    //     return (
+    //         <div className="flex w-full items-center justify-center py-4">
+    //             <LoadingSpinner />
+    //         </div>
+    //     )
+    // }
 
     return (
         <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">

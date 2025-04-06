@@ -1,4 +1,4 @@
-// / src\store\authStore.js
+// src/store/authStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { jwtDecode } from "jwt-decode"
@@ -7,10 +7,7 @@ const useAuthStore = create(
     persist(
         (set, get) => ({
             authTokens: null,
-            userId: null,
-            fullName: null,
-            email: null,
-            role: null,
+            user: null,
 
             isAuthenticated: () => {
                 const { authTokens } = get()
@@ -20,7 +17,6 @@ const useAuthStore = create(
                     const decodedToken = jwtDecode(authTokens.accessToken)
                     const currentTime = Date.now() / 1000
                     if (decodedToken.exp < currentTime) {
-                        // Token expirado, forzamos logout
                         get().logout()
                         return false
                     }
@@ -33,35 +29,34 @@ const useAuthStore = create(
 
             login: (tokens) => {
                 if (!tokens?.token) {
-                    console.error("Invalid token received in login:", tokens)
+                    console.error("Token inválido en login:", tokens)
                     return
                 }
 
-                const formattedTokens = {
-                    accessToken: tokens.token,
-                    refreshToken: tokens.refreshToken,
+                const accessToken = tokens.token
+                const refreshToken = tokens.refreshToken
+
+                const decoded = jwtDecode(accessToken)
+
+                const user = {
+                    id: decoded?.userId || null,
+                    full_name: decoded?.full_name || null,
+                    email: decoded?.email || null,
+                    role: decoded?.role || null,
+                    created_at: decoded?.created_at || null,
                 }
 
-                const decodedToken = jwtDecode(tokens.token)
                 set({
-                    authTokens: formattedTokens,
-                    userId: decodedToken?.userId || null,
-                    fullName: decodedToken?.full_name || null,
-                    email: decodedToken?.email || null,
-                    role: decodedToken?.role || null,
+                    authTokens: { accessToken, refreshToken },
+                    user,
                 })
             },
 
             logout: () => {
-                // Limpiar estado de autenticación
                 set({
                     authTokens: null,
-                    userId: null,
-                    fullName: null,
-                    email: null,
-                    role: null,
+                    user: null,
                 })
-                // Eliminar el almacenamiento persistente de auth y otros stores relacionados
                 localStorage.removeItem("auth-storage")
                 localStorage.removeItem("status-storage")
             },

@@ -10,8 +10,6 @@ import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
 
 import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
-
-import Sidebar from "../components/layout/Sidebar"
 import MainLayout from "../components/layout/MainLayout"
 import { useOptionsStore } from "../store/modules/optionsStore"
 
@@ -173,10 +171,6 @@ const TaskDetailsPage = () => {
     return (
         <MainLayout>
             <div className="flex min-h-screen flex-col lg:flex-row">
-                {/* Sidebar solo visible en pantallas grandes */}
-                <div className="hidden lg:block lg:w-72">
-                    <Sidebar />
-                </div>
                 <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
                     <TaskHeader
                         task={currentTask}
@@ -198,7 +192,7 @@ const TaskDetailsPage = () => {
                             companies={companies_table}
                             projects={projects_table}
                             hourTypes={hour_type_table}
-                            setValue={setValue} // Se pasa para actualizar "project"
+                            setValue={setValue}
                             reset={reset}
                         />
                     ) : (
