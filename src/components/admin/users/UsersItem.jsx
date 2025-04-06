@@ -3,11 +3,9 @@ import PropTypes from "prop-types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
-import useAuthStore from "../../../store/modules/authStore"
 
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()
-    const role = useAuthStore((state) => state.role)
     const { mutate: deleteUser, isPending: deleteUserIsLoading } =
         useDeleteUser(user.id)
 

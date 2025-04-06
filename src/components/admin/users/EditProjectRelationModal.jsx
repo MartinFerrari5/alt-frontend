@@ -1,9 +1,10 @@
 // /src/components/admin/users/EditProjectRelationModal.jsx
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
 import { DialogClose } from "../../ui/dialog"
+import { useUpdateRelationsOnCompanyChange } from "../../../hooks/useUpdateRelationsOnCompanyChange"
 
 export const EditProjectRelationModal = ({
     title,
@@ -15,34 +16,15 @@ export const EditProjectRelationModal = ({
     const [selectedProject, setSelectedProject] = useState("")
     const [loading, setLoading] = useState(false)
 
-    // Extraemos las propiedades del store para compañías y proyectos
     const {
-        relatedCompanies, // Ahora lo obtenemos directamente desde el store
+        relatedCompanies,
         relatedProjects,
         notRelatedProjects,
         updateRelations,
     } = useRelationsStore()
 
-    const handleSave = async () => {
-        try {
-            setLoading(true)
-            if (selectedRelationshipId && selectedProject) {
-                await handleAddRelation()
-            }
-            onClose?.()
-        } catch (error) {
-            console.error("Error al guardar:", error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    // Actualiza proyectos asociados y disponibles cuando cambia la compañía seleccionada
-    useEffect(() => {
-        if (selectedRelationshipId) {
-            updateRelations(userId, selectedRelationshipId)
-        }
-    }, [selectedRelationshipId, userId, updateRelations])
+    // Actualiza relaciones cuando cambia la compañía seleccionada en el modal
+    useUpdateRelationsOnCompanyChange(userId, selectedRelationshipId)
 
     const handleAddRelation = () => {
         if (selectedRelationshipId && selectedProject) {
@@ -52,12 +34,26 @@ export const EditProjectRelationModal = ({
         }
     }
 
+    const handleSave = async () => {
+        try {
+            setLoading(true)
+            if (selectedRelationshipId && selectedProject) {
+                handleAddRelation()
+            }
+            onClose?.()
+        } catch (error) {
+            console.error("Error al guardar:", error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <div>
             <div>
                 <h3 className="mb-4 text-xl font-bold">Editar {title}</h3>
                 <div className="flex gap-4">
-                    {/* Panel de proyectos ya asociados */}
+                    {/* Panel de proyectos asociados */}
                     <div className="w-1/2">
                         <h4 className="mb-2 text-lg font-semibold">
                             Asociados
@@ -82,14 +78,13 @@ export const EditProjectRelationModal = ({
                         <h4 className="mb-2 text-lg font-semibold">
                             Agregar {title}
                         </h4>
-                        {/* Dropdown para seleccionar la compañía (relationship_id) */}
                         <Dropdown
                             id="companyDropdown"
                             label="Seleccionar Compañía"
                             register={() => ({
                                 onChange: (e) => {
                                     setSelectedRelationshipId(e.target.value)
-                                    setSelectedProject("") // Reiniciamos el proyecto al cambiar la compañía
+                                    setSelectedProject("") // Reinicia el proyecto al cambiar la compañía
                                 },
                                 value: selectedRelationshipId,
                             })}
@@ -104,7 +99,6 @@ export const EditProjectRelationModal = ({
                             errorText="Error al cargar"
                             useIdAsValue={true}
                         />
-                        {/* Dropdown para seleccionar un proyecto disponible */}
                         <Dropdown
                             id="projectDropdown"
                             label="Seleccionar Proyecto"

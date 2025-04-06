@@ -8,15 +8,20 @@ import {
     getNotRelatedCompanies,
     getNotRelatedProjects,
     getRelatedOptions,
+    getCompanyProjects,
+    addCompanyProjectRelation,
+    deleteCompanyProjectRelation,
 } from "../../hooks/data/options/relationsService"
 
 const initialState = {
     // Relaciones de compañías
     relatedCompanies: [],
     notRelatedCompanies: [],
-    // Relaciones de proyectos
+    // Relaciones de proyectos (proyecto-usuario)
     relatedProjects: [],
     notRelatedProjects: [],
+    // Relaciones de compañía-proyecto
+    companyProjects: [],
     error: null,
 }
 
@@ -26,10 +31,11 @@ export const useRelationsStore = create((set, get) => ({
     setError: (error) => set({ error }),
 
     /**
-     * Actualiza las relaciones de compañías y, opcionalmente, de proyectos.
-     * Si se pasa selectedCompanyRelId, se actualizarán también los proyectos relacionados.
+     * Actualiza las relaciones de compañías y, opcionalmente, de proyectos asociados al usuario y la compañía.
+     * @param {string|number} user_id - ID del usuario.
+     * @param {string|number} [selectedCompanyId] - ID de la compañía seleccionada (para actualizar proyectos relacionados al usuario y la compañía).
      */
-    updateRelations: async (user_id, selectedCompanyRelId = null) => {
+    updateRelations: async (user_id, selectedCompanyId = null) => {
         try {
             // Actualizar relaciones de compañías
             const relatedCompanies = await getRelatedOptions({
@@ -39,21 +45,21 @@ export const useRelationsStore = create((set, get) => ({
             })
             const notRelatedCompanies = await getNotRelatedCompanies(user_id)
 
-            // Actualiza estado de compañías
             set({
                 relatedCompanies,
                 notRelatedCompanies,
             })
 
-            // Si se pasa una compañía seleccionada, actualizar relaciones de proyectos
-            if (selectedCompanyRelId) {
+            // Si se seleccionó una compañía, se actualizan las relaciones de proyectos (proyecto-usuario)
+            if (selectedCompanyId) {
                 const relatedProjects = await getRelatedOptions({
                     user_id,
-                    related_table: "projects_table",
-                    individual_table: "projects_table",
-                    relationship_id: selectedCompanyRelId,
+                    related_table: "project_user_table",
+                    individual_table: "project_company_table",
+                    company_id: selectedCompanyId,
                 })
-                const notRelatedProjects = await getNotRelatedProjects(user_id)
+                const notRelatedProjects =
+                    await getNotRelatedProjects(selectedCompanyId)
                 set({
                     relatedProjects,
                     notRelatedProjects,
@@ -67,6 +73,20 @@ export const useRelationsStore = create((set, get) => ({
         } catch (error) {
             console.error(
                 `Error actualizando relaciones para usuario ${user_id}:`,
+                error
+            )
+            get().setError(error.message)
+        }
+    },
+
+    // Actualiza las relaciones de compañía-proyecto.
+    updateCompanyProjects: async (company_id) => {
+        try {
+            const companyProjects = await getCompanyProjects(company_id)
+            set({ companyProjects })
+        } catch (error) {
+            console.error(
+                `Error actualizando proyectos de la compañía ${company_id}:`,
                 error
             )
             get().setError(error.message)
@@ -88,13 +108,24 @@ export const useRelationsStore = create((set, get) => ({
     addProjectUserRelation: async (
         relationData,
         user_id,
-        selectedCompanyRelId
+        selectedCompanyId
     ) => {
         try {
             await addProjectUserRelation(relationData)
-            await get().updateRelations(user_id, selectedCompanyRelId)
+            await get().updateRelations(user_id, selectedCompanyId)
         } catch (error) {
             console.error("Error en addProjectUserRelation:", error)
+            get().setError(error.message)
+        }
+    },
+
+    // Agrega relación compañía-proyecto y actualiza las relaciones de la compañía.
+    addCompanyProjectRelation: async (relationData, company_id) => {
+        try {
+            await addCompanyProjectRelation(relationData)
+            await get().updateCompanyProjects(company_id)
+        } catch (error) {
+            console.error("Error en addCompanyProjectRelation:", error)
             get().setError(error.message)
         }
     },
@@ -112,15 +143,26 @@ export const useRelationsStore = create((set, get) => ({
 
     // Elimina relación proyecto-usuario y actualiza las relaciones.
     deleteProjectUserRelation: async (
-        project_id,
+        relationship_id,
         user_id,
-        selectedCompanyRelId
+        selectedCompanyId
     ) => {
         try {
-            await deleteProjectUserRelation(project_id)
-            await get().updateRelations(user_id, selectedCompanyRelId)
+            await deleteProjectUserRelation(relationship_id)
+            await get().updateRelations(user_id, selectedCompanyId)
         } catch (error) {
             console.error("Error en deleteProjectUserRelation:", error)
+            get().setError(error.message)
+        }
+    },
+
+    // Elimina relación compañía-proyecto y actualiza las relaciones de la compañía.
+    deleteCompanyProjectRelation: async (relationship_id, company_id) => {
+        try {
+            await deleteCompanyProjectRelation(relationship_id)
+            await get().updateCompanyProjects(company_id)
+        } catch (error) {
+            console.error("Error en deleteCompanyProjectRelation:", error)
             get().setError(error.message)
         }
     },

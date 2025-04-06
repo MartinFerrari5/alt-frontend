@@ -3,10 +3,9 @@ import { NavLink } from "react-router-dom"
 import useAuthStore from "../../store/modules/authStore"
 
 const UserDetails = () => {
-    const fullNameFromStore = useAuthStore((state) => state.fullName)
-    const userId = useAuthStore((state) => state.userId)
+    const user = useAuthStore((state) => state.user)
 
-    if (!userId) return null
+    if (!user) return null
     return (
         <NavLink
             to={`/user/user-profile`}
@@ -15,10 +14,10 @@ const UserDetails = () => {
             <img
                 className="h-10 w-10 rounded-full"
                 src="/src/assets/icons/usuario.png"
-                alt={fullNameFromStore}
+                alt={user.full_name}
             />
             <div className="font-medium">
-                <h2>{fullNameFromStore}</h2>
+                <h2>{user.full_name}</h2>
             </div>
         </NavLink>
     )

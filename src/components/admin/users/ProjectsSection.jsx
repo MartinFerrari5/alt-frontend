@@ -1,38 +1,39 @@
 // /src/components/admin/users/ProjectsSection.jsx
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { RelationSection } from "./RelationSection"
 import { EditProjectRelationModal } from "./EditProjectRelationModal"
 import { toast } from "react-toastify"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
 import { Briefcase } from "lucide-react"
+import CompanySelector from "../../ui/CompanySelector"
+import { mapCompanies, mapProjects } from "../../../util/mappers"
+import { useUpdateRelationsOnCompanyChange } from "../../../hooks/useUpdateRelationsOnCompanyChange"
 
-const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
+const ProjectsSection = ({ userId }) => {
+    const [selectedCompanyRelId, setSelectedCompanyRelId] = useState("")
+
     const {
         relatedProjects,
         relatedCompanies,
-        updateRelations,
         addProjectUserRelation,
         deleteProjectUserRelation,
     } = useRelationsStore()
 
-    // Actualizar relaciones de proyectos cada vez que cambia la compañía seleccionada
+    // Cuando cambie el listado de compañías, si no hay compañía seleccionada, se asigna la primera.
     useEffect(() => {
-        if (userId && selectedCompanyRelId) {
-            updateRelations(userId, selectedCompanyRelId)
+        if (relatedCompanies.length > 0 && !selectedCompanyRelId) {
+            setSelectedCompanyRelId(relatedCompanies[0].relationship_id)
         }
-    }, [userId, selectedCompanyRelId, updateRelations])
+    }, [relatedCompanies, selectedCompanyRelId])
 
-    console.log("Proyectos relacionados:", relatedProjects)
-    // Mapea los proyectos relacionados para el diseño
-    const mappedRelatedProjects = relatedProjects.map((r) => ({
-        id: r.project_id,
-        relationshipId: r.relationship_id,
-        option: r.option,
-    }))
+    // Actualiza las relaciones cada vez que cambia la compañía seleccionada
+    useUpdateRelationsOnCompanyChange(userId, selectedCompanyRelId)
+
+    const mappedRelatedCompanies = mapCompanies(relatedCompanies)
+    const mappedRelatedProjects = mapProjects(relatedProjects)
 
     const handleDeleteRelation = async (relation) => {
         try {
-            // Se utiliza el project_id para eliminar la relación
             await deleteProjectUserRelation(
                 relation.id,
                 userId,
@@ -60,6 +61,7 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
         }
     }
 
+    // Modal para agregar una nueva relación de proyecto
     const ProjectModal = ({ onClose }) => (
         <EditProjectRelationModal
             title="Proyectos"
@@ -71,14 +73,21 @@ const ProjectsSection = ({ userId, selectedCompanyRelId }) => {
     )
 
     return (
-        <RelationSection
-            icon={<Briefcase className="h-5 w-5 text-blue-600" />}
-            title="Proyectos"
-            relatedItems={mappedRelatedProjects}
-            displayProp="option"
-            onDeleteRelation={handleDeleteRelation}
-            customModal={ProjectModal}
-        />
+        <div className="mb-8">
+            <RelationSection
+                icon={<Briefcase className="h-5 w-5 text-blue-600" />}
+                title="Proyectos"
+                relatedItems={mappedRelatedProjects}
+                displayProp="option"
+                onDeleteRelation={handleDeleteRelation}
+                customModal={ProjectModal}
+            />
+            <CompanySelector
+                mappedRelatedCompanies={mappedRelatedCompanies}
+                selectedCompanyRelId={selectedCompanyRelId}
+                setSelectedCompanyRelId={setSelectedCompanyRelId}
+            />
+        </div>
     )
 }
 

@@ -29,7 +29,7 @@ const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
 
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     // Extraer filtros desde la URL e incluir el nuevo filtro "hourtype"
     const filters = useMemo(() => {

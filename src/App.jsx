@@ -22,6 +22,8 @@ import { Status } from "./pages/admin/Status.jsx"
 import ResetPasswordPage from "./pages/auth/ResetPassword.jsx"
 import NewPasswordPage from "./pages/user/NewPassword.jsx"
 import TasksPage from "./pages/TasksPage.jsx"
+import CompanyDetail from "./pages/admin/CompanyDetail.jsx"
+import CompanyPage from "./pages/admin/CompanyPage.jsx"
 
 const queryClient = new QueryClient()
 
@@ -106,6 +108,22 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute adminOnly>
                 <Status />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/admin/companies",
+        element: (
+            <ProtectedRoute adminOnly>
+                <CompanyPage />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/admin/companies/:id",
+        element: (
+            <ProtectedRoute adminOnly>
+                <CompanyDetail />
             </ProtectedRoute>
         ),
     },

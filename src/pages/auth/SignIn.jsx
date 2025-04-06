@@ -6,9 +6,6 @@ import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod"
 import useAuthStore from "../../store/modules/authStore"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
-
-// Componente LoadingSpinner reutilizable
-
 // Esquema de validación usando zod
 const schema = z.object({
     email: z

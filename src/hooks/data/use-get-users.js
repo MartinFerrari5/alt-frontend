@@ -20,7 +20,7 @@ export const userQueryKeys = {
  * @param {string|null} userId - ID del usuario a obtener (opcional).
  */
 export const useGetUsers = (userId = null) => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     return useQuery({
         queryKey: userId

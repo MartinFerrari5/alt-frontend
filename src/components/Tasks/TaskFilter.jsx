@@ -18,7 +18,7 @@ import { useOptionsStore } from "../../store/modules/optionsStore"
  * @returns {ReactElement}
  */
 const TaskFilter = ({ onFilter, currentPath }) => {
-    const role = useAuthStore((state) => state.role)
+    const user = useAuthStore((state) => state.user)
     const [searchParams] = useSearchParams()
     const {
         register,
@@ -166,7 +166,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             onSubmit={handleSubmit(onSubmit)}
             className="mb-1 flex flex-col gap-4 sm:flex-row sm:items-center"
         >
-            {role === "admin" && (
+            {user.role === "admin" && (
                 <input
                     type="text"
                     placeholder="Buscar por nombre"
@@ -184,7 +184,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={companies_table}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
-                valueKey={role === "admin" ? "id" : "company_id"}
+                valueKey={user.role === "admin" ? "id" : "company_id"}
             />
             <Dropdown
                 id="project"
@@ -196,7 +196,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={filteredProjects}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
-                valueKey={role === "admin" ? "id" : "project_id"}
+                valueKey={user.role === "admin" ? "id" : "project_id"}
             />
             <Dropdown
                 id="hourtype"

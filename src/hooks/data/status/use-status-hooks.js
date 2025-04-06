@@ -20,7 +20,7 @@ const statusQueryKeys = {
 }
 
 export const useGetStatus = () => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const setStatuses = useStatusStore((state) => state.setStatuses)
 
     return useQuery({

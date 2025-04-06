@@ -15,8 +15,7 @@ function Header({ subtitle, title, tasks }) {
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
     const [searchParams] = useSearchParams()
-    const role = useAuthStore((state) => state.role)
-    const fullNameFromStore = useAuthStore((state) => state.fullName)
+    const user = useAuthStore((state) => state.user)
 
     const currentPath = location.pathname
     const isAdminPath = currentPath.startsWith("/admin/")
@@ -26,25 +25,11 @@ function Header({ subtitle, title, tasks }) {
     const queryParams = {
         company: (searchParams.get("company") || "").trim(),
         project: (searchParams.get("project") || "").trim(),
-        fullname: (
-            searchParams.get("fullname") ||
-            fullNameFromStore ||
-            ""
-        ).trim(),
+        fullname: (searchParams.get("fullname") || user.full_name || "").trim(),
         date: (searchParams.get("date") || "").trim(),
     }
 
     const showDownloadExcel = currentPath === "/" || currentPath === "/history"
-
-    // Si alguno de los parámetros esenciales aún no está disponible,
-    // mostramos un spinner de carga.
-    // if (!tasks || !role || !queryParams.fullname) {
-    //     return (
-    //         <div className="flex w-full items-center justify-center py-4">
-    //             <LoadingSpinner />
-    //         </div>
-    //     )
-    // }
 
     return (
         <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
@@ -80,7 +65,7 @@ function Header({ subtitle, title, tasks }) {
                     <SendToRRHHButton
                         queryParams={queryParams}
                         tasks={tasks}
-                        role={role}
+                        role={user.role}
                     />
                 )}
             </div>

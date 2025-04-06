@@ -127,33 +127,6 @@ const CompaniesSection = ({
                 emptyText="El usuario no está asociado a ninguna compañía"
                 renderItemContent={renderItemContent}
             />
-            {mappedRelatedCompanies.length > 0 && (
-                <div className="mb-4">
-                    <label
-                        htmlFor="companySelector"
-                        className="mb-1 block font-bold"
-                    >
-                        Seleccionar Compañía para proyectos:
-                    </label>
-                    <select
-                        id="companySelector"
-                        value={selectedCompanyRelId}
-                        onChange={(e) =>
-                            setSelectedCompanyRelId(e.target.value)
-                        }
-                        className="w-full rounded border p-2"
-                    >
-                        {mappedRelatedCompanies.map((company) => (
-                            <option
-                                key={company.relationship_id}
-                                value={company.relationship_id}
-                            >
-                                {company.option}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
         </div>
     )
 }

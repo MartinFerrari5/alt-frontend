@@ -1,4 +1,5 @@
-import { FaEdit, FaTrash } from "react-icons/fa"
+// /src/components/admin/users/RelationSection.jsx
+import { Trash } from "lucide-react"
 import EditRelationModal from "./EditRelationModal"
 import Button from "../../../components/Button"
 import {
@@ -8,7 +9,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../../ui/dialog"
-import { Building, Plus, Trash } from "lucide-react"
 
 export const RelationSection = ({
     icon,
@@ -38,7 +38,7 @@ export const RelationSection = ({
                             className="flex items-center gap-1"
                             title={`Editar ${title}`}
                         >
-                            <Plus className="h-4 w-4" />
+                            <span className="h-4 w-4">+</span>
                             Add Company
                         </Button>
                     </DialogTrigger>
