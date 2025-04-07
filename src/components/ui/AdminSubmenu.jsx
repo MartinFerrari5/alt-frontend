@@ -1,4 +1,3 @@
-// /src/components/ui/AdminSubmenu.jsx
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { Settings, ChevronDown, ChevronRight } from "lucide-react"
@@ -18,7 +17,7 @@ const AdminSubmenu = ({ showLabels }) => {
     const isActive = location.pathname.startsWith("/admin")
 
     if (!showLabels) {
-        // Collapsed sidebar - show dropdown
+        // Menú colapsado - mostrar dropdown
         return (
             <li>
                 <div className="nav-item relative">
@@ -59,7 +58,7 @@ const AdminSubmenu = ({ showLabels }) => {
                                     to="/admin/companies"
                                     className="cursor-pointer hover:bg-sidebar-accent"
                                 >
-                                    Companias
+                                    Compañías
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
@@ -77,7 +76,7 @@ const AdminSubmenu = ({ showLabels }) => {
         )
     }
 
-    // Expanded sidebar - show collapsible menu
+    // Menú expandido - mostrar lista desplegable
     return (
         <li>
             <button
@@ -116,18 +115,18 @@ const AdminSubmenu = ({ showLabels }) => {
                             Users
                         </Link>
                     </li>
-                    {/* <li>
+                    <li>
                         <Link
-                            to="/admin/tasks"
+                            to="/admin/companies"
                             className={`nav-item py-2 ${
-                                location.pathname === "/admin/tasks"
+                                location.pathname === "/admin/companies"
                                     ? "active bg-sidebar-accent/80"
                                     : ""
                             }`}
                         >
-                            Tasks
+                            Compañías
                         </Link>
-                    </li> */}
+                    </li>
                     <li>
                         <Link
                             to="/admin/management"

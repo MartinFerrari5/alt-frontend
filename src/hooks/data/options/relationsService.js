@@ -2,14 +2,14 @@
 import { api } from "../../../lib/axios"
 
 /**
- * Obtiene las opciones relacionadas para un usuario.
+ * Obtiene las Proyecto relacionadas para un usuario y una companía.
  * @param {Object} params - Parámetros necesarios.
  * @param {string|number} params.user_id - ID del usuario.
  * @param {string} params.related_table - Tabla de relaciones (ej.: "company_users_table" o "project_user_table").
  * @param {string} params.individual_table - Tabla individual (ej.: "companies_table" o "project_company_table").
  * @param {string} [params.company_id] - (Opcional) ID de la compañía cuando se buscan proyectos relacionados.
  * @param {string} [params.relationship_id] - (Opcional) ID de la relación para filtrar.
- * @returns {Promise<Array>} Array de opciones relacionadas.
+ * @returns {Promise<Array>} Array de proyectos relacionadas.
  */
 export const getRelatedOptions = async ({
     user_id,
@@ -128,18 +128,31 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
 }
 
 /**
- * Crea la relación entre proyecto y usuario.
- * @param {Object} relationData - { user_id, company_id, relationship_id }
- * @returns {Promise<Object>} Resultado de la creación.
+ * Creates the relationship between a project and a user.
+ * @param {Object} relationData - Object containing relationship data.
+ * @param {string|number} relationData.user_id - ID of the user.
+ * @param {string|number} relationData.company_id - ID of the company.
+ * @param {string} relationData.relationship_id - ID of the relationship.
+ * @returns {Promise<Object>} Result of the creation.
  */
 export const addProjectUserRelation = async (relationData) => {
+    console.log("Data sent:", relationData)
     try {
-        const { data } = await api.post("/projectUser", relationData)
+        const { data } = await api.post("/projectUser", {
+            user_id: relationData.user_id,
+            company_id: relationData.company_id,
+            relationship_id: relationData.relationship_id,
+        })
         console.log("addProjectUserRelation:", data)
-        return data
+        return data // Se retorna la respuesta de la API
     } catch (error) {
+        const backendMessage = error.response?.data?.message || error.message
+        console.error(
+            "Error en addProjectUserRelation:",
+            error.response?.data || error
+        )
         throw new Error(
-            `Error creando relación proyecto-usuario: ${error.message}`
+            `Error creando relación proyecto-usuario: ${backendMessage}`
         )
     }
 }
@@ -192,7 +205,6 @@ export const getCompanyProjects = async (company_id) => {
             error
         )
 
-        // Manejo de errores más claro
         if (error.response?.data) {
             throw new Error(
                 `Error obteniendo proyectos relacionados con la compañía ${company_id}: ${error.response.data}`

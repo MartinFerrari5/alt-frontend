@@ -1,13 +1,11 @@
-// /src/components/admin/users/ProjectsSection.jsx
 import { useState, useEffect } from "react"
+import { Briefcase } from "lucide-react"
+import { toast } from "react-toastify"
 import { RelationSection } from "./RelationSection"
 import { EditProjectRelationModal } from "./EditProjectRelationModal"
-import { toast } from "react-toastify"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
-import { Briefcase } from "lucide-react"
 import CompanySelector from "../../ui/CompanySelector"
 import { mapCompanies, mapProjects } from "../../../util/mappers"
-import { useUpdateRelationsOnCompanyChange } from "../../../hooks/useUpdateRelationsOnCompanyChange"
 
 const ProjectsSection = ({ userId }) => {
     const [selectedCompanyRelId, setSelectedCompanyRelId] = useState("")
@@ -15,22 +13,31 @@ const ProjectsSection = ({ userId }) => {
     const {
         relatedProjects,
         relatedCompanies,
+        updateRelations,
         addProjectUserRelation,
         deleteProjectUserRelation,
     } = useRelationsStore()
 
-    // Cuando cambie el listado de compañías, si no hay compañía seleccionada, se asigna la primera.
+    // Cada vez que se seleccione una compañía, se actualizan las relaciones de proyectos (del usuario y esa compañía)
+    useEffect(() => {
+        if (selectedCompanyRelId) {
+            updateRelations(userId, selectedCompanyRelId).catch((error) => {
+                console.error("Error al cargar relaciones de proyectos:", error)
+                toast.error("Error al cargar proyectos de la compañía")
+            })
+        }
+    }, [selectedCompanyRelId, updateRelations, userId])
+
+    // Seleccionar la primera compañía si aún no se ha seleccionado ninguna
     useEffect(() => {
         if (relatedCompanies.length > 0 && !selectedCompanyRelId) {
             setSelectedCompanyRelId(relatedCompanies[0].relationship_id)
         }
     }, [relatedCompanies, selectedCompanyRelId])
 
-    // Actualiza las relaciones cada vez que cambia la compañía seleccionada
-    useUpdateRelationsOnCompanyChange(userId, selectedCompanyRelId)
-
+    // Mapeo de datos
     const mappedRelatedCompanies = mapCompanies(relatedCompanies)
-    const mappedRelatedProjects = mapProjects(relatedProjects)
+    const mappedRelatedProjects = mapProjects(relatedProjects || [])
 
     const handleDeleteRelation = async (relation) => {
         try {
@@ -46,14 +53,15 @@ const ProjectsSection = ({ userId }) => {
         }
     }
 
-    const handleAddRelation = async (projectId, companyId) => {
+    /**
+     * Crea una relación entre un proyecto y un usuario.
+     * @param {Object} relationData - Datos de la relación.
+     * @returns {Promise<void>}
+     */
+    const handleAddRelation = async (relationData) => {
         try {
-            const relationData = {
-                user_id: userId,
-                project_id: projectId,
-                company_id: companyId,
-            }
-            await addProjectUserRelation(relationData, userId, companyId)
+            // Llamar al servicio con los parámetros correctos
+            await addProjectUserRelation(relationData)
             toast.success("Relación con el proyecto creada exitosamente")
         } catch (error) {
             console.error("Error al agregar relación de proyecto:", error)
@@ -61,7 +69,6 @@ const ProjectsSection = ({ userId }) => {
         }
     }
 
-    // Modal para agregar una nueva relación de proyecto
     const ProjectModal = ({ onClose }) => (
         <EditProjectRelationModal
             title="Proyectos"
@@ -87,6 +94,22 @@ const ProjectsSection = ({ userId }) => {
                 selectedCompanyRelId={selectedCompanyRelId}
                 setSelectedCompanyRelId={setSelectedCompanyRelId}
             />
+            <div className="mt-4">
+                <h4 className="text-lg font-semibold">
+                    Proyectos de la Compañía
+                </h4>
+                <ul>
+                    {mappedRelatedProjects.length > 0 ? (
+                        mappedRelatedProjects.map((project) => (
+                            <li key={project.id}>{project.option}</li>
+                        ))
+                    ) : (
+                        <li>
+                            No hay proyectos relacionados con esta compañía.
+                        </li>
+                    )}
+                </ul>
+            </div>
         </div>
     )
 }
