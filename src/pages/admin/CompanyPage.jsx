@@ -7,10 +7,7 @@ const CompanyPage = () => {
 
     return (
         <MainLayout>
-            <div className="p-6">
-                <h1 className="mb-4 text-2xl font-bold">Lista de Compañías</h1>
                 <CompaniesTable userId={user.id} />
-            </div>
         </MainLayout>
     )
 }

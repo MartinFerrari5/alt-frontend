@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useParams, useLocation, Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import {
@@ -17,6 +17,12 @@ import {
  */
 const CompanyDetail = () => {
     const { id } = useParams()
+    const { search } = useLocation()
+
+    // Extraer el nombre de la compañía desde la query string
+    const queryParams = new URLSearchParams(search)
+    const companyNameFromQuery = queryParams.get("name") || `Compañía ${id}`
+
     const [company, setCompany] = useState(null)
     const [projects, setProjects] = useState([])
     const [availableProjects, setAvailableProjects] = useState([])
@@ -27,16 +33,16 @@ const CompanyDetail = () => {
             try {
                 setIsLoading(true)
 
-                // Fetch related projects
+                // Obtener proyectos relacionados
                 const relatedProjects = await getCompanyProjects(id)
                 setProjects(relatedProjects)
 
-                // Fetch available projects
+                // Obtener proyectos disponibles
                 const notRelatedProjects = await getNotRelatedProjects(id)
                 setAvailableProjects(notRelatedProjects)
 
-                // Mock company details (replace with actual API call if needed)
-                setCompany({ id, name: `Compañía ${id}` })
+                // Asignar detalles de la compañía usando el nombre obtenido de la URL
+                setCompany({ id, name: companyNameFromQuery })
             } catch (error) {
                 toast.error(
                     `Error al cargar los detalles de la compañía: ${error.message}`
@@ -48,10 +54,10 @@ const CompanyDetail = () => {
         }
 
         fetchCompanyDetails()
-    }, [id])
+    }, [id, companyNameFromQuery])
 
     /**
-     * Agrega un proyecto a la lista de proyectos relacionados de la compañía.
+     * Agrega un proyecto a la lista de proyectos relacionados.
      * @param {number} projectId El ID del proyecto a agregar.
      */
     const handleAddProject = async (projectId) => {
@@ -62,7 +68,7 @@ const CompanyDetail = () => {
             })
             toast.success("Proyecto agregado exitosamente")
 
-            // Refresh related and available projects
+            // Actualizar proyectos relacionados y disponibles
             const updatedProjects = await getCompanyProjects(id)
             setProjects(updatedProjects)
 
@@ -75,15 +81,15 @@ const CompanyDetail = () => {
     }
 
     /**
-     * Elimina un proyecto de la lista de proyectos relacionados de la compañía.
-     * @param {number} relationshipId El ID de la relación entre la compañía y el proyecto.
+     * Elimina un proyecto de la lista de proyectos relacionados.
+     * @param {number} relationshipId El ID de la relación.
      */
     const handleRemoveProject = async (relationshipId) => {
         try {
             await deleteCompanyProjectRelation(relationshipId)
             toast.success("Proyecto eliminado exitosamente")
 
-            // Refresh related and available projects
+            // Actualizar proyectos relacionados y disponibles
             const updatedProjects = await getCompanyProjects(id)
             setProjects(updatedProjects)
 
@@ -98,7 +104,7 @@ const CompanyDetail = () => {
     if (isLoading) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <p>Cargando detalles de la compañía...</p>
+                <p className="text-muted">Cargando detalles de la compañía...</p>
             </div>
         )
     }
@@ -106,44 +112,48 @@ const CompanyDetail = () => {
     if (!company) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <p>No se encontró la compañía.</p>
+                <p className="text-muted">No se encontró la compañía.</p>
             </div>
         )
     }
 
     return (
         <MainLayout>
-            <div className="p-6">
+            <div className="p-6 bg-card rounded-md shadow">
                 <div className="mb-4">
                     <Link
                         to="/admin/companies"
-                        className="text-blue-500 hover:underline"
+                        className="text-greenApp hover:underline"
                     >
                         &larr; Volver a la lista de compañías
                     </Link>
                 </div>
-                <h1 className="mb-4 text-2xl font-bold">{company.name}</h1>
-                <p className="mb-4 text-gray-600">ID: {company.id}</p>
+                <h1 className="mb-4 text-2xl font-bold text-foreground">
+                    Compañia: {company.name}
+                </h1>
+                <p className="mb-4 text-sm text-muted">ID: {company.id}</p>
 
                 <div className="mt-6">
-                    <h2 className="mb-2 text-lg font-bold">
+                    <h2 className="mb-2 text-lg font-bold text-foreground">
                         Proyectos Relacionados
                     </h2>
                     {projects.length > 0 ? (
-                        <ul className="list-disc pl-5">
+                        <ul className="list-disc pl-5 space-y-2">
                             {projects.map((project) => (
                                 <li
                                     key={project.relationship_id}
-                                    className="flex justify-between"
+                                    className="flex items-center justify-between bg-popover rounded p-2"
                                 >
-                                    <span>{project.option}</span>
+                                    <span className="text-foreground">
+                                        {project.option}
+                                    </span>
                                     <button
                                         onClick={() =>
                                             handleRemoveProject(
                                                 project.relationship_id
                                             )
                                         }
-                                        className="text-red-500 hover:underline"
+                                        className="btn bg-destructive text-white hover:bg-red-500"
                                     >
                                         Eliminar
                                     </button>
@@ -151,27 +161,31 @@ const CompanyDetail = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p>No hay proyectos relacionados.</p>
+                        <p className="text-muted">
+                            No hay proyectos relacionados.
+                        </p>
                     )}
                 </div>
 
                 <div className="mt-6">
-                    <h2 className="mb-2 text-lg font-bold">
+                    <h2 className="mb-2 text-lg font-bold text-foreground">
                         Agregar Proyectos
                     </h2>
                     {availableProjects.length > 0 ? (
-                        <ul className="list-disc pl-5">
+                        <ul className="list-disc pl-5 space-y-2">
                             {availableProjects.map((project) => (
                                 <li
                                     key={project.project_id}
-                                    className="flex justify-between"
+                                    className="flex items-center justify-between bg-popover rounded p-2"
                                 >
-                                    <span>{project.options}</span>
+                                    <span className="text-foreground">
+                                        {project.options}
+                                    </span>
                                     <button
                                         onClick={() =>
                                             handleAddProject(project.project_id)
                                         }
-                                        className="text-blue-500 hover:underline"
+                                        className="btn btn-primary"
                                     >
                                         Agregar
                                     </button>
@@ -179,7 +193,9 @@ const CompanyDetail = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p>No hay proyectos disponibles para agregar.</p>
+                        <p className="text-muted">
+                            No hay proyectos disponibles para agregar.
+                        </p>
                     )}
                 </div>
             </div>

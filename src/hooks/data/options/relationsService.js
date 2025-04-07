@@ -136,7 +136,7 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
  * @returns {Promise<Object>} Result of the creation.
  */
 export const addProjectUserRelation = async (relationData) => {
-    console.log("Data sent:", relationData)
+    console.log("addProjectUserRelation", relationData)
     try {
         const { data } = await api.post("/projectUser", {
             user_id: relationData.user_id,
@@ -144,7 +144,7 @@ export const addProjectUserRelation = async (relationData) => {
             relationship_id: relationData.relationship_id,
         })
         console.log("addProjectUserRelation:", data)
-        return data // Se retorna la respuesta de la API
+        return data 
     } catch (error) {
         const backendMessage = error.response?.data?.message || error.message
         console.error(
