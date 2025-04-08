@@ -17,10 +17,14 @@ export const handleApiError = (error, defaultMessage = "Operación fallida") => 
         : mainMessage
 
     console.error("API Error:", { error, errorData })
-    toast.error(fullMessage, {
-        autoClose: 5000,
-        toastId: errorData?.code || Date.now(),
-    })
+
+    // Usar el mensaje completo como toastId para evitar duplicados.
+    if (!toast.isActive(fullMessage)) {
+        toast.error(fullMessage, {
+            autoClose: 5000,
+            toastId: fullMessage,
+        })
+    }
 
     return fullMessage
 }

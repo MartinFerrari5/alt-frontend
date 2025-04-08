@@ -12,7 +12,7 @@ const CompaniesTable = ({ userId }) => {
     }, [fetchOptions])
 
     return (
-        <div className="overflow-x-auto bg-card rounded-md shadow p-4">
+        <div className="overflow-x-auto rounded-md bg-card p-4 shadow">
             <CompaniesList title="Compañías" data={companies_table || []} />
         </div>
     )

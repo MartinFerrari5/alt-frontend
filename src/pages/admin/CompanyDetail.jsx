@@ -104,7 +104,9 @@ const CompanyDetail = () => {
     if (isLoading) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <p className="text-muted">Cargando detalles de la compañía...</p>
+                <p className="text-muted">
+                    Cargando detalles de la compañía...
+                </p>
             </div>
         )
     }
@@ -119,7 +121,7 @@ const CompanyDetail = () => {
 
     return (
         <MainLayout>
-            <div className="p-6 bg-card rounded-md shadow">
+            <div className="rounded-md bg-card p-6 shadow">
                 <div className="mb-4">
                     <Link
                         to="/admin/companies"
@@ -138,11 +140,11 @@ const CompanyDetail = () => {
                         Proyectos Relacionados
                     </h2>
                     {projects.length > 0 ? (
-                        <ul className="list-disc pl-5 space-y-2">
+                        <ul className="list-disc space-y-2 pl-5">
                             {projects.map((project) => (
                                 <li
                                     key={project.relationship_id}
-                                    className="flex items-center justify-between bg-popover rounded p-2"
+                                    className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
                                         {project.option}
@@ -172,11 +174,11 @@ const CompanyDetail = () => {
                         Agregar Proyectos
                     </h2>
                     {availableProjects.length > 0 ? (
-                        <ul className="list-disc pl-5 space-y-2">
+                        <ul className="list-disc space-y-2 pl-5">
                             {availableProjects.map((project) => (
                                 <li
                                     key={project.project_id}
-                                    className="flex items-center justify-between bg-popover rounded p-2"
+                                    className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
                                         {project.options}

@@ -7,7 +7,7 @@ const CompanyPage = () => {
 
     return (
         <MainLayout>
-                <CompaniesTable userId={user.id} />
+            <CompaniesTable userId={user.id} />
         </MainLayout>
     )
 }

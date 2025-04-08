@@ -36,8 +36,7 @@ export const EditProjectRelationModal = ({
 
     const handleAddRelation = () => {
         if (selectedRelationshipId && selectedProject) {
-            console.log("selectedRelationshipId", selectedRelationshipId)
-            console.log("selectedProject", selectedProject)
+
             onAddRelation({
                 user_id: userId,
                 company_id: selectedRelationshipId,
