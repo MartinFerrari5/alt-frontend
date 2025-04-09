@@ -28,7 +28,7 @@ const CompaniesSection = ({
         const fetchCompanies = async () => {
             try {
                 const companiesData = await getOptions("companies_table")
-                setCompaniesTable(companiesData.option|| [])
+                setCompaniesTable(companiesData.option || [])
             } catch (error) {
                 console.error("Error al obtener compañías:", error)
             }

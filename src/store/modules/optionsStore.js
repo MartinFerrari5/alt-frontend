@@ -82,7 +82,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en deleteOption para ${table}:`, error)
                     get().setError(error.message)
-                    throw error 
+                    throw error
                 }
             },
         }),

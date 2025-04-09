@@ -71,7 +71,7 @@ export const getNotRelatedProjects = async (company_id) => {
     try {
         const { data } = await api.get(
             `/options/notRelatedOptions?company_id=${company_id}&table=true`
-        )   
+        )
         console.log("getNotRelatedProjects", data)
         return data
     } catch (error) {

@@ -77,7 +77,7 @@ export const useRelationsStore = create((set, get) => ({
                 const notRelatedProjects = notRelatedProjectsRaw.map(
                     (project) => ({
                         id: project.id,
-                        option: project.option
+                        option: project.option,
                     })
                 )
                 set({
@@ -359,7 +359,10 @@ export const useRelationsStore = create((set, get) => ({
     updateNotRelatedProjectsForUser: async (user_id, company_id) => {
         set({ isLoading: true, error: null })
         try {
-            const response = await getNotRelatedProjectsForUser(user_id, company_id)
+            const response = await getNotRelatedProjectsForUser(
+                user_id,
+                company_id
+            )
             const notRelatedProjects = Array.isArray(response.data)
                 ? response.data
                 : []

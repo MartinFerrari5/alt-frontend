@@ -36,7 +36,7 @@ const CompanyDetail = () => {
             }
         }
         fetchData()
-    }, [id, updateCompanyProjects, updateAvailableCompanyProjects ])
+    }, [id, updateCompanyProjects, updateAvailableCompanyProjects])
 
     /**
      * Agrega un proyecto a la compañía y actualiza ambos listados.
@@ -113,11 +113,15 @@ const CompanyDetail = () => {
                                     className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
-                                        {project.option} {/* Mostrar `option` */}
+                                        {project.option}{" "}
+                                        {/* Mostrar `option` */}
                                     </span>
                                     <button
-                                        onClick={() =>
-                                            handleRemoveProject(project.relationship_id) // Usar `relationship_id`
+                                        onClick={
+                                            () =>
+                                                handleRemoveProject(
+                                                    project.relationship_id
+                                                ) // Usar `relationship_id`
                                         }
                                         className="btn bg-destructive text-white hover:bg-red-500"
                                     >
@@ -145,7 +149,8 @@ const CompanyDetail = () => {
                                     className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
-                                        {project.option} {/* Mostrar `option` */}
+                                        {project.option}{" "}
+                                        {/* Mostrar `option` */}
                                     </span>
                                     <button
                                         onClick={() =>

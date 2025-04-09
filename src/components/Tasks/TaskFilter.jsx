@@ -181,7 +181,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.company}
                 isLoading={!companies_table || companies_table.length === 0}
                 isError={false}
-                items={Array.isArray(companies_table) ? companies_table : []} 
+                items={Array.isArray(companies_table) ? companies_table : []}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
                 valueKey={user.role === "admin" ? "id" : "company_id"}
