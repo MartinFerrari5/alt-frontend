@@ -28,10 +28,11 @@ export const useGetEmails = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: emailQueryKeys.getAll(),
         queryFn: async () => {
-            return await getEmails()
+            const response = await getEmails()
+            return response.data // Extrae solo el array de emails
         },
         onSuccess: (fetchedData) => {
-            setEmails(fetchedData)
+            setEmails(fetchedData) // Guarda solo el array de emails en el store
         },
         refetchOnMount: true,
     })

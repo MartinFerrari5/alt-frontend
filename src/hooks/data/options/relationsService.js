@@ -3,7 +3,8 @@ import { api } from "../../../lib/axios"
 import { handleApiError } from "../../../lib/errorHandler"
 
 /**
- * Obtiene las opciones relacionadas para un usuario y una compañía.
+ * Obtiene las proyectos relacionadas para un usuario y una compañía o proyecto.
+ * (Se usa en: company-users y project-users según parámetros)
  * @param {Object} params - Parámetros necesarios.
  * @param {string|number} params.user_id - ID del usuario.
  * @param {string} params.related_table - Tabla de relaciones (ej.: "company_users_table" o "project_user_table").
@@ -25,11 +26,12 @@ export const getRelatedOptions = async ({
         if (relationship_id) params.relationship_id = relationship_id
 
         const { data } = await api.get("/options/relatedOptions", { params })
+        console.log("getRelatedOptions", data)
         return data
     } catch (error) {
         const fullMessage = handleApiError(
             error,
-            `Error obteniendo opciones relacionadas para el usuario ${user_id}`
+            `Error obteniendo ${related_table} relacionadas para el usuario ${user_id}`
         )
         throw new Error(fullMessage)
     }
@@ -69,12 +71,39 @@ export const getNotRelatedProjects = async (company_id) => {
     try {
         const { data } = await api.get(
             `/options/notRelatedOptions?company_id=${company_id}&table=true`
-        )
+        )   
+        console.log("getNotRelatedProjects", data)
         return data
     } catch (error) {
         const fullMessage = handleApiError(
             error,
             `Error obteniendo proyectos no relacionados para la compañía ${company_id}`
+        )
+        throw new Error(fullMessage)
+    }
+}
+
+/**
+ * Obtiene los proyectos no relacionados con un usuario pero relacionados con una compañía.
+ * @param {string|number} user_id - ID del usuario.
+ * @param {string|number} company_id - ID de la compañía.
+ * @returns {Promise<Array>} Array de proyectos no relacionados con el usuario.
+ */
+export const getNotRelatedProjectsForUser = async (user_id, company_id) => {
+    if (!user_id || !company_id) {
+        throw new Error(
+            "El ID del usuario y el ID de la compañía son obligatorios para obtener los proyectos no relacionados."
+        )
+    }
+    try {
+        const { data } = await api.get("/projectUser", {
+            params: { user_id, company_id },
+        })
+        return data
+    } catch (error) {
+        const fullMessage = handleApiError(
+            error,
+            `Error obteniendo proyectos no relacionados para el usuario ${user_id} y la compañía ${company_id}`
         )
         throw new Error(fullMessage)
     }
@@ -128,7 +157,7 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
  * @param {Object} relationData - Datos de la relación.
  * @param {string|number} relationData.user_id - ID del usuario.
  * @param {string|number} relationData.company_id - ID de la compañía.
- * @param {string} relationData.relationship_id - ID de la relación.
+ * @param {string} relationData.relationship_id - ID de la relación (de compañía-proyecto).
  * @returns {Promise<Object>} Resultado de la creación.
  */
 export const addProjectUserRelation = async (relationData) => {
@@ -138,7 +167,6 @@ export const addProjectUserRelation = async (relationData) => {
             company_id: relationData.company_id,
             relationship_id: relationData.relationship_id,
         })
-
         return data
     } catch (error) {
         const fullMessage = handleApiError(
@@ -207,7 +235,6 @@ export const getCompanyProjects = async (company_id) => {
 export const addCompanyProjectRelation = async (relationData) => {
     try {
         const { data } = await api.post("/companyProject", relationData)
-
         return data
     } catch (error) {
         const fullMessage = handleApiError(
@@ -233,11 +260,70 @@ export const deleteCompanyProjectRelation = async (relationship_id) => {
         const { data } = await api.delete(
             `/companyProject?relationship_id=${relationship_id}`
         )
+        console.log("deleteCompanyProjectRelation", data)
         return data
     } catch (error) {
         const fullMessage = handleApiError(
             error,
             "Error eliminando relación compañía-proyecto"
+        )
+        throw new Error(fullMessage)
+    }
+}
+
+/*
+ * =====================================================
+ * Funciones Placeholder para la relación Usuario-Proyecto
+ * Desde la perspectiva del proyecto (usuarios relacionados/no relacionados)
+ * =====================================================
+ */
+
+/**
+ * Obtiene los usuarios relacionados con un proyecto.
+ * (Placeholder: Endpoint a definir en la API)
+ * @param {string|number} project_id - ID del proyecto.
+ * @returns {Promise<Array>} Array de usuarios relacionados.
+ */
+export const getProjectUsers = async (project_id) => {
+    if (!project_id) {
+        throw new Error(
+            "El ID del proyecto es obligatorio para obtener los usuarios relacionados."
+        )
+    }
+    try {
+        const { data } = await api.get(`/projectUser?project_id=${project_id}`)
+        return data
+    } catch (error) {
+        const fullMessage = handleApiError(
+            error,
+            `Error obteniendo usuarios relacionados con el proyecto ${project_id}`
+        )
+        throw new Error(fullMessage)
+    }
+}
+
+/**
+ * Obtiene los usuarios NO relacionados con un proyecto.
+ * (Placeholder: Endpoint a definir en la API)
+ * @param {string|number} project_id - ID del proyecto.
+ * @returns {Promise<Array>} Array de usuarios no relacionados.
+ */
+export const getNotRelatedProjectUsers = async (project_id) => {
+    if (!project_id) {
+        throw new Error(
+            "El ID del proyecto es obligatorio para obtener los usuarios no relacionados."
+        )
+    }
+    try {
+        // Se asume que el endpoint diferencia con un query parámetro adicional
+        const { data } = await api.get(
+            `/options/notRelatedOptions?project_id=${project_id}&table=project`
+        )
+        return data
+    } catch (error) {
+        const fullMessage = handleApiError(
+            error,
+            `Error obteniendo proyectos no relacionados con el proyecto ${project_id}`
         )
         throw new Error(fullMessage)
     }

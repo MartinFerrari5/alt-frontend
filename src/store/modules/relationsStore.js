@@ -11,19 +11,27 @@ import {
     getCompanyProjects,
     addCompanyProjectRelation,
     deleteCompanyProjectRelation,
+    // Nuevas funciones para manejo desde la perspectiva del proyecto:
+    getProjectUsers,
+    getNotRelatedProjectUsers,
+    getNotRelatedProjectsForUser,
 } from "../../hooks/data/options/relationsService"
 import { handleApiError } from "../../lib/errorHandler"
 
 const initialState = {
-    // Relaciones de compañías
+    // Relaciones Usuario-Compañía
     relatedCompanies: [],
     notRelatedCompanies: [],
-    // Relaciones de proyectos (proyecto-usuario)
+    // Relaciones Proyecto-Compañía
+    companyProjects: [],
+    availableCompanyProjects: [],
+    // Relaciones Usuario-Proyecto (según la compañía seleccionada)
     relatedProjects: [],
     notRelatedProjects: [],
-    // Relaciones de compañía-proyecto
-    companyProjects: [],
-    // Estado de error y carga global
+    // Relaciones Proyecto-Usuario (vista desde el proyecto)
+    projectUsers: [],
+    notRelatedProjectUsers: [],
+    // Estado global de error y carga
     error: null,
     isLoading: false,
 }
@@ -35,14 +43,15 @@ export const useRelationsStore = create((set, get) => ({
     setLoading: (loading) => set({ isLoading: loading }),
 
     /**
-     * Actualiza las relaciones de compañías y, opcionalmente, las de proyectos asociados al usuario y la compañía seleccionada.
+     * Actualiza las relaciones de compañías para el usuario.
+     * Adicionalmente, si se provee selectedCompanyId, actualiza las relaciones de proyectos asociados a dicha compañía.
      * @param {string|number} user_id - ID del usuario.
      * @param {string|number} [selectedCompanyId] - ID de la compañía seleccionada.
      */
     updateRelations: async (user_id, selectedCompanyId = null) => {
         set({ isLoading: true, error: null })
         try {
-            // Actualizar relaciones de compañías
+            // Actualizar relaciones Usuario-Compañía
             const relatedCompanies = await getRelatedOptions({
                 user_id,
                 related_table: "company_users_table",
@@ -55,7 +64,7 @@ export const useRelationsStore = create((set, get) => ({
                 notRelatedCompanies,
             })
 
-            // Actualizar relaciones de proyectos si se proporcionó selectedCompanyId
+            // Actualizar relaciones Usuario-Proyecto (en el contexto de una compañía)
             if (selectedCompanyId) {
                 const relatedProjects = await getRelatedOptions({
                     user_id,
@@ -63,8 +72,14 @@ export const useRelationsStore = create((set, get) => ({
                     individual_table: "project_company_table",
                     company_id: selectedCompanyId,
                 })
-                const notRelatedProjects =
+                const notRelatedProjectsRaw =
                     await getNotRelatedProjects(selectedCompanyId)
+                const notRelatedProjects = notRelatedProjectsRaw.map(
+                    (project) => ({
+                        id: project.id,
+                        option: project.option
+                    })
+                )
                 set({
                     relatedProjects,
                     notRelatedProjects,
@@ -86,15 +101,41 @@ export const useRelationsStore = create((set, get) => ({
             set({ isLoading: false })
         }
     },
+    /**
+     * Actualiza las relaciones de proyectos no relacionados con una compañía.
+     * @param {string|number} company_id - ID de la compañía.
+     */
+    updateAvailableCompanyProjects: async (company_id) => {
+        set({ isLoading: true, error: null })
+        try {
+            const response = await getNotRelatedProjects(company_id)
+            const availableCompanyProjects = Array.isArray(response.data)
+                ? response.data
+                : []
+            set({ availableCompanyProjects })
+        } catch (error) {
+            set({
+                error: handleApiError(
+                    error,
+                    `Error actualizando proyectos disponibles de la compañía ${company_id}`
+                ),
+            })
+        } finally {
+            set({ isLoading: false })
+        }
+    },
 
     /**
-     * Actualiza las relaciones de compañía-proyecto.
+     * Actualiza las relaciones de proyectos relacionados con una compañía.
      * @param {string|number} company_id - ID de la compañía.
      */
     updateCompanyProjects: async (company_id) => {
         set({ isLoading: true, error: null })
         try {
-            const companyProjects = await getCompanyProjects(company_id)
+            const response = await getCompanyProjects(company_id)
+            const companyProjects = Array.isArray(response.data)
+                ? response.data
+                : []
             set({ companyProjects })
         } catch (error) {
             set({
@@ -109,8 +150,43 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Agrega relación compañía-usuario y actualiza las relaciones del usuario.
-     * @param {Object} relationData - Datos de la relación { user_id, company_id }.
+     * Actualiza las relaciones Proyecto-Usuario (vista desde un proyecto).
+     * @param {string|number} project_id - ID del proyecto.
+     */
+    updateProjectUsers: async (project_id) => {
+        set({ isLoading: true, error: null })
+        try {
+            const projectUsers = await getProjectUsers(project_id)
+            const notRelatedProjectUsersRaw =
+                await getNotRelatedProjectUsers(project_id)
+
+            // Unificar las claves de los datos
+            const notRelatedProjectUsers = notRelatedProjectUsersRaw.map(
+                (user) => ({
+                    id: user.id || user.user_id,
+                    option: user.option || user.options,
+                })
+            )
+
+            set({
+                projectUsers,
+                notRelatedProjectUsers,
+            })
+        } catch (error) {
+            set({
+                error: handleApiError(
+                    error,
+                    `Error actualizando usuarios para el proyecto ${project_id}`
+                ),
+            })
+        } finally {
+            set({ isLoading: false })
+        }
+    },
+
+    /**
+     * Agrega relación Usuario-Compañía y actualiza las relaciones.
+     * @param {Object} relationData - { user_id, company_id }.
      * @param {string|number} user_id - ID del usuario.
      */
     addCompanyUserRelation: async (relationData, user_id) => {
@@ -128,8 +204,8 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Agrega relación proyecto-usuario y actualiza las relaciones. Retorna la respuesta para usar el mensaje de la API.
-     * @param {Object} relationData - Datos de la relación.
+     * Agrega relación Usuario-Proyecto y actualiza las relaciones.
+     * @param {Object} relationData - Datos de la relación { user_id, company_id, relationship_id }.
      * @param {string|number} user_id - ID del usuario.
      * @param {string|number} selectedCompanyId - ID de la compañía seleccionada.
      * @returns {Promise<Object>} Respuesta de la API.
@@ -155,7 +231,7 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Agrega relación compañía-proyecto y actualiza las relaciones de la compañía.
+     * Agrega una relación entre compañía y proyecto.
      * @param {Object} relationData - Datos de la relación { company_id, project_id }.
      * @param {string|number} company_id - ID de la compañía.
      */
@@ -164,6 +240,7 @@ export const useRelationsStore = create((set, get) => ({
         try {
             await addCompanyProjectRelation(relationData)
             await get().updateCompanyProjects(company_id)
+            await get().updateAvailableCompanyProjects(company_id)
         } catch (error) {
             set({
                 error: handleApiError(
@@ -177,7 +254,7 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Elimina relación compañía-usuario y actualiza las relaciones.
+     * Elimina relación Usuario-Compañía y actualiza las relaciones.
      * @param {string} relationship_id - ID de la relación.
      * @param {string|number} user_id - ID del usuario.
      */
@@ -199,7 +276,7 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Elimina relación proyecto-usuario y actualiza las relaciones.
+     * Elimina relación Usuario-Proyecto y actualiza las relaciones.
      * @param {string} relationship_id - ID de la relación.
      * @param {string|number} user_id - ID del usuario.
      * @param {string|number} selectedCompanyId - ID de la compañía seleccionada.
@@ -226,7 +303,7 @@ export const useRelationsStore = create((set, get) => ({
     },
 
     /**
-     * Elimina relación compañía-proyecto y actualiza las relaciones de la compañía.
+     * Elimina una relación entre compañía y proyecto.
      * @param {string} relationship_id - ID de la relación.
      * @param {string|number} company_id - ID de la compañía.
      */
@@ -235,11 +312,63 @@ export const useRelationsStore = create((set, get) => ({
         try {
             await deleteCompanyProjectRelation(relationship_id)
             await get().updateCompanyProjects(company_id)
+            await get().updateAvailableCompanyProjects(company_id)
         } catch (error) {
             set({
                 error: handleApiError(
                     error,
                     "Error en deleteCompanyProjectRelation"
+                ),
+            })
+        } finally {
+            set({ isLoading: false })
+        }
+    },
+
+    /**
+     * (Placeholder) Elimina relación Proyecto-Usuario y actualiza el listado de usuarios para el proyecto.
+     * @param {string} relationship_id - ID de la relación en el proyecto.
+     * @param {string|number} project_id - ID del proyecto.
+     */
+    deleteProjectUserRelationFromProject: async (
+        relationship_id,
+        project_id
+    ) => {
+        set({ isLoading: true, error: null })
+        try {
+            // Suponiendo que el endpoint es el mismo que deleteProjectUserRelation
+            await deleteProjectUserRelation(relationship_id)
+            await get().updateProjectUsers(project_id)
+        } catch (error) {
+            set({
+                error: handleApiError(
+                    error,
+                    "Error eliminando relación en el proyecto"
+                ),
+            })
+        } finally {
+            set({ isLoading: false })
+        }
+    },
+
+    /**
+     * Actualiza las relaciones de proyectos no relacionados con un usuario y una compañía.
+     * @param {string|number} user_id - ID del usuario.
+     * @param {string|number} company_id - ID de la compañía.
+     */
+    updateNotRelatedProjectsForUser: async (user_id, company_id) => {
+        set({ isLoading: true, error: null })
+        try {
+            const response = await getNotRelatedProjectsForUser(user_id, company_id)
+            const notRelatedProjects = Array.isArray(response.data)
+                ? response.data
+                : []
+            set({ notRelatedProjects })
+        } catch (error) {
+            set({
+                error: handleApiError(
+                    error,
+                    `Error actualizando proyectos no relacionados para el usuario ${user_id} y la compañía ${company_id}`
                 ),
             })
         } finally {

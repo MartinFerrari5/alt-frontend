@@ -130,7 +130,7 @@ export const getUsers = async () => {
     try {
         const { data } = await api.get("/users")
         // Se asume que la respuesta retorna un arreglo en data.users o directamente data
-        return data.users || data
+        return data.user
     } catch (error) {
         console.error("Error al obtener usuarios:", error)
         throw new Error(
@@ -148,7 +148,7 @@ export const getUsers = async () => {
 export const getUserById = async (userId) => {
     try {
         const { data } = await api.get(`/users/user?user_id=${userId}`)
-        return data.user || data
+        return data.user
     } catch (error) {
         console.error("Error al obtener el usuario:", error)
         throw new Error(

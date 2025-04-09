@@ -181,7 +181,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.company}
                 isLoading={!companies_table || companies_table.length === 0}
                 isError={false}
-                items={companies_table}
+                items={Array.isArray(companies_table) ? companies_table : []} 
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
                 valueKey={user.role === "admin" ? "id" : "company_id"}
@@ -193,7 +193,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.project}
                 isLoading={!filteredProjects || filteredProjects.length === 0}
                 isError={false}
-                items={filteredProjects}
+                items={Array.isArray(filteredProjects) ? filteredProjects : []}
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
                 valueKey={user.role === "admin" ? "id" : "project_id"}
@@ -205,7 +205,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.hourtype}
                 isLoading={!hour_type_table || hour_type_table.length === 0}
                 isError={false}
-                items={hour_type_table}
+                items={Array.isArray(hour_type_table) ? hour_type_table : []}
                 valueKey="hour_type_id"
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
@@ -240,7 +240,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             <Button
                 type="submit"
                 color="primary"
-                size="large"
+                size="lg"
                 className="rounded-lg transition-transform active:scale-95"
             >
                 Filtrar

@@ -5,7 +5,6 @@ import CompaniesList from "./CompaniesList"
 
 const CompaniesTable = ({ userId }) => {
     const { companies_table, fetchOptions } = useOptionsStore()
-    console.log("CompaniesTable", companies_table)
 
     useEffect(() => {
         fetchOptions("companies_table")

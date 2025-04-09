@@ -1,103 +1,69 @@
-import { useState, useEffect } from "react"
+// /src/pages/CompanyDetail.jsx
+import { useEffect } from "react"
 import { useParams, useLocation, Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
-import {
-    getCompanyProjects,
-    getNotRelatedProjects,
-    addCompanyProjectRelation,
-    deleteCompanyProjectRelation,
-} from "../../hooks/data/options/relationsService"
+import { useRelationsStore } from "../../store/modules/relationsStore"
 
-/**
- * Componente que muestra los detalles de una compañía y permite agregar y eliminar
- * proyectos relacionados.
- *
- * @returns {ReactElement}
- */
 const CompanyDetail = () => {
     const { id } = useParams()
     const { search } = useLocation()
-
-    // Extraer el nombre de la compañía desde la query string
     const queryParams = new URLSearchParams(search)
     const companyNameFromQuery = queryParams.get("name") || `Compañía ${id}`
 
-    const [company, setCompany] = useState(null)
-    const [projects, setProjects] = useState([])
-    const [availableProjects, setAvailableProjects] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
+    // Extraer estado y métodos del store
+    const {
+        companyProjects,
+        availableCompanyProjects,
+        isLoading,
+        error,
+        updateCompanyProjects,
+        updateAvailableCompanyProjects,
+        addCompanyProjectRelation,
+        deleteCompanyProjectRelation,
+    } = useRelationsStore()
 
+    // Efecto para cargar los datos de la compañía y sus proyectos
     useEffect(() => {
-        const fetchCompanyDetails = async () => {
+        const fetchData = async () => {
             try {
-                setIsLoading(true)
-
-                // Obtener proyectos relacionados
-                const relatedProjects = await getCompanyProjects(id)
-                setProjects(relatedProjects)
-
-                // Obtener proyectos disponibles
-                const notRelatedProjects = await getNotRelatedProjects(id)
-                setAvailableProjects(notRelatedProjects)
-
-                // Asignar detalles de la compañía usando el nombre obtenido de la URL
-                setCompany({ id, name: companyNameFromQuery })
-            } catch (error) {
-                toast.error(
-                    `Error al cargar los detalles de la compañía: ${error.message}`
-                )
-                console.error("Error fetching company details:", error)
-            } finally {
-                setIsLoading(false)
+                await updateCompanyProjects(id)
+                await updateAvailableCompanyProjects(id)
+                console.log("Proyectos relacionados:", companyProjects)
+            } catch (err) {
+                toast.error(`Error al cargar los proyectos: ${err.message}`)
+                console.error("Error fetching company projects:", err)
             }
         }
-
-        fetchCompanyDetails()
-    }, [id, companyNameFromQuery])
+        fetchData()
+    }, [id, updateCompanyProjects, updateAvailableCompanyProjects ])
 
     /**
-     * Agrega un proyecto a la lista de proyectos relacionados.
-     * @param {number} projectId El ID del proyecto a agregar.
+     * Agrega un proyecto a la compañía y actualiza ambos listados.
      */
     const handleAddProject = async (projectId) => {
         try {
-            await addCompanyProjectRelation({
-                company_id: id,
-                project_id: projectId,
-            })
+            await addCompanyProjectRelation(
+                { company_id: id, project_id: projectId },
+                id
+            )
             toast.success("Proyecto agregado exitosamente")
-
-            // Actualizar proyectos relacionados y disponibles
-            const updatedProjects = await getCompanyProjects(id)
-            setProjects(updatedProjects)
-
-            const updatedAvailableProjects = await getNotRelatedProjects(id)
-            setAvailableProjects(updatedAvailableProjects)
-        } catch (error) {
-            toast.error("Error al agregar el proyecto")
-            console.error("Error adding project:", error)
+        } catch (err) {
+            toast.error(`Error al agregar el proyecto: ${err.message}`)
+            console.error("Error adding project:", err)
         }
     }
 
     /**
-     * Elimina un proyecto de la lista de proyectos relacionados.
-     * @param {number} relationshipId El ID de la relación.
+     * Elimina un proyecto de la compañía y actualiza ambos listados.
      */
-    const handleRemoveProject = async (relationshipId) => {
+    const handleRemoveProject = async (projectId) => {
         try {
-            await deleteCompanyProjectRelation(relationshipId)
+            await deleteCompanyProjectRelation(projectId, id)
             toast.success("Proyecto eliminado exitosamente")
-
-            // Actualizar proyectos relacionados y disponibles
-            const updatedProjects = await getCompanyProjects(id)
-            setProjects(updatedProjects)
-
-            const updatedAvailableProjects = await getNotRelatedProjects(id)
-            setAvailableProjects(updatedAvailableProjects)
-        } catch (error) {
-            toast.error("Error al eliminar el proyecto")
-            console.error("Error removing project:", error)
+        } catch (err) {
+            toast.error(`Error al eliminar el proyecto: ${err.message}`)
+            console.error("Error removing project:", err)
         }
     }
 
@@ -111,10 +77,10 @@ const CompanyDetail = () => {
         )
     }
 
-    if (!company) {
+    if (error) {
         return (
             <div className="flex h-64 items-center justify-center">
-                <p className="text-muted">No se encontró la compañía.</p>
+                <p className="text-muted">Ocurrió un error: {error}</p>
             </div>
         )
     }
@@ -131,29 +97,27 @@ const CompanyDetail = () => {
                     </Link>
                 </div>
                 <h1 className="mb-4 text-2xl font-bold text-foreground">
-                    Compañia: {company.name}
+                    Compañía: {companyNameFromQuery}
                 </h1>
-                <p className="mb-4 text-sm text-muted">ID: {company.id}</p>
+                <p className="mb-4 text-sm text-muted">ID: {id}</p>
 
                 <div className="mt-6">
                     <h2 className="mb-2 text-lg font-bold text-foreground">
                         Proyectos Relacionados
                     </h2>
-                    {projects.length > 0 ? (
+                    {companyProjects.length > 0 ? (
                         <ul className="list-disc space-y-2 pl-5">
-                            {projects.map((project) => (
+                            {companyProjects.map((project) => (
                                 <li
-                                    key={project.relationship_id}
+                                    key={project.relationship_id} // Usar `relationship_id` como clave única
                                     className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
-                                        {project.option}
+                                        {project.option} {/* Mostrar `option` */}
                                     </span>
                                     <button
                                         onClick={() =>
-                                            handleRemoveProject(
-                                                project.relationship_id
-                                            )
+                                            handleRemoveProject(project.relationship_id) // Usar `relationship_id`
                                         }
                                         className="btn bg-destructive text-white hover:bg-red-500"
                                     >
@@ -173,19 +137,19 @@ const CompanyDetail = () => {
                     <h2 className="mb-2 text-lg font-bold text-foreground">
                         Agregar Proyectos
                     </h2>
-                    {availableProjects.length > 0 ? (
+                    {availableCompanyProjects.length > 0 ? (
                         <ul className="list-disc space-y-2 pl-5">
-                            {availableProjects.map((project) => (
+                            {availableCompanyProjects.map((project) => (
                                 <li
-                                    key={project.project_id}
+                                    key={project.id} // Usar `id` como clave única
                                     className="flex items-center justify-between rounded bg-popover p-2"
                                 >
                                     <span className="text-foreground">
-                                        {project.options}
+                                        {project.option} {/* Mostrar `option` */}
                                     </span>
                                     <button
                                         onClick={() =>
-                                            handleAddProject(project.project_id)
+                                            handleAddProject(project.id)
                                         }
                                         className="btn btn-primary"
                                     >

@@ -25,19 +25,28 @@ export const useOptionsStore = create(
 
             fetchOptions: async (table) => {
                 try {
-                    const data = await getOptions(table)
-                    set({ [table]: data })
+                    const response = await getOptions(table)
+                    const data = response.data
+                    // const data = Array.isArray(response.data)
+                    //     ? response.data // Si es un array, úsalo directamente
+                    //     : response.data !== null && typeof response.data === "object"
+                    //     ? [response.data] // Si es un objeto, conviértelo en un array
+                    //     : [] // Si no es ni un array ni un objeto, usa un array vacío
+                    console.log(`Opciones para ${table}:`, data)
+                    set({ [table]: data }) // Almacena solo la propiedad `data`
                 } catch (error) {
                     console.error(`Error en fetchOptions para ${table}:`, error)
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error
                 }
             },
 
             addOption: async (table, option) => {
                 try {
-                    const newOption = await addOption(table, option)
+                    const response = await addOption(table, option)
+                    const newOption = response.data
                     set((state) => ({
+                        ...state,
                         [table]: [...state[table], newOption],
                     }))
                 } catch (error) {
@@ -49,12 +58,10 @@ export const useOptionsStore = create(
 
             updateOption: async (table, id, updatedData) => {
                 try {
-                    const updatedOption = await updateOption(
-                        table,
-                        id,
-                        updatedData
-                    )
+                    const response = await updateOption(table, id, updatedData)
+                    const updatedOption = response.data
                     set((state) => ({
+                        ...state,
                         [table]: state[table].map((item) =>
                             item.id === id ? updatedOption : item
                         ),
@@ -62,7 +69,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en updateOption para ${table}:`, error)
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error
                 }
             },
 
@@ -75,7 +82,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en deleteOption para ${table}:`, error)
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error 
                 }
             },
         }),

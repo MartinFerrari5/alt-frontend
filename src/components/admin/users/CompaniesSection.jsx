@@ -28,7 +28,7 @@ const CompaniesSection = ({
         const fetchCompanies = async () => {
             try {
                 const companiesData = await getOptions("companies_table")
-                setCompaniesTable(companiesData.options || [])
+                setCompaniesTable(companiesData.option|| [])
             } catch (error) {
                 console.error("Error al obtener compañías:", error)
             }
@@ -60,7 +60,7 @@ const CompaniesSection = ({
     // Mapeo para compañías disponibles (no relacionadas)
     const availableCompanies = notRelatedCompanies.map((item) => ({
         id: item.company_id,
-        option: item.options,
+        option: item.option,
     }))
 
     // Función para agregar relación utilizando el store global

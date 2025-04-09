@@ -38,7 +38,11 @@ const ProjectsSection = ({ userId }) => {
 
     const handleAddRelation = async (relationData) => {
         try {
-            await addProjectUserRelation(relationData, userId, selectedCompanyRelId)
+            await addProjectUserRelation(
+                relationData,
+                userId,
+                selectedCompanyRelId
+            )
             toast.success("Relación con el proyecto creada exitosamente")
         } catch (error) {
             console.error("Error al agregar relación de proyecto:", error)
@@ -46,11 +50,29 @@ const ProjectsSection = ({ userId }) => {
         }
     }
 
+    /**
+     * Renderiza un modal para agregar una relación de usuario con un proyecto.
+     * @param {{ onClose: () => void }} props - Props del componente.
+     * @returns {JSX.Element} El modal.
+     */
     const ProjectModal = ({ onClose }) => (
         <EditProjectRelationModal
+            /**
+             * Título del modal.
+             */
             title="Proyectos"
+            /**
+             * Función para agregar la relación.
+             * @param {{ project_id: string, user_id: string }} relationData - Datos de la relación.
+             */
             onAddRelation={handleAddRelation}
+            /**
+             * Función para cerrar el modal.
+             */
             onClose={onClose}
+            /**
+             * ID del usuario que se está editando.
+             */
             userId={userId}
         />
     )

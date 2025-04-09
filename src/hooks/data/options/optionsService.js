@@ -24,7 +24,6 @@ export const getOptions = async (table) => {
  * @returns {Promise<Array>} Array con los proyectos.
  */
 export const getCompanyProjects = async (relationship_id) => {
-    console.log("getCompanyProjects", relationship_id)
     if (!relationship_id) {
         throw new Error(
             "El ID de la relación es obligatorio para obtener los proyectos."
@@ -53,7 +52,7 @@ export const getCompanyProjects = async (relationship_id) => {
 export const addOption = async (table, option) => {
     try {
         const { data } = await api.post("/options", { table, option })
-        return data.option
+        return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
@@ -75,7 +74,7 @@ export const updateOption = async (table, id, updatedData) => {
             table,
             option: updatedData,
         })
-        return data.option
+        return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(

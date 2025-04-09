@@ -7,6 +7,8 @@ import { api } from "../../../lib/axios"
  */
 export const getEmails = async () => {
     const { data } = await api.get("/emails")
+    console.log("getEmails", data)
+
     return data
 }
 
