@@ -1,11 +1,11 @@
 // /src/pages/auth/ResetPasswordPage.jsx
 import { useState } from "react"
-import { useResetPassword } from "../../hooks/data/users/useUserHooks"
 import Button from "../../components/Button"
 import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
+import { useResetPassword } from "../../store/modules/userStore"
 
 const ResetPasswordPage = () => {
     const [email, setEmail] = useState("")

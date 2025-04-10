@@ -178,6 +178,7 @@ const AddTaskForm = ({ onClose }) => {
      */
     const handleSaveClick = (data) => {
         const formattedDate = formatDateForBackend(taskDate)
+        console.log("handleSaveClick: ", data)
         // Buscar el objeto de la compañía a partir del relationship_id para extraer el company_id real
         const selectedCompanyObj = companies_table.find(
             (comp) => comp.relationship_id === data.company
@@ -231,7 +232,7 @@ const AddTaskForm = ({ onClose }) => {
                         isLoading={isLoadingCompanies}
                         isError={false}
                         items={companies_table}
-                        valueKey="relationship_id"
+                        valueKey="id"
                     />
                     {/* Dropdown de proyectos: utiliza "project_id" para el value */}
                     <Dropdown
@@ -242,7 +243,7 @@ const AddTaskForm = ({ onClose }) => {
                         isLoading={isLoadingProjects}
                         isError={false}
                         items={filteredProjects}
-                        valueKey="project_id"
+                        valueKey="id"
                     />
                     <Dropdown
                         id="hour_type"

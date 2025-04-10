@@ -27,13 +27,7 @@ export const useOptionsStore = create(
                 try {
                     const response = await getOptions(table)
                     const data = response.data
-                    // const data = Array.isArray(response.data)
-                    //     ? response.data // Si es un array, úsalo directamente
-                    //     : response.data !== null && typeof response.data === "object"
-                    //     ? [response.data] // Si es un objeto, conviértelo en un array
-                    //     : [] // Si no es ni un array ni un objeto, usa un array vacío
-                    console.log(`Opciones para ${table}:`, data)
-                    set({ [table]: data }) // Almacena solo la propiedad `data`
+                    set({ [table]: data })
                 } catch (error) {
                     console.error(`Error en fetchOptions para ${table}:`, error)
                     get().setError(error.message)

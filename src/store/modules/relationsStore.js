@@ -52,12 +52,16 @@ export const useRelationsStore = create((set, get) => ({
         set({ isLoading: true, error: null })
         try {
             // Actualizar relaciones Usuario-Compañía
-            const relatedCompanies = await getRelatedOptions({
+            const relatedCompaniesResponse = await getRelatedOptions({
                 user_id,
                 related_table: "company_users_table",
                 individual_table: "companies_table",
             })
-            const notRelatedCompanies = await getNotRelatedCompanies(user_id)
+
+            // Accede a la propiedad `data` del objeto de respuesta
+            const relatedCompanies = relatedCompaniesResponse.data
+            const response = await getNotRelatedCompanies(user_id)
+            const notRelatedCompanies = response.data
 
             set({
                 relatedCompanies,
@@ -66,20 +70,23 @@ export const useRelationsStore = create((set, get) => ({
 
             // Actualizar relaciones Usuario-Proyecto (en el contexto de una compañía)
             if (selectedCompanyId) {
-                const relatedProjects = await getRelatedOptions({
+                const relatedProjectsResponse = await getRelatedOptions({
                     user_id,
                     related_table: "project_user_table",
                     individual_table: "project_company_table",
                     company_id: selectedCompanyId,
                 })
-                const notRelatedProjectsRaw =
-                    await getNotRelatedProjects(selectedCompanyId)
-                const notRelatedProjects = notRelatedProjectsRaw.map(
-                    (project) => ({
-                        id: project.id,
-                        option: project.option,
-                    })
-                )
+
+                const relatedProjects = relatedProjectsResponse.data
+
+                const { data } = await getNotRelatedProjects(selectedCompanyId)
+                const notRelatedProjects = Array.isArray(data)
+                    ? data.map((project) => ({
+                          id: project.id,
+                          option: project.option,
+                      }))
+                    : []
+
                 set({
                     relatedProjects,
                     notRelatedProjects,
@@ -101,6 +108,7 @@ export const useRelationsStore = create((set, get) => ({
             set({ isLoading: false })
         }
     },
+
     /**
      * Actualiza las relaciones de proyectos no relacionados con una compañía.
      * @param {string|number} company_id - ID de la compañía.
@@ -363,9 +371,8 @@ export const useRelationsStore = create((set, get) => ({
                 user_id,
                 company_id
             )
-            const notRelatedProjects = Array.isArray(response.data)
-                ? response.data
-                : []
+            const notRelatedProjects = response.data
+
             set({ notRelatedProjects })
         } catch (error) {
             set({

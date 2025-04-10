@@ -5,15 +5,20 @@ import { Link, useParams } from "react-router-dom"
 
 import { toast } from "react-toastify"
 import UserEditForm from "../../components/admin/users/UserEditForm"
-import {
-    useGetUsers,
-    useUpdateUser,
-    useUpdateUserRole,
-} from "../../hooks/data/users/useUserHooks"
+// import {
+//     useGetUsers,
+//     useUpdateUser,
+//     useUpdateUserRole,
+// } from "../../hooks/data/users/useUserHooks"
 import ProjectsSection from "../../components/admin/users/ProjectsSection"
 import CompaniesSection from "../../components/admin/users/CompaniesSection"
 import useNavigationStore from "../../store/ui/navigationStore"
 import MainLayout from "../../components/layout/MainLayout"
+import {
+    useGetUsers,
+    useUpdateUser,
+    useUpdateUserRole,
+} from "../../store/modules/userStore"
 
 const UsersDetail = () => {
     const { id } = useParams()

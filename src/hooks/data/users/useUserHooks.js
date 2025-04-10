@@ -1,153 +1,125 @@
-// /src\hooks\data\users\useUserHooks.js
+// /src/hooks/data/users/useUserHooks.js
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-
-import {
-    createUser,
-    resetPassword,
-    changePassword,
-    updateUser,
-    getUsers,
-    getUserById,
-    deleteUser,
-    updateUserRole,
-} from "./usersAlt"
+import { api } from "../../../lib/axios"
 
 /**
- * Claves de consulta para usuarios.
+ * Crea un nuevo usuario.
  */
-export const userQueryKeys = {
-    getAll: () => ["users", "getAll"],
-    getById: (userId) => ["users", "getById", userId],
+export const createUser = async (payload) => {
+    try {
+        const { data } = await api.post("/users", payload)
+        return data
+    } catch (error) {
+        console.error("Error al crear usuario:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al crear el usuario"
+        )
+    }
 }
 
 /**
- * Hook para obtener usuarios.
- * Si se proporciona un userId, retorna el usuario correspondiente;
- * de lo contrario, retorna la lista completa.
- *
- * @param {string|null} userId - ID del usuario a obtener (opcional).
+ * Envía correo para resetear la contraseña.
  */
-export const useGetUsers = (userId = null) => {
-    return useQuery({
-        queryKey: userId
-            ? userQueryKeys.getById(userId)
-            : userQueryKeys.getAll(),
-        queryFn: async () => {
-            // Asegúrate de que userId sea válido antes de llamar a getUserById
-            if (userId) {
-                return await getUserById(userId)
-            } else {
-                return await getUsers()
-            }
-        },
-    })
+export const resetPassword = async (payload) => {
+    try {
+        const { data } = await api.post("/users/newpassword", payload)
+        return data
+    } catch (error) {
+        console.error("Error al enviar correo de reseteo:", error)
+        throw new Error(
+            error.response?.data?.message ||
+                "Error al enviar el correo para resetear la contraseña"
+        )
+    }
 }
 
 /**
- * Hook para crear un nuevo usuario.
- * @returns {Object} - Objeto con la función de mutación para crear usuario.
+ * Cambia la contraseña del usuario.
  */
-export const useCreateUser = () => {
-    const queryClient = useQueryClient()
-
-    return useMutation({
-        mutationFn: async (payload) => {
-            return await createUser(payload)
-        },
-        onSuccess: () => {
-            // Invalida la consulta de usuarios para refrescar la lista
-            queryClient.invalidateQueries(userQueryKeys.getAll())
-        },
-    })
+export const changePassword = async (payload) => {
+    try {
+        const { data } = await api.post("/users/changepassword", payload)
+        return data
+    } catch (error) {
+        console.error("Error al cambiar contraseña:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al cambiar la contraseña"
+        )
+    }
 }
 
 /**
- * Hook para enviar correo de reseteo de contraseña.
- * @returns {Object} - Objeto con la función de mutación para resetear la contraseña.
+ * Actualiza los datos del usuario.
  */
-export const useResetPassword = () => {
-    return useMutation({
-        mutationFn: async (payload) => {
-            return await resetPassword(payload)
-        },
-    })
+export const updateUser = async (user_id, payload) => {
+    try {
+        const { data } = await api.put(`/users?user_id=${user_id}`, payload)
+        return data
+    } catch (error) {
+        console.error("Error al actualizar usuario:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al actualizar el usuario"
+        )
+    }
 }
 
 /**
- * Hook para cambiar la contraseña del usuario.
- * @returns {Object} - Objeto con la función de mutación para cambiar la contraseña.
+ * Actualiza el rol del usuario.
  */
-export const useChangePassword = () => {
-    return useMutation({
-        mutationFn: async (payload) => {
-            return await changePassword(payload)
-        },
-    })
+export const updateUserRole = async (user_id, payload) => {
+    try {
+        const { data } = await api.put(`/users?user_id=${user_id}`, payload)
+        return data
+    } catch (error) {
+        console.error("Error al actualizar rol del usuario:", error)
+        throw new Error(
+            error.response?.data?.message ||
+                "Error al actualizar el rol del usuario"
+        )
+    }
 }
 
 /**
- * Hook para actualizar los datos del usuario.
- * @param {string} user_id - ID del usuario a actualizar.
- * @returns {Object} - Objeto con la función de mutación para actualizar usuario.
+ * Obtiene todos los usuarios.
  */
-export const useUpdateUser = (user_id) => {
-    const queryClient = useQueryClient()
-
-    return useMutation({
-        mutationFn: async (payload) => {
-            return await updateUser(user_id, payload)
-        },
-        onSuccess: () => {
-            // Actualiza la lista global de usuarios y la caché del usuario específico
-            queryClient.invalidateQueries(userQueryKeys.getAll())
-            queryClient.invalidateQueries(userQueryKeys.getById(user_id))
-        },
-    })
+export const getUsers = async () => {
+    try {
+        const { data } = await api.get("/users")
+        return data
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al obtener usuarios"
+        )
+    }
 }
 
 /**
- * Hook para actualizar el rol del usuario.
- * @param {string} user_id - ID del usuario a actualizar.
- * @returns {Object} - Objeto con la función de mutación para actualizar el rol.
+ * Obtiene un usuario por su ID.
  */
-export const useUpdateUserRole = (user_id) => {
-    const queryClient = useQueryClient()
-
-    return useMutation({
-        mutationFn: async (payload) => {
-            return await updateUserRole(user_id, payload)
-        },
-        onSuccess: () => {
-            // Invalida la caché para refrescar la información del usuario
-            queryClient.invalidateQueries(userQueryKeys.getAll())
-            queryClient.invalidateQueries(userQueryKeys.getById(user_id))
-        },
-    })
+export const getUserById = async (userId) => {
+    try {
+        const { data } = await api.get(`/users/user?user_id=${userId}`)
+        return data
+    } catch (error) {
+        console.error("Error al obtener el usuario:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al obtener el usuario"
+        )
+    }
 }
 
 /**
- * Hook para eliminar un usuario.
- * @param {string} userId - ID del usuario a eliminar.
- * @returns {Object} - Objeto con la función de mutación para eliminar usuario.
+ * Elimina un usuario por su ID.
  */
-export const useDeleteUser = (userId) => {
-    const queryClient = useQueryClient()
-
-    return useMutation({
-        mutationFn: async () => {
-            return await deleteUser(userId)
-        },
-        onSuccess: () => {
-            // Actualiza la lista de usuarios eliminando el usuario borrado
-            queryClient.setQueryData(userQueryKeys.getAll(), (oldUsers) => {
-                return oldUsers
-                    ? oldUsers.filter((user) => user.id !== userId)
-                    : []
-            })
-        },
-        onError: (error) => {
-            console.error("🔴 Error al eliminar el usuario:", error)
-        },
-    })
+export const deleteUser = async (userId) => {
+    try {
+        const { data } = await api.delete(`/users/${userId}`)
+        return data
+    } catch (error) {
+        console.error("Error al eliminar usuario:", error)
+        throw new Error(
+            error.response?.data?.message || "Error al eliminar el usuario"
+        )
+    }
 }

@@ -11,12 +11,12 @@ import {
     Loader2,
 } from "lucide-react"
 
-import { useUpdateUser } from "../../hooks/data/users/useUserHooks"
 import { useNavigate } from "react-router-dom"
 import { toast } from "../../components/ui/sonner"
 import MainLayout from "../../components/layout/MainLayout"
 import useAuthStore from "../../store/modules/authStore"
 import Button from "../../components/Button"
+import { useUpdateUser } from "../../store/modules/userStore"
 
 const UserProfile = () => {
     const navigate = useNavigate()

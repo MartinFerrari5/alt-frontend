@@ -19,7 +19,6 @@ const ProjectsSection = ({ userId }) => {
         deleteProjectUserRelation,
     } = useRelationsStore()
 
-    // Actualiza las relaciones cada vez que se selecciona una compañía.
     useEffect(() => {
         if (selectedCompanyRelId) {
             updateRelations(userId, selectedCompanyRelId).catch((error) => {
@@ -29,7 +28,7 @@ const ProjectsSection = ({ userId }) => {
         }
     }, [selectedCompanyRelId, updateRelations, userId])
 
-    // Selecciona la primera compañía si aún no hay seleccionada.
+    // Si no hay compañía seleccionada, se toma la primera disponible.
     useEffect(() => {
         if (relatedCompanies.length > 0 && !selectedCompanyRelId) {
             setSelectedCompanyRelId(relatedCompanies[0].relationship_id)
@@ -50,29 +49,11 @@ const ProjectsSection = ({ userId }) => {
         }
     }
 
-    /**
-     * Renderiza un modal para agregar una relación de usuario con un proyecto.
-     * @param {{ onClose: () => void }} props - Props del componente.
-     * @returns {JSX.Element} El modal.
-     */
     const ProjectModal = ({ onClose }) => (
         <EditProjectRelationModal
-            /**
-             * Título del modal.
-             */
             title="Proyectos"
-            /**
-             * Función para agregar la relación.
-             * @param {{ project_id: string, user_id: string }} relationData - Datos de la relación.
-             */
             onAddRelation={handleAddRelation}
-            /**
-             * Función para cerrar el modal.
-             */
             onClose={onClose}
-            /**
-             * ID del usuario que se está editando.
-             */
             userId={userId}
         />
     )

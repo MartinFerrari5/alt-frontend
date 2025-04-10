@@ -2,7 +2,7 @@
 import PropTypes from "prop-types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
+import { useDeleteUser } from "../../../store/modules/userStore"
 
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()

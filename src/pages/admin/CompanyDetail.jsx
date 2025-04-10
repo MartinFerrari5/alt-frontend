@@ -29,7 +29,6 @@ const CompanyDetail = () => {
             try {
                 await updateCompanyProjects(id)
                 await updateAvailableCompanyProjects(id)
-                console.log("Proyectos relacionados:", companyProjects)
             } catch (err) {
                 toast.error(`Error al cargar los proyectos: ${err.message}`)
                 console.error("Error fetching company projects:", err)

@@ -25,7 +25,7 @@ const Dropdown = ({
     error,
     isLoading,
     isError,
-    items = [],
+    items,
     valueKey = "id",
     loadingText = "Cargando...",
     errorText = "Error al cargar opciones",

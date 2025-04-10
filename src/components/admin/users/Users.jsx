@@ -1,5 +1,6 @@
 // /src/components/Users/Users.jsx
-import { useGetUsers } from "../../../hooks/data/users/useUserHooks"
+
+import { useGetUsers } from "../../../store/modules/userStore"
 import Header from "../../layout/Header"
 
 import UsersItem from "./UsersItem"

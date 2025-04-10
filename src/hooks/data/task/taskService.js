@@ -13,16 +13,19 @@ import { formatTaskDate } from "../../../util/date"
 
 export const getAllTasks = async () => {
     const { data } = await api.get("/tasks")
-    return data.tasks
+    return data.data
 }
 
 export const getAllTasksAll = async () => {
     const { data } = await api.get("/tasks/all")
-    return data.tasks
+    console.log("getAllTasksAll: ", data.data)
+    return data.data
 }
 
 export const createTask = async (task) => {
+    console.log("createTask: ", task)
     const { data } = await api.post("/tasks", task)
+    console.log("createTask: ", data)
     return data
 }
 

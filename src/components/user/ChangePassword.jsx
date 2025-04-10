@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "react-toastify"
-import { changePassword } from "../../hooks/data/users/usersAlt"
 import { FaSpinner } from "react-icons/fa"
 import Button from "../Button"
+import { changePassword } from "../../hooks/data/users/useUserHooks"
 
 const schema = z
     .object({
