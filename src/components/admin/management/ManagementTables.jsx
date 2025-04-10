@@ -14,6 +14,7 @@ const ManagementTables = () => {
         projects_table,
         types_table,
         fetchOptions,
+        loading,
     } = useOptionsStore()
 
     const {
@@ -38,22 +39,26 @@ const ManagementTables = () => {
                 <DataTable
                     title="Compañías"
                     data={Array.isArray(companies_table) ? companies_table : []}
+                    loading={loading.companies_table} // Pasar estado de carga
                 />
                 <DataTable
                     title="Tipos de Hora"
                     data={Array.isArray(hour_type_table) ? hour_type_table : []}
+                    loading={loading.hour_type_table}
                 />
                 <DataTable
                     title="Proyectos"
                     data={Array.isArray(projects_table) ? projects_table : []}
+                    loading={loading.projects_table}
                 />
                 <DataTable
                     title="Tipos de Tarea"
                     data={Array.isArray(types_table) ? types_table : []}
+                    loading={loading.types_table}
                 />
                 <DataTable
                     title="Emails"
-                    data={emails}
+                    data={Array.isArray(emails) ? emails : []}
                     isEmailTable={true}
                     emailMutations={emailMutations}
                     loading={emailsLoading}

@@ -18,7 +18,6 @@ export const getAllTasks = async () => {
 
 export const getAllTasksAll = async () => {
     const { data } = await api.get("/tasks/all")
-    console.log("getAllTasksAll: ", data.data)
     return data.data
 }
 

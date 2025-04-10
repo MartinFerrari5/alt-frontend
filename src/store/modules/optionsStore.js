@@ -13,6 +13,12 @@ const initialState = {
     hour_type_table: [],
     projects_table: [],
     types_table: [],
+    loading: {
+        companies_table: false,
+        hour_type_table: false,
+        projects_table: false,
+        types_table: false,
+    },
     error: null,
 }
 
@@ -24,12 +30,23 @@ export const useOptionsStore = create(
             setError: (error) => set({ error }),
 
             fetchOptions: async (table) => {
+                set((state) => ({
+                    loading: { ...state.loading, [table]: true },
+                }))
                 try {
                     const response = await getOptions(table)
-                    const data = response.data
-                    set({ [table]: data })
+                    const data = Array.isArray(response.data)
+                        ? response.data
+                        : []
+                    set((state) => ({
+                        [table]: data,
+                        loading: { ...state.loading, [table]: false },
+                    }))
                 } catch (error) {
                     console.error(`Error en fetchOptions para ${table}:`, error)
+                    set((state) => ({
+                        loading: { ...state.loading, [table]: false },
+                    }))
                     get().setError(error.message)
                     throw error
                 }

@@ -13,8 +13,6 @@ import Input from "../Input"
 import Button from "../Button"
 import { schema } from "../../util/validationSchema"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
-import { useRelationsStore } from "../../store/modules/relationsStore"
-
 
 /**
  * Formulario para agregar una tarea
@@ -44,11 +42,6 @@ const AddTaskForm = ({ onClose }) => {
         fetchOptions("projects_table")
         fetchOptions("types_table")
     }, [fetchOptions])
-
-        const {
-        relatedCompanies,
-        relatedProjects,
-    } = useRelationsStore()
 
     // Flags de carga
     const isLoadingCompanies = !companies_table || companies_table.length === 0
@@ -87,7 +80,7 @@ const AddTaskForm = ({ onClose }) => {
             ...watch(),
             company:
                 companies_table && companies_table.length > 0
-                    ? companies_table[0].relationship_id
+                    ? companies_table[0].company_id
                     : "",
             project: "",
             hour_type:
@@ -138,13 +131,13 @@ const AddTaskForm = ({ onClose }) => {
      */
     useEffect(() => {
         if (selectedCompany) {
+            console.log("selectedCompany: ", selectedCompany)
             getCompanyProjects(selectedCompany)
                 .then((projects) => {
                     setFilteredProjects(projects)
                     reset({
                         ...watch(),
-                        project:
-                            projects.length > 0 ? projects[0].project_id : "",
+                        project: projects.length > 0 ? projects[0].company : "",
                     })
                 })
                 .catch((error) => toast.error(error.message))
@@ -194,8 +187,8 @@ const AddTaskForm = ({ onClose }) => {
             : data.company
 
         const taskPayload = {
-            company_id, // Enviar el id real de la compañía
-            project_id: data.project, // Se espera que el dropdown de proyecto devuelva project_id
+            company_id,
+            project_id: data.project,
             task_type: data.task_type.trim(),
             task_description: data.task_description.trim(),
             entry_time: formatTime(data.entry_time),
@@ -224,7 +217,10 @@ const AddTaskForm = ({ onClose }) => {
             },
         })
     }
-    console.log("filteredProjects: ",filteredProjects)
+
+    console.log("companies_table: ", companies_table)
+    console.log("hour_type_table: ", hour_type_table)
+    console.log("types_table: ", types_table)
 
     return (
         <form onSubmit={handleSubmit(handleSaveClick)}>
@@ -238,8 +234,12 @@ const AddTaskForm = ({ onClose }) => {
                         error={errors.company}
                         isLoading={isLoadingCompanies}
                         isError={false}
-                        items={companies_table}
-                        valueKey="id"
+                        items={
+                            Array.isArray(companies_table)
+                                ? companies_table
+                                : []
+                        } // Validación
+                        valueKey="company_id"
                     />
                     {/* Dropdown de proyectos: utiliza "project_id" para el value */}
                     <Dropdown
@@ -249,7 +249,11 @@ const AddTaskForm = ({ onClose }) => {
                         error={errors.project}
                         isLoading={isLoadingProjects}
                         isError={false}
-                        items={filteredProjects}
+                        items={
+                            Array.isArray(filteredProjects)
+                                ? filteredProjects
+                                : []
+                        } // Validación
                         valueKey="id"
                     />
                     <Dropdown
@@ -259,8 +263,8 @@ const AddTaskForm = ({ onClose }) => {
                         error={errors.hour_type}
                         isLoading={isLoadingHourTypes}
                         isError={false}
-                        items={hour_type_table}
-                        valueKey="hour_type"
+                        items={hour_type_table || []} // Validación
+                        valueKey="id"
                     />
                 </div>
                 <Dropdown
@@ -270,7 +274,7 @@ const AddTaskForm = ({ onClose }) => {
                     error={errors.task_type?.message}
                     isLoading={isLoadingTypesTable}
                     isError={false}
-                    items={types_table}
+                    items={types_table || []}
                     valueKey="type"
                 />
                 <Input

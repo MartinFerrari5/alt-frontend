@@ -9,6 +9,7 @@ import { api } from "../../../lib/axios"
 export const getOptions = async (table) => {
     try {
         const { data } = await api.get("/options", { params: { table } })
+        console.log("getOptions: ", table, data)
         return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
@@ -23,8 +24,8 @@ export const getOptions = async (table) => {
  * @param {string} relationship_id - ID de la relación de la compañía.
  * @returns {Promise<Array>} Array con los proyectos.
  */
-export const getCompanyProjects = async (relationship_id) => {
-    if (!relationship_id) {
+export const getCompanyProjects = async (company_id) => {
+    if (!company_id) {
         throw new Error(
             "El ID de la relación es obligatorio para obtener los proyectos."
         )
@@ -32,14 +33,14 @@ export const getCompanyProjects = async (relationship_id) => {
     try {
         const table = "projects_table"
         const { data } = await api.get("/options", {
-            params: { table, relationship_id },
+            params: { table, company_id },
         })
         console.log("getCompanyProjects: ", data)
         return data.data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
-            `Error obteniendo proyectos para la compañía con relationship_id ${relationship_id}: ${backendMsg}`
+            `Error obteniendo proyectos para la compañía con company_id ${company_id}: ${backendMsg}`
         )
     }
 }
