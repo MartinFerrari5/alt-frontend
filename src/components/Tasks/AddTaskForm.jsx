@@ -12,8 +12,9 @@ import DatePicker from "./DatePicker"
 import Input from "../Input"
 import Button from "../Button"
 import { schema } from "../../util/validationSchema"
-import { statusMap } from "../../util/taskConstants"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import { useRelationsStore } from "../../store/modules/relationsStore"
+
 
 /**
  * Formulario para agregar una tarea
@@ -43,6 +44,11 @@ const AddTaskForm = ({ onClose }) => {
         fetchOptions("projects_table")
         fetchOptions("types_table")
     }, [fetchOptions])
+
+        const {
+        relatedCompanies,
+        relatedProjects,
+    } = useRelationsStore()
 
     // Flags de carga
     const isLoadingCompanies = !companies_table || companies_table.length === 0
@@ -218,6 +224,7 @@ const AddTaskForm = ({ onClose }) => {
             },
         })
     }
+    console.log("filteredProjects: ",filteredProjects)
 
     return (
         <form onSubmit={handleSubmit(handleSaveClick)}>
