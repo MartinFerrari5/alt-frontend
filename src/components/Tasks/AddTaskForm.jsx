@@ -177,7 +177,7 @@ const AddTaskForm = ({ onClose }) => {
      * @param {Object} data: Datos del formulario
      */
     const handleSaveClick = (data) => {
-        console.log("data: ", data)
+        // console.log("data: ", data)
         const formattedDate = formatDateForBackend(taskDate)
         const selectedCompanyObj = companies_table.find(
             (comp) => comp.relationship_id === data.company
@@ -199,7 +199,7 @@ const AddTaskForm = ({ onClose }) => {
             task_date: formattedDate,
         }
 
-        console.log("taskPayload: ", taskPayload)
+        // console.log("taskPayload: ", taskPayload)
 
         addTaskMutation.mutate(taskPayload, {
             onSuccess: () => {
@@ -261,7 +261,7 @@ const AddTaskForm = ({ onClose }) => {
                         isLoading={isLoadingHourTypes}
                         isError={false}
                         items={hour_type_table || []} // Validación
-                        valueKey="id"
+                        valueKey="hour_type"
                     />
                 </div>
                 <Dropdown
