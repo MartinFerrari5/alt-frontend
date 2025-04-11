@@ -11,7 +11,7 @@ import TaskTable from "./TaskTable"
 const Tasks = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     // Se muestra la selección de tareas solo en la ruta "/"
     const isInicio = currentPath === "/"

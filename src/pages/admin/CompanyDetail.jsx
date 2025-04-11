@@ -1,5 +1,5 @@
 // /src/pages/CompanyDetail.jsx
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useLocation, Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
@@ -23,7 +23,10 @@ const CompanyDetail = () => {
         deleteCompanyProjectRelation,
     } = useRelationsStore()
 
-    // Efecto para cargar los datos de la compañía y sus proyectos
+    // Estados para los filtros de búsqueda individuales
+    const [filterRelated, setFilterRelated] = useState("")
+    const [filterAvailable, setFilterAvailable] = useState("")
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -84,6 +87,16 @@ const CompanyDetail = () => {
         )
     }
 
+    // Filtrado por cada input de forma independiente
+    const filteredCompanyProjects = companyProjects.filter((project) =>
+        project.option.toLowerCase().includes(filterRelated.toLowerCase())
+    )
+
+    const filteredAvailableProjects = availableCompanyProjects.filter(
+        (project) =>
+            project.option.toLowerCase().includes(filterAvailable.toLowerCase())
+    )
+
     return (
         <MainLayout>
             <div className="rounded-md bg-card p-6 shadow">
@@ -100,73 +113,137 @@ const CompanyDetail = () => {
                 </h1>
                 <p className="mb-4 text-sm text-muted">ID: {id}</p>
 
-                <div className="mt-6">
-                    <h2 className="mb-2 text-lg font-bold text-foreground">
-                        Proyectos Relacionados
-                    </h2>
-                    {companyProjects.length > 0 ? (
-                        <ul className="list-disc space-y-2 pl-5">
-                            {companyProjects.map((project) => (
-                                <li
-                                    key={project.relationship_id} // Usar `relationship_id` como clave única
-                                    className="flex items-center justify-between rounded bg-popover p-2"
-                                >
-                                    <span className="text-foreground">
-                                        {project.option}{" "}
-                                        {/* Mostrar `option` */}
-                                    </span>
-                                    <button
-                                        onClick={
-                                            () =>
-                                                handleRemoveProject(
-                                                    project.relationship_id
-                                                ) // Usar `relationship_id`
-                                        }
-                                        className="btn bg-destructive text-white hover:bg-red-500"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-muted">
-                            No hay proyectos relacionados.
-                        </p>
-                    )}
-                </div>
+                {/* Contenedor responsivo para las dos tablas */}
+                <div className="flex flex-col gap-6 md:flex-row">
+                    {/* Tabla de Proyectos Relacionados */}
+                    <div className="w-full md:w-1/2">
+                        <h2 className="mb-2 text-lg font-bold text-foreground">
+                            Proyectos Relacionados
+                        </h2>
+                        {/* Filtro exclusivo para Proyectos Relacionados */}
+                        <input
+                            type="text"
+                            placeholder="Buscar proyecto..."
+                            value={filterRelated}
+                            onChange={(e) => setFilterRelated(e.target.value)}
+                            className="input-edit mb-4"
+                        />
+                        {filteredCompanyProjects.length > 0 ? (
+                            <div className="overflow-x-auto rounded-xl bg-white p-1 shadow">
+                                {/* Contenedor con altura máxima y scroll vertical */}
+                                <div className="max-h-64 overflow-y-auto">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="sticky top-0 z-10 bg-popover">
+                                            <tr>
+                                                <th className="px-4 py-2 text-left text-sm font-semibold text-foreground">
+                                                    Proyecto
+                                                </th>
+                                                <th className="px-4 py-2 text-left text-sm font-semibold text-foreground">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {filteredCompanyProjects.map(
+                                                (project) => (
+                                                    <tr
+                                                        key={
+                                                            project.relationship_id
+                                                        }
+                                                        className="bg-white transition-colors hover:bg-gray-50"
+                                                    >
+                                                        <td className="px-4 py-2 text-sm text-foreground">
+                                                            {project.option}
+                                                        </td>
+                                                        <td className="px-4 py-2">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleRemoveProject(
+                                                                        project.relationship_id
+                                                                    )
+                                                                }
+                                                                className="btn bg-destructive text-sm text-white hover:bg-red-500"
+                                                            >
+                                                                Eliminar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-muted">
+                                No hay proyectos relacionados.
+                            </p>
+                        )}
+                    </div>
 
-                <div className="mt-6">
-                    <h2 className="mb-2 text-lg font-bold text-foreground">
-                        Agregar Proyectos
-                    </h2>
-                    {availableCompanyProjects.length > 0 ? (
-                        <ul className="list-disc space-y-2 pl-5">
-                            {availableCompanyProjects.map((project) => (
-                                <li
-                                    key={project.id} // Usar `id` como clave única
-                                    className="flex items-center justify-between rounded bg-popover p-2"
-                                >
-                                    <span className="text-foreground">
-                                        {project.option}{" "}
-                                        {/* Mostrar `option` */}
-                                    </span>
-                                    <button
-                                        onClick={() =>
-                                            handleAddProject(project.id)
-                                        }
-                                        className="btn btn-primary"
-                                    >
-                                        Agregar
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-muted">
-                            No hay proyectos disponibles para agregar.
-                        </p>
-                    )}
+                    {/* Tabla de Proyectos Disponibles */}
+                    <div className="w-full md:w-1/2">
+                        <h2 className="mb-2 text-lg font-bold text-foreground">
+                            Agregar Proyectos
+                        </h2>
+                        {/* Filtro exclusivo para Proyectos Disponibles */}
+                        <input
+                            type="text"
+                            placeholder="Buscar proyecto..."
+                            value={filterAvailable}
+                            onChange={(e) => setFilterAvailable(e.target.value)}
+                            className="input-edit mb-4"
+                        />
+                        {filteredAvailableProjects.length > 0 ? (
+                            <div className="space-y-4 rounded-xl bg-white p-1 shadow">
+                                {/* Contenedor con altura definida y scroll vertical */}
+                                <div className="max-h-64 overflow-y-auto">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="sticky top-0 z-10 bg-popover">
+                                            <tr>
+                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
+                                                    Proyecto
+                                                </th>
+                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {filteredAvailableProjects.map(
+                                                (project) => (
+                                                    <tr
+                                                        key={project.id}
+                                                        className="cursor-pointer bg-white transition-colors hover:bg-gray-50"
+                                                    >
+                                                        <td className="px-4 py-5 text-sm text-foreground">
+                                                            {project.option}
+                                                        </td>
+                                                        <td className="px-4 py-5">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleAddProject(
+                                                                        project.id
+                                                                    )
+                                                                }
+                                                                className="btn btn-primary text-sm"
+                                                            >
+                                                                Agregar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-muted">
+                                No hay proyectos disponibles para agregar.
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
         </MainLayout>
