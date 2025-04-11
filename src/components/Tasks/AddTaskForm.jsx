@@ -137,7 +137,8 @@ const AddTaskForm = ({ onClose }) => {
                     setFilteredProjects(projects)
                     reset({
                         ...watch(),
-                        project: projects.length > 0 ? projects[0].company : "",
+                        project:
+                            projects.length > 0 ? projects[0].project_id : "",
                     })
                 })
                 .catch((error) => toast.error(error.message))
@@ -176,18 +177,16 @@ const AddTaskForm = ({ onClose }) => {
      * @param {Object} data: Datos del formulario
      */
     const handleSaveClick = (data) => {
+        console.log("data: ", data)
         const formattedDate = formatDateForBackend(taskDate)
-        console.log("handleSaveClick: ", data)
-        // Buscar el objeto de la compañía a partir del relationship_id para extraer el company_id real
         const selectedCompanyObj = companies_table.find(
             (comp) => comp.relationship_id === data.company
         )
-        const company_id = selectedCompanyObj
-            ? selectedCompanyObj.company_id
-            : data.company
 
         const taskPayload = {
-            company_id,
+            company_id: selectedCompanyObj
+                ? selectedCompanyObj.company_id
+                : data.company,
             project_id: data.project,
             task_type: data.task_type.trim(),
             task_description: data.task_description.trim(),
@@ -199,6 +198,8 @@ const AddTaskForm = ({ onClose }) => {
             status: "0",
             task_date: formattedDate,
         }
+
+        console.log("taskPayload: ", taskPayload)
 
         addTaskMutation.mutate(taskPayload, {
             onSuccess: () => {
@@ -217,10 +218,6 @@ const AddTaskForm = ({ onClose }) => {
             },
         })
     }
-
-    console.log("companies_table: ", companies_table)
-    console.log("hour_type_table: ", hour_type_table)
-    console.log("types_table: ", types_table)
 
     return (
         <form onSubmit={handleSubmit(handleSaveClick)}>
@@ -254,7 +251,7 @@ const AddTaskForm = ({ onClose }) => {
                                 ? filteredProjects
                                 : []
                         } // Validación
-                        valueKey="id"
+                        valueKey="project_id"
                     />
                     <Dropdown
                         id="hour_type"

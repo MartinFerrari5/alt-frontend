@@ -58,7 +58,7 @@ const EditRelationModal = ({
                         isLoading={false}
                         isError={false}
                         items={availableItems.map((item) => ({
-                            id: item.id || item.company_id || item.project_id,
+                            id: item.id || item.project_id,
                             option: item[displayProp] || item.options,
                         }))}
                         loadingText="Cargando..."

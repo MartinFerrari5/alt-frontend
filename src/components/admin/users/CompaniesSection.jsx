@@ -59,12 +59,13 @@ const CompaniesSection = ({
 
     // Mapeo para compañías disponibles (no relacionadas)
     const availableCompanies = notRelatedCompanies.map((item) => ({
-        id: item.company_id,
+        id: item.id,
         option: item.option,
     }))
 
     // Función para agregar relación utilizando el store global
     const handleAddRelation = async (companyId) => {
+        console.log("handleAddRelation: ", userId, companyId)
         try {
             const relationData = { user_id: userId, company_id: companyId }
             await addCompanyUserRelation(relationData, userId)

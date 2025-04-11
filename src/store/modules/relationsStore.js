@@ -61,6 +61,7 @@ export const useRelationsStore = create((set, get) => ({
             // Accede a la propiedad `data` del objeto de respuesta
             const relatedCompanies = relatedCompaniesResponse.data
             const response = await getNotRelatedCompanies(user_id)
+            console.log("getNotRelatedCompanies: ", response)
             const notRelatedCompanies = response.data
 
             set({
