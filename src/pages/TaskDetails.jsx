@@ -173,7 +173,7 @@ const TaskDetailsPage = () => {
                     <TaskHeader
                         task={currentTask}
                         onBack={() => navigate(-1)}
-                        onDelete={handleDeleteClick}
+                        onDeleteConfirmed={handleDeleteClick}
                         onEdit={() => setIsEditing((prev) => !prev)}
                         isEditing={isEditing}
                     />

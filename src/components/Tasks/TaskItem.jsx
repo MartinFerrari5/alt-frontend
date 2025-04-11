@@ -33,7 +33,7 @@ const TaskItem = ({
     onSelectTask,
     currentPath,
 }) => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
         deleteTaskMutation

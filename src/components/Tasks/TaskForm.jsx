@@ -68,7 +68,7 @@ const TaskForm = ({
                         items={companies}
                         loadingText="Cargando empresas..."
                         errorText="Error cargando empresas"
-                        valueKey="relationship_id"
+                        valueKey="company_id"
                     />
                     <Dropdown
                         id="project"
