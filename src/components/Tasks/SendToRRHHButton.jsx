@@ -31,7 +31,7 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
         // const payloadTasks = tasks.map((task) => ({ id: task.id }))
 
         // Crear el payload con todas las tareas completas
-        const payloadTasks = tasks;
+        const payloadTasks = tasks
 
         // Diferenciar acción según rol:
         sendToRRHH(

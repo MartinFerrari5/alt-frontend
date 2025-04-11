@@ -67,13 +67,9 @@ const TaskDetailsPage = () => {
     // Obtener la tarea (acepta tanto objeto como array)
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
+    console.log("currentTask", currentTask)
 
-    const taskDetails =
-        currentTask && currentTask.task
-            ? Array.isArray(currentTask.task)
-                ? currentTask.task[0]
-                : currentTask.task
-            : null
+    const taskDetails = currentTask || null
 
     useEffect(() => {
         if (taskDetails) {
@@ -138,6 +134,7 @@ const TaskDetailsPage = () => {
             status: Number(data.status),
             task_date: taskDate ? formatDateForBackend(taskDate) : null,
         }
+        console.log("Datos a actualizar:", updateData)
 
         updateTaskMutation.mutate(
             { taskId, task: updateData },
@@ -162,6 +159,7 @@ const TaskDetailsPage = () => {
                 toast.error("Ocurrió un error al eliminar la tarea."),
         })
     }
+    console.log("taskDetails", taskDetails)
 
     if (isLoading) return <p>Cargando...</p>
     if (isError)
