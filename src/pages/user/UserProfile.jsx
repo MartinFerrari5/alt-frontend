@@ -20,25 +20,22 @@ import { useUpdateUser } from "../../store/modules/userStore"
 
 const UserProfile = () => {
     const navigate = useNavigate()
-    const {
-        userId,
-        email,
-        role,
-        fullName: authFullName,
-    } = useAuthStore((state) => state)
 
-    const [editedName, setEditedName] = useState(authFullName || "")
+    const user = useAuthStore((state) => state.user)
+
+
+    const [editedName, setEditedName] = useState(user.full_name || "")
     const [isEditing, setIsEditing] = useState(false)
 
-    const updateUserMutation = useUpdateUser(userId)
+    const updateUserMutation = useUpdateUser(user.id)
 
     useEffect(() => {
-        setEditedName(authFullName || "")
-    }, [authFullName])
+        setEditedName(user.full_name || "")
+    }, [user.full_name])
 
     const handleStartEditing = () => setIsEditing(true)
     const handleCancelEditing = () => {
-        setEditedName(authFullName || "")
+        setEditedName(user.full_name || "")
         setIsEditing(false)
     }
 
@@ -47,7 +44,7 @@ const UserProfile = () => {
             toast.error("Name cannot be empty")
             return
         }
-        if (editedName.trim() === authFullName) {
+        if (editedName.trim() === user.full_name) {
             setIsEditing(false)
             return
         }
@@ -70,7 +67,7 @@ const UserProfile = () => {
         })
     }
 
-    if (!userId) {
+    if (!user) {
         return (
             <div className="flex h-screen items-center justify-center">
                 <Loader2 className="text-green h-10 w-10 animate-spin" />
@@ -79,9 +76,9 @@ const UserProfile = () => {
     }
 
     const userInfoItems = [
-        { icon: IdCard, label: "User ID", value: userId },
-        { icon: Mail, label: "Email", value: email },
-        { icon: Shield, label: "Role", value: role },
+        { icon: IdCard, label: "User ID", value: user.id },
+        { icon: Mail, label: "Email", value: user.email },
+        { icon: Shield, label: "Role", value: user.role },
     ]
 
     return (
@@ -165,7 +162,7 @@ const UserProfile = () => {
                                                 {editedName || "No Name Set"}
                                             </h2>
                                             <p className="text-sm text-gray-500">
-                                                {email}
+                                                {user.email}
                                             </p>
                                         </div>
                                         <button
