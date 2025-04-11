@@ -32,7 +32,6 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
 
         // Diferenciar acción según rol:
         if (role === "admin") {
-            // Para admin se envía un flag 'finalize'
             sendToRRHH(
                 {
                     queryParams: cleanedParams,
@@ -49,7 +48,7 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
                     },
                 }
             )
-        } else if (role === "user") {
+        } else if (role == "user") {
             sendToRRHH(
                 {
                     queryParams: cleanedParams,

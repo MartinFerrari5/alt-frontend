@@ -41,7 +41,7 @@ export const useGetStatus = () => {
 }
 
 export const useCreateStatus = () => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const queryClient = useQueryClient()
     const addStatus = useStatusStore((state) => state.addStatus)
 
@@ -60,7 +60,7 @@ export const useCreateStatus = () => {
 }
 
 export const useUpdateStatus = () => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const queryClient = useQueryClient()
     const updateLocalStatus = useStatusStore((state) => state.updateStatus)
 
@@ -80,7 +80,7 @@ export const useUpdateStatus = () => {
 }
 
 export const useGetStatusByTask = (task_id) => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     return useQuery({
         queryKey: statusQueryKeys.byTask(task_id),
@@ -113,7 +113,7 @@ export const useFilterExportedTasks = (filters) => {
  * @returns Un objeto con la función de envío y un objeto con la respuesta.
  */
 export const useSendStatusToRRHH = () => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const queryClient = useQueryClient()
 
     return useMutation({
