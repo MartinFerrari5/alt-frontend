@@ -38,7 +38,7 @@ const StatusIndicator = ({ status, isLoading, onChange }) => {
 
     return (
         <label
-            className={`relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg ${statusClasses}`}
+            className={`relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg ${statusClasses}`}
         >
             <input
                 type="checkbox"

@@ -26,6 +26,7 @@ const TaskTable = ({
                                                 tasks.length
                                             }
                                             onChange={onSelectAll}
+                                            className="h-6 w-6 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-white transition duration-200 checked:border-green-500 checked:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
                                         />
                                     </th>
                                 )}
