@@ -7,7 +7,7 @@ import { api } from "../../../lib/axios"
 export const getStatuses = async () => {
     const { data } = await api.get("/status")
     // Se asume que la respuesta contiene un arreglo en data.tasks
-    return data.tasks
+    return data.data
 }
 
 /**
@@ -51,7 +51,7 @@ export const getFilteredExportedTasks = async (filters) => {
     params.append("date", filters.date || "")
     const { data } = await api.get(`/status/filtertasks?${params.toString()}`)
     // Se asume que la respuesta contiene un arreglo en data.tasks
-    return data.tasks
+    return data.data
 }
 
 /**
@@ -66,7 +66,7 @@ export const postStatusRRHH = async (queryParams, payload) => {
         const { data } = await api.post("/status/rrhh", payload, {
             params: queryParams,
         })
-        return data
+        return data.data
     } catch (error) {
         console.error("Error en postStatusRRHH:", error)
         // Lanza un error con el mensaje del backend o un mensaje genérico en caso de fallo

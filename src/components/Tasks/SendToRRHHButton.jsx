@@ -27,45 +27,35 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
         // Limpiar los query params antes de enviarlos
         const cleanedParams = cleanQueryParams(queryParams)
 
-        // Enviar solo lo necesario: un arreglo de objetos con la propiedad id
-        const payloadTasks = tasks.map((task) => ({ id: task.id }))
+        // Crear el payload con solo los IDs de las tareas
+        // const payloadTasks = tasks.map((task) => ({ id: task.id }))
+
+        // Crear el payload con todas las tareas completas
+        const payloadTasks = tasks;
 
         // Diferenciar acción según rol:
-        if (role === "admin") {
-            sendToRRHH(
-                {
-                    queryParams: cleanedParams,
-                    payload: { tasks: payloadTasks, finalize: true },
+        sendToRRHH(
+            {
+                queryParams: cleanedParams,
+                payload: { tasks: payloadTasks },
+            },
+            {
+                onSuccess: () => {
+                    const successMessage =
+                        role === "admin"
+                            ? "Tareas finalizadas exitosamente!"
+                            : "Tareas enviadas a RRHH exitosamente!"
+                    toast.success(successMessage)
                 },
-                {
-                    onSuccess: () => {
-                        toast.success("Tareas finalizadas exitosamente!")
-                    },
-                    onError: (error) => {
-                        toast.error(
-                            `Error al finalizar tareas: ${error.message}`
-                        )
-                    },
-                }
-            )
-        } else if (role == "user") {
-            sendToRRHH(
-                {
-                    queryParams: cleanedParams,
-                    payload: { tasks: payloadTasks },
+                onError: (error) => {
+                    const errorMessage =
+                        role === "admin"
+                            ? `Error al finalizar tareas: ${error.message}`
+                            : `Error al enviar tareas a RRHH: ${error.message}`
+                    toast.error(errorMessage)
                 },
-                {
-                    onSuccess: () => {
-                        toast.success("Tareas enviadas a RRHH exitosamente!")
-                    },
-                    onError: (error) => {
-                        toast.error(
-                            `Error al enviar tareas a RRHH: ${error.message}`
-                        )
-                    },
-                }
-            )
-        }
+            }
+        )
     }, [tasks, queryParams, sendToRRHH, role])
 
     return (

@@ -12,6 +12,7 @@ import AddTaskDialog from "../Tasks/AddTaskDialog"
 // import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 function Header({ subtitle, title, tasks }) {
+    console.log("Tareas seleccionadas:", tasks)
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
     const [searchParams] = useSearchParams()
@@ -25,7 +26,6 @@ function Header({ subtitle, title, tasks }) {
     const queryParams = {
         company: (searchParams.get("company") || "").trim(),
         project: (searchParams.get("project") || "").trim(),
-        fullname: (searchParams.get("fullname") || user.full_name || "").trim(),
         date: (searchParams.get("date") || "").trim(),
     }
 
