@@ -38,7 +38,8 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         },
     })
 
-    const { companies_table, hour_type_table, fetchOptions } = useOptionsStore()
+    const { companies_table, hour_type_table, fetchOptions, projects_table } =
+        useOptionsStore()
     // Estado para almacenar la lista de proyectos relacionados según la compañía seleccionada
     const [filteredProjects, setFilteredProjects] = useState([])
 
@@ -93,11 +94,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     // Se busca en companies_table el objeto que corresponda para extraer el relationship_id y obtener los proyectos.
     const selectedCompanyId = watch("company")
     useEffect(() => {
-        if (
-            selectedCompanyId &&
-            companies_table &&
-            companies_table.length > 0
-        ) {
+        if (user.role !== "admin" && selectedCompanyId && companies_table && companies_table.length > 0) {
             // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
             const companyObj = companies_table.find(
                 (c) =>
@@ -105,30 +102,31 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                     c.id === selectedCompanyId
             )
 
-            if ((companyObj && companyObj.relationship_id) || companyObj.id) {
-                getCompanyProjects(companyObj.relationship_id || "")
+            if ((companyObj && companyObj.company_id) || companyObj.id) {
+                getCompanyProjects(companyObj.company_id || "")
                     .then((projects) => {
                         setFilteredProjects(projects)
                         // Si el usuario aún no ha seleccionado un proyecto, asignar el primer proyecto (usando project_id)
-                        // if (!watch("project")) {
-                        //     setValue(
-                        //         "project",
-                        //         projects.length > 0
-                        //             ? projects[0].project_id
-                        //             : ""
-                        //     )
-                        // }
+                        if (!watch("project")) {
+                            setValue(
+                                "project",
+                                projects.length > 0
+                                    ? projects[0].project_id
+                                    : ""
+                            )
+                        }
                     })
                     .catch((error) => toast.error(error.message))
             } else {
                 setFilteredProjects([])
                 setValue("project", "")
             }
-        } else {
+        } else if (user.role === "admin") {
+            // Si es administrador, no buscar proyectos relacionados
             setFilteredProjects([])
             setValue("project", "")
         }
-    }, [selectedCompanyId, companies_table, setValue, watch])
+    }, [user.role, selectedCompanyId, companies_table, setValue, watch])
 
     /**
      * Función que se encarga de procesar la búsqueda de tareas cuando se envía el formulario.
@@ -160,6 +158,8 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             hourtype,
         })
     }
+    console.log("filteredProjects", filteredProjects)
+    console.log("projects_table", projects_table)
 
     return (
         <form
@@ -191,9 +191,21 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 label="Proyecto"
                 register={register}
                 error={errors.project}
-                isLoading={!filteredProjects || filteredProjects.length === 0}
+                isLoading={
+                    user.role === "admin"
+                        ? !projects_table || projects_table.length === 0
+                        : !filteredProjects || filteredProjects.length === 0
+                }
                 isError={false}
-                items={Array.isArray(filteredProjects) ? filteredProjects : []}
+                items={
+                    user.role === "admin"
+                        ? Array.isArray(projects_table)
+                            ? projects_table
+                            : []
+                        : Array.isArray(filteredProjects)
+                          ? filteredProjects
+                          : []
+                }
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
                 valueKey={user.role === "admin" ? "id" : "project_id"}

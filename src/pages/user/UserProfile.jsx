@@ -23,7 +23,6 @@ const UserProfile = () => {
 
     const user = useAuthStore((state) => state.user)
 
-
     const [editedName, setEditedName] = useState(user.full_name || "")
     const [isEditing, setIsEditing] = useState(false)
 
