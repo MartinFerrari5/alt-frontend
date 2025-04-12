@@ -1,6 +1,7 @@
 import Dropdown from "../Dropdown/Dropdown"
 import DatePicker from "./DatePicker"
 import Input from "../Input"
+import useAuthStore from "../../store/modules/authStore"
 
 const TaskFormFields = ({
     companies_table,
@@ -12,6 +13,8 @@ const TaskFormFields = ({
     register,
     errors,
 }) => {
+    const user = useAuthStore((state) => state.user)
+    const role = user?.role || "user"
     return (
         <div className="mx-auto grid max-w-4xl gap-6">
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -27,7 +30,7 @@ const TaskFormFields = ({
                         }
                         isError={false}
                         items={companies_table || []}
-                        valueKey="company_id"
+                        valueKey={role === "user" ? "company_id" : "id"}
                     />
                     {/* Dropdown Proyecto */}
                     <Dropdown
@@ -38,7 +41,7 @@ const TaskFormFields = ({
                         isLoading={filteredProjects.length === 0}
                         isError={false}
                         items={filteredProjects || []}
-                        valueKey="project_id"
+                        valueKey={role === "user" ? "project_id" : "id"}
                     />
                 </div>
             </div>

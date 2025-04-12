@@ -7,7 +7,6 @@ import InputErrorMessage from "./InputErrorMessage"
 import InputLabel from "./InputLabel"
 
 const Input = forwardRef(({ label, errorMessage, ...rest }, ref) => {
-    console.log("Input component rendered", rest)
     return (
         <div className="col-span-2">
             <InputLabel htmlFor={rest.id}>{label}</InputLabel>
