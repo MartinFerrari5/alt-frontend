@@ -19,11 +19,8 @@ const TaskForm = ({
     companies,
     projects,
     hourTypes,
-    setValue,
     reset,
 }) => {
-    if (!task) return null
-
     const isLoadingCompanies = companies.length === 0
     const [filteredProjects, setFilteredProjects] = useState(projects)
     const isLoadingProjects = filteredProjects.length === 0
@@ -54,6 +51,7 @@ const TaskForm = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
 
+    if (!task) return null
     return (
         <form onSubmit={handleSubmit}>
             <div className="bg-brand-white space-y-6 rounded-xl p-6">
