@@ -4,12 +4,12 @@ import { useSearchParams } from "react-router-dom"
 import StatusItem from "./StatusItem"
 import TaskFilter from "../../Tasks/TaskFilter"
 
-import useStatusStore from "../../../store/statusStore"
 import {
     getFilteredExportedTasks,
     getStatuses,
 } from "../../../hooks/data/status/statusServer"
 import Header from "../../layout/Header"
+import useStatusStore from "../../../store/modules/statusStore"
 
 const StatusTable = () => {
     // Manejo de query params para filtros

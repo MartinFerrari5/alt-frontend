@@ -1,8 +1,9 @@
-// /src/components/admin/users/EditProjectRelationModal.jsx
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
-import { useRelationsStore } from "../../../store/relationsStore"
+import { useRelationsStore } from "../../../store/modules/relationsStore"
+import { DialogClose } from "../../ui/dialog"
+import { LoadingSpinner } from "../../../util/LoadingSpinner"
 
 export const EditProjectRelationModal = ({
     title,
@@ -12,40 +13,107 @@ export const EditProjectRelationModal = ({
 }) => {
     const [selectedRelationshipId, setSelectedRelationshipId] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
 
-    // Extraemos las propiedades del store para compañías y proyectos
+    // Extraemos datos del store
     const {
-        relatedCompanies, // Ahora lo obtenemos directamente desde el store
-        relatedProjects,
+        relatedCompanies,
         notRelatedProjects,
+        relatedProjects,
         updateRelations,
+        updateNotRelatedProjectsForUser,
     } = useRelationsStore()
 
-    // Actualiza proyectos asociados y disponibles cuando cambia la compañía seleccionada
+    // Inicializar la compañía seleccionada si no hay ninguna seleccionada
     useEffect(() => {
-        if (selectedRelationshipId) {
-            updateRelations(userId, selectedRelationshipId)
+        if (relatedCompanies.length > 0 && !selectedRelationshipId) {
+            setSelectedRelationshipId(relatedCompanies[0].company_id)
         }
-    }, [selectedRelationshipId, userId, updateRelations])
+    }, [relatedCompanies, selectedRelationshipId])
 
-    const handleAddRelation = () => {
+    // Función para actualizar proyectos relacionados y no relacionados
+    const refreshRelations = useCallback(async () => {
+        if (!selectedRelationshipId) return
+
+        setIsLoading(true)
+        setError(null)
+        try {
+            // Actualiza proyectos relacionados
+            await updateRelations(userId, selectedRelationshipId)
+            // Actualiza proyectos no relacionados
+            await updateNotRelatedProjectsForUser(
+                userId,
+                selectedRelationshipId
+            )
+        } catch (err) {
+            console.error(
+                "Error al actualizar relaciones:",
+                err.response?.data || err
+            )
+            setError("Error al cargar la información")
+        } finally {
+            setIsLoading(false)
+        }
+    }, [
+        selectedRelationshipId,
+        updateRelations,
+        updateNotRelatedProjectsForUser,
+        userId,
+    ])
+
+    // Ejecutamos el refresco cada vez que cambia la compañía seleccionada
+    useEffect(() => {
+        refreshRelations()
+    }, [refreshRelations])
+
+    const handleAddRelation = useCallback(() => {
         if (selectedRelationshipId && selectedProject) {
-            onAddRelation(selectedProject, selectedRelationshipId)
+            onAddRelation({
+                user_id: userId,
+                company_id: selectedRelationshipId,
+                relationship_id: selectedProject,
+            })
+            // Reiniciar estados para el formulario
             setSelectedRelationshipId("")
             setSelectedProject("")
         }
+    }, [onAddRelation, selectedRelationshipId, selectedProject, userId])
+
+    const handleSave = () => {
+        if (selectedRelationshipId && selectedProject) {
+            handleAddRelation()
+        }
+        onClose?.()
     }
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-11/12 rounded bg-white p-6 shadow-lg md:w-2/3 lg:w-1/2">
-                <h3 className="mb-4 text-xl font-bold">Editar {title}</h3>
-                <div className="flex gap-4">
-                    {/* Panel de proyectos ya asociados */}
+        <div>
+            <div
+                role="dialog"
+                aria-labelledby="edit-project-relation-title"
+                aria-describedby="edit-project-relation-description"
+            >
+                <h2
+                    id="edit-project-relation-title"
+                    className="text-xl font-bold"
+                >
+                    {title}
+                </h2>
+                <p
+                    id="edit-project-relation-description"
+                    className="text-sm text-gray-500"
+                >
+                    Selecciona una compañía y un proyecto para gestionar las
+                    relaciones.
+                </p>
+                <div className="mt-4 flex gap-4">
+                    {/* Lista de proyectos asociados */}
                     <div className="w-1/2">
                         <h4 className="mb-2 text-lg font-semibold">
-                            Asociados
+                            Proyectos Asociados
                         </h4>
+                        {error && <p className="text-red-500">{error}</p>}
                         <ul className="max-h-64 overflow-y-auto">
                             {relatedProjects && relatedProjects.length > 0 ? (
                                 relatedProjects.map((item) => (
@@ -53,7 +121,9 @@ export const EditProjectRelationModal = ({
                                         key={item.project_id}
                                         className="flex items-center justify-between border-b py-2"
                                     >
-                                        <span>{item.option}</span>
+                                        <span>
+                                            {item.option || item.options}
+                                        </span>
                                     </li>
                                 ))
                             ) : (
@@ -61,34 +131,33 @@ export const EditProjectRelationModal = ({
                             )}
                         </ul>
                     </div>
-                    {/* Panel para agregar nuevos proyectos */}
+                    {/* Sección para agregar nuevos proyectos */}
                     <div className="w-1/2">
                         <h4 className="mb-2 text-lg font-semibold">
                             Agregar {title}
                         </h4>
-                        {/* Dropdown para seleccionar la compañía (relationship_id) */}
                         <Dropdown
                             id="companyDropdown"
                             label="Seleccionar Compañía"
                             register={() => ({
                                 onChange: (e) => {
                                     setSelectedRelationshipId(e.target.value)
-                                    setSelectedProject("") // Reiniciamos el proyecto al cambiar la compañía
+                                    setSelectedProject("")
                                 },
                                 value: selectedRelationshipId,
                             })}
                             error={null}
-                            isLoading={false}
-                            isError={false}
-                            items={relatedCompanies.map((item) => ({
-                                id: item.company_id,
-                                option: item.option,
-                            }))}
-                            loadingText="Cargando..."
-                            errorText="Error al cargar"
-                            useIdAsValue={true}
+                            isLoading={isLoading}
+                            isError={!!error}
+                            items={
+                                Array.isArray(relatedCompanies)
+                                    ? relatedCompanies.map((item) => ({
+                                          id: item.company_id,
+                                          option: item.option,
+                                      }))
+                                    : []
+                            }
                         />
-                        {/* Dropdown para seleccionar un proyecto disponible */}
                         <Dropdown
                             id="projectDropdown"
                             label="Seleccionar Proyecto"
@@ -98,28 +167,35 @@ export const EditProjectRelationModal = ({
                                 value: selectedProject,
                             })}
                             error={null}
-                            isLoading={false}
-                            isError={false}
-                            items={notRelatedProjects.map((item) => ({
-                                id: item.project_id,
-                                option: item.options,
-                            }))}
-                            loadingText="Cargando proyectos..."
-                            errorText="Error al cargar proyectos"
-                            useIdAsValue={true}
-                        />
-                        <Button
-                            onClick={handleAddRelation}
-                            disabled={
-                                !selectedRelationshipId || !selectedProject
+                            isLoading={isLoading}
+                            isError={!!error}
+                            items={
+                                Array.isArray(notRelatedProjects)
+                                    ? notRelatedProjects.map((item) => ({
+                                          id: item.id,
+                                          option: item.option,
+                                      }))
+                                    : []
                             }
-                        >
-                            Agregar
-                        </Button>
+                        />
                     </div>
                 </div>
-                <div className="mt-4 flex justify-end">
-                    <Button onClick={onClose}>Cerrar</Button>
+                <div className="mt-6 flex justify-end gap-3">
+                    <DialogClose asChild>
+                        <Button variant="outline" disabled={isLoading}>
+                            Cancelar
+                        </Button>
+                    </DialogClose>
+                    <Button
+                        onClick={handleSave}
+                        disabled={
+                            !selectedRelationshipId ||
+                            !selectedProject ||
+                            isLoading
+                        }
+                    >
+                        {isLoading ? <LoadingSpinner size="sm" /> : "Agregar"}
+                    </Button>
                 </div>
             </div>
         </div>

@@ -2,14 +2,10 @@
 import PropTypes from "prop-types"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { TrashIcon, LoaderIcon } from "../../../assets/icons"
-import { useDeleteUser } from "../../../hooks/data/users/useUserHooks"
-import Button from "../../Button"
-import useAuthStore from "../../../store/authStore"
+import { useDeleteUser } from "../../../store/modules/userStore"
 
 const UsersItem = ({ user }) => {
     const navigate = useNavigate()
-    const role = useAuthStore((state) => state.role)
     const { mutate: deleteUser, isPending: deleteUserIsLoading } =
         useDeleteUser(user.id)
 
@@ -36,7 +32,7 @@ const UsersItem = ({ user }) => {
             <td className="px-4 py-5">{user.full_name}</td>
             <td className="px-4 py-5">{user.email}</td>
             <td className="px-4 py-5">{user.role}</td>
-            <td className="flex gap-2 px-4 py-5 text-right">
+            {/* <td className="flex gap-2 px-4 py-5 text-right">
                 {role === "admin" && (
                     <Button
                         color="ghost"
@@ -44,13 +40,13 @@ const UsersItem = ({ user }) => {
                         disabled={deleteUserIsLoading}
                     >
                         {deleteUserIsLoading ? (
-                            <LoaderIcon className="animate-spin text-brand-text-gray" />
+                            <LoaderIcon className="text-brand-text-gray animate-spin" />
                         ) : (
                             <TrashIcon className="text-brand-text-gray" />
                         )}
                     </Button>
                 )}
-            </td>
+            </td> */}
         </tr>
     )
 }

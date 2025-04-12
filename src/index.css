@@ -1,138 +1,149 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
+@tailwind components;
 @tailwind utilities;
 
 @layer base {
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Black.ttf") format("truetype");
-        font-weight: 900;
-        font-style: normal;
+    :root {
+        --background: 0 0% 98%;
+        --foreground: 222 14% 15%;
+
+        --card: 0 0% 100%;
+        --card-foreground: 222 14% 15%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 222 14% 15%;
+
+        --primary: 114 45% 38%;
+        --primary-foreground: 0 0% 98%;
+
+        --secondary: 217 33% 16%;
+        --secondary-foreground: 0 0% 98%;
+
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+
+        --radius: 0.5rem;
+
+        --sidebar-background: 217 33% 16%;
+        --sidebar-foreground: 0 0% 95%;
+        --sidebar-primary: 114 45% 38%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 217 33% 24%;
+        --sidebar-accent-foreground: 0 0% 95%;
+        --sidebar-border: 217 33% 24%;
+        --sidebar-ring: 114 45% 38%;
     }
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-BlackItalic.ttf") format("truetype");
-        font-weight: 900;
-        font-style: italic;
-    }
+    .dark {
+        --background: 222 14% 15%;
+        --foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Bold.ttf") format("truetype");
-        font-weight: 700;
-        font-style: normal;
-    }
+        --card: 222 14% 18%;
+        --card-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-BoldItalic.ttf") format("truetype");
-        font-weight: 700;
-        font-style: italic;
-    }
+        --popover: 222 14% 18%;
+        --popover-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-ExtraBold.ttf") format("truetype");
-        font-weight: 800;
-        font-style: normal;
-    }
+        --primary: 114 45% 38%;
+        --primary-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-ExtraBoldItalic.ttf")
-            format("truetype");
-        font-weight: 800;
-        font-style: italic;
-    }
+        --secondary: 217 33% 16%;
+        --secondary-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-ExtraLight.ttf") format("truetype");
-        font-weight: 200;
-        font-style: normal;
-    }
+        --muted: 217 33% 24%;
+        --muted-foreground: 215 20.2% 65.1%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-ExtraLightItalic.ttf")
-            format("truetype");
-        font-weight: 200;
-        font-style: italic;
-    }
+        --accent: 217 33% 24%;
+        --accent-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Italic.ttf") format("truetype");
-        font-weight: 400;
-        font-style: italic;
-    }
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Light.ttf") format("truetype");
-        font-weight: 300;
-        font-style: normal;
+        --border: 217 33% 24%;
+        --input: 217 33% 24%;
+        --ring: 114 45% 38%;
     }
+}
 
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-LightItalic.ttf") format("truetype");
-        font-weight: 300;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Medium.ttf") format("truetype");
-        font-weight: 500;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-MediumItalic.ttf")
-            format("truetype");
-        font-weight: 500;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Regular.ttf") format("truetype");
-        font-weight: 400;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-SemiBold.ttf") format("truetype");
-        font-weight: 600;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-SemiBoldItalic.ttf")
-            format("truetype");
-        font-weight: 600;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-Thin.ttf") format("truetype");
-        font-weight: 100;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: "Poppins";
-        src: url("/src/assets/fonts/Poppins-ThinItalic.ttf") format("truetype");
-        font-weight: 100;
-        font-style: italic;
+@layer base {
+    * {
+        @apply border-border;
     }
 
     body {
-        @apply bg-brand-background;
+        @apply bg-greyBg font-sans text-blackColor;
+    }
+}
+
+/* Custom components and UI elements */
+@layer components {
+    .nav-item {
+        @apply relative flex items-center gap-3 rounded-md px-4 py-3 text-sidebar-foreground transition-colors hover:bg-sidebar-accent;
+    }
+
+    .nav-item.active {
+        @apply bg-sidebar-accent font-medium;
+    }
+
+    .input-edit {
+        @apply w-full rounded-md border px-3 py-2 outline-none focus:border-greenApp focus:ring-1 focus:ring-greenApp;
+    }
+
+    .btn {
+        @apply rounded-md px-4 py-2 font-medium transition-all duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-greenApp text-white hover:bg-darkGreen2;
+    }
+
+    .btn-secondary {
+        @apply bg-greyStrongBg text-blackColor hover:bg-blueBg;
+    }
+
+    .btn-icon {
+        @apply rounded-full p-2 transition-colors hover:bg-greyStrongBg;
+    }
+
+    /* Animation utilities */
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .animate-slide-in {
+        animation: slideIn 0.3s ease-out forwards;
+    }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }

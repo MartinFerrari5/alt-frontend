@@ -13,18 +13,18 @@ import { formatTaskDate } from "../../../util/date"
 
 export const getAllTasks = async () => {
     const { data } = await api.get("/tasks")
-    return data.tasks
+    return data.data
 }
 
 export const getAllTasksAll = async () => {
     const { data } = await api.get("/tasks/all")
-    return data.tasks
+    console.log("Tareas obtenidas:", data.data)
+    return data.data
 }
 
 export const createTask = async (task) => {
-    console.log("createTask: ", task)
     const { data } = await api.post("/tasks", task)
-    return data
+    return data.data
 }
 
 export const updateTaskApi = async ({ taskId, task }) => {
@@ -64,6 +64,13 @@ export const deleteTaskApi = async (taskId) => {
     return taskId
 }
 export const filterTasksApi = async (filters) => {
+    // Validar que al menos un filtro tenga un valor
+    const hasValidFilters = Object.values(filters).some((value) => value)
+    if (!hasValidFilters) {
+        console.warn("Filtros vacíos, no se ejecutará la consulta.")
+        return [] // Devuelve un array vacío si no hay filtros válidos
+    }
+
     const queryParams = new URLSearchParams()
     if (filters.company) queryParams.append("company", filters.company)
     if (filters.project) queryParams.append("project", filters.project)
@@ -72,14 +79,14 @@ export const filterTasksApi = async (filters) => {
     if (filters.date) queryParams.append("date", filters.date)
     if (filters.status !== undefined)
         queryParams.append("status", filters.status)
+
     const { data } = await api.get(
         `/tasks/filtertasks?${queryParams.toString()}`
     )
-    return data.tasks
+    return data.data || [] // Asegúrate de devolver un array
 }
 
 export const getTaskByIdApi = async (taskId) => {
     const { data } = await api.get(`/tasks/task?task_id=${taskId}`)
-    console.log("getTaskByIdApi: ", data)
-    return data
+    return data.data
 }

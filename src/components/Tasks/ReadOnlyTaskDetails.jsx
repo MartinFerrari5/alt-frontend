@@ -12,7 +12,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
         date ? new Intl.DateTimeFormat("es-ES").format(new Date(date)) : "-"
 
     return (
-        <div className="space-y-6 rounded-xl bg-brand-white p-6">
+        <div className="bg-brand-white space-y-6 rounded-xl p-6">
             <h2 className="text-lg font-semibold">Detalles de la Tarea</h2>
             <table className="min-w-full border-collapse border border-gray-300">
                 <tbody>

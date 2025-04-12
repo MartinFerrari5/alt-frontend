@@ -3,7 +3,7 @@ import { useMemo, useState, useCallback } from "react"
 import { useSearchParams, useLocation } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import TaskFilter from "./TaskFilter"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 import Header from "../layout/Header"
 import DashboardCards from "../DashboardCards"
 import TaskTable from "./TaskTable"
@@ -11,7 +11,7 @@ import TaskTable from "./TaskTable"
 const Tasks = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     // Se muestra la selección de tareas solo en la ruta "/"
     const isInicio = currentPath === "/rraa"
@@ -142,7 +142,7 @@ const Tasks = () => {
     const renderContent = () => {
         if (isLoading)
             return (
-                <p className="text-sm text-brand-text-gray">
+                <p className="text-brand-text-gray text-sm">
                     Cargando tareas...
                 </p>
             )
@@ -154,7 +154,7 @@ const Tasks = () => {
             )
         if (!validTasks || validTasks.length === 0)
             return (
-                <p className="text-sm text-brand-text-gray">
+                <p className="text-brand-text-gray text-sm">
                     No hay tareas disponibles.
                 </p>
             )
@@ -172,7 +172,7 @@ const Tasks = () => {
     }
 
     return (
-        <div className="space-y-6 overflow-hidden px-8 py-9">
+        <div className="space-y-6">
             <Header
                 subtitle="Mis Tareas"
                 title="Mis Tareas"

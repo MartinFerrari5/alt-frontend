@@ -6,7 +6,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
         <article className="rounded-lg bg-white p-4 shadow">
             {title && (
                 <header className="mb-2">
-                    <h3 className="text-2xl font-bold text-brand-dark-blue">
+                    <h3 className="text-brand-dark-blue text-2xl font-bold">
                         {title}
                     </h3>
                 </header>
@@ -30,7 +30,7 @@ const DashboardCard = ({ title, stats, total, onStatClick }) => {
                                     onClick={() =>
                                         onStatClick && onStatClick(stat)
                                     }
-                                    className="w-full cursor-pointer text-left text-lg text-brand-dark-blue focus:outline-none"
+                                    className="text-brand-dark-blue w-full cursor-pointer text-left text-lg focus:outline-none"
                                 >
                                     <strong className="font-semibold">
                                         {stat.label}:

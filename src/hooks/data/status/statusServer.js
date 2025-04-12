@@ -1,4 +1,4 @@
-// /src/api/statusServer.js
+// /src/hooks/data/status/statusServer.js
 import { api } from "../../../lib/axios"
 
 /**
@@ -7,7 +7,7 @@ import { api } from "../../../lib/axios"
 export const getStatuses = async () => {
     const { data } = await api.get("/status")
     // Se asume que la respuesta contiene un arreglo en data.tasks
-    return data.tasks
+    return data.data
 }
 
 /**
@@ -51,7 +51,7 @@ export const getFilteredExportedTasks = async (filters) => {
     params.append("date", filters.date || "")
     const { data } = await api.get(`/status/filtertasks?${params.toString()}`)
     // Se asume que la respuesta contiene un arreglo en data.tasks
-    return data.tasks
+    return data.data
 }
 
 /**
@@ -69,9 +69,15 @@ export const postStatusRRHH = async (queryParams, payload) => {
         return data
     } catch (error) {
         console.error("Error en postStatusRRHH:", error)
-        // Lanza un error con el mensaje del backend o un mensaje genérico en caso de fallo
+
+        // Si no hay una respuesta del servidor, lanza un error genérico
+        if (!error.response) {
+            throw new Error("Error de red o servidor no disponible.")
+        }
+
+        // Si el servidor devolvió un error, lanza el mensaje del backend
         throw new Error(
-            error.response?.data?.message || "Error al enviar tareas a RRHH"
+            error.response.data?.message || "Error al enviar tareas a RRHH"
         )
     }
 }

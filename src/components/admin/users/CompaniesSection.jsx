@@ -4,7 +4,7 @@ import { RelationSection } from "./RelationSection"
 import { getOptions } from "../../../hooks/data/options/optionsService"
 import { toast } from "react-toastify"
 import { Building } from "lucide-react"
-import { useRelationsStore } from "../../../store/relationsStore"
+import { useRelationsStore } from "../../../store/modules/relationsStore"
 
 const CompaniesSection = ({
     userId,
@@ -28,7 +28,7 @@ const CompaniesSection = ({
         const fetchCompanies = async () => {
             try {
                 const companiesData = await getOptions("companies_table")
-                setCompaniesTable(companiesData.options || [])
+                setCompaniesTable(companiesData.option || [])
             } catch (error) {
                 console.error("Error al obtener compañías:", error)
             }
@@ -59,8 +59,8 @@ const CompaniesSection = ({
 
     // Mapeo para compañías disponibles (no relacionadas)
     const availableCompanies = notRelatedCompanies.map((item) => ({
-        id: item.company_id,
-        option: item.options,
+        id: item.id,
+        option: item.option,
     }))
 
     // Función para agregar relación utilizando el store global
@@ -116,6 +116,7 @@ const CompaniesSection = ({
     return (
         <div className="mb-8">
             <RelationSection
+                icon={<Building className="h-5 w-5 text-green-600" />}
                 title="Compañías"
                 relatedItems={mappedRelatedCompanies}
                 availableItems={availableCompanies}
@@ -126,33 +127,6 @@ const CompaniesSection = ({
                 emptyText="El usuario no está asociado a ninguna compañía"
                 renderItemContent={renderItemContent}
             />
-            {mappedRelatedCompanies.length > 0 && (
-                <div className="mb-4">
-                    <label
-                        htmlFor="companySelector"
-                        className="mb-1 block font-bold"
-                    >
-                        Seleccionar Compañía para proyectos:
-                    </label>
-                    <select
-                        id="companySelector"
-                        value={selectedCompanyRelId}
-                        onChange={(e) =>
-                            setSelectedCompanyRelId(e.target.value)
-                        }
-                        className="w-full rounded border p-2"
-                    >
-                        {mappedRelatedCompanies.map((company) => (
-                            <option
-                                key={company.relationship_id}
-                                value={company.relationship_id}
-                            >
-                                {company.option}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
         </div>
     )
 }

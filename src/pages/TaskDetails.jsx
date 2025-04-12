@@ -10,9 +10,8 @@ import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
 
 import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
 import { schema } from "../util/validationSchema"
-
-import { useOptionsStore } from "../store/optionsStore"
-import Sidebar from "../components/layout/Sidebar"
+import MainLayout from "../components/layout/MainLayout"
+import { useOptionsStore } from "../store/modules/optionsStore"
 
 const TaskDetailsPage = () => {
     const { taskId } = useParams()
@@ -69,12 +68,7 @@ const TaskDetailsPage = () => {
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
 
-    const taskDetails =
-        currentTask && currentTask.task
-            ? Array.isArray(currentTask.task)
-                ? currentTask.task[0]
-                : currentTask.task
-            : null
+    const taskDetails = currentTask || null
 
     useEffect(() => {
         if (taskDetails) {
@@ -128,7 +122,7 @@ const TaskDetailsPage = () => {
         const updateData = {
             ...data,
             // Se reemplaza la propiedad "company" por company_id real para el payload
-            company_id,
+            company_id: data.company ? company_id : null,
             project_id: data.project,
             task_type: data.task_type?.trim(),
             task_description: data.task_description?.trim(),
@@ -170,40 +164,38 @@ const TaskDetailsPage = () => {
     if (!taskDetails) return <p>No se encontraron detalles de la tarea.</p>
 
     return (
-        <div className="flex min-h-screen flex-col lg:flex-row">
-            {/* Sidebar solo visible en pantallas grandes */}
-            <div className="hidden lg:block lg:w-72">
-                <Sidebar />
-            </div>
-            <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
-                <TaskHeader
-                    task={currentTask}
-                    onBack={() => navigate(-1)}
-                    onDelete={handleDeleteClick}
-                    onEdit={() => setIsEditing((prev) => !prev)}
-                    isEditing={isEditing}
-                />
-                {isEditing ? (
-                    <TaskForm
-                        register={register}
-                        watch={watch}
-                        errors={errors}
-                        handleSubmit={handleSubmit(handleSaveClick)}
-                        isSubmitting={isSubmitting}
-                        taskDate={taskDate}
-                        setTaskDate={setTaskDate}
-                        task={taskDetails}
-                        companies={companies_table}
-                        projects={projects_table}
-                        hourTypes={hour_type_table}
-                        setValue={setValue} // Se pasa para actualizar "project"
-                        reset={reset}
+        <MainLayout>
+            <div className="flex min-h-screen flex-col lg:flex-row">
+                <div className="flex-1 overflow-auto px-4 py-6 sm:px-8">
+                    <TaskHeader
+                        task={currentTask}
+                        onBack={() => navigate(-1)}
+                        onDeleteConfirmed={handleDeleteClick}
+                        onEdit={() => setIsEditing((prev) => !prev)}
+                        isEditing={isEditing}
                     />
-                ) : (
-                    <ReadOnlyTaskDetails task={taskDetails} />
-                )}
+                    {isEditing ? (
+                        <TaskForm
+                            register={register}
+                            watch={watch}
+                            errors={errors}
+                            handleSubmit={handleSubmit(handleSaveClick)}
+                            isSubmitting={isSubmitting}
+                            taskDate={taskDate}
+                            setTaskDate={setTaskDate}
+                            task={taskDetails}
+                            companies={companies_table}
+                            projects={projects_table}
+                            hourTypes={hour_type_table}
+                            setValue={setValue}
+                            reset={reset}
+                        />
+                    ) : (
+                        <ReadOnlyTaskDetails task={taskDetails} />
+                    )}
+                </div>
             </div>
-        </div>
+        </MainLayout>
     )
 }
 

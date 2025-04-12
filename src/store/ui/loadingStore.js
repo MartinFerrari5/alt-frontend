@@ -1,3 +1,4 @@
+// /src/store/loadingStore.js
 import { create } from "zustand"
 
 export const useLoadingStore = create((set) => ({

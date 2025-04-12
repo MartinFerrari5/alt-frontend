@@ -55,7 +55,7 @@ const TaskForm = ({
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="space-y-6 rounded-xl bg-brand-white p-6">
+            <div className="bg-brand-white space-y-6 rounded-xl p-6">
                 {/* Dropdowns para Empresa, Proyecto y Tipo de Hora */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <Dropdown
@@ -68,7 +68,7 @@ const TaskForm = ({
                         items={companies}
                         loadingText="Cargando empresas..."
                         errorText="Error cargando empresas"
-                        valueKey="relationship_id"
+                        valueKey="company_id"
                     />
                     <Dropdown
                         id="project"

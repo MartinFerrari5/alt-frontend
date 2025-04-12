@@ -1,9 +1,11 @@
-// /src/components/ChangePassword.jsx
+// /src/components/user/ChangePassword.jsx
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "react-toastify"
-import { changePassword } from "../../hooks/data/users/usersAlt"
+import { FaSpinner } from "react-icons/fa"
+import Button from "../Button"
+import { changePassword } from "../../hooks/data/users/useUserHooks"
 
 const schema = z
     .object({
@@ -46,18 +48,25 @@ const ChangePassword = () => {
             toast.success("¡Contraseña cambiada exitosamente!")
             reset()
         } catch (error) {
-            toast.error(error.message)
+            toast.error(
+                error.message || "Ocurrió un error al cambiar la contraseña"
+            )
         }
     }
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="mx-auto max-w-md p-4"
+            className="mx-auto max-w-md rounded bg-white p-6 shadow"
         >
-            <h2 className="mb-4 text-xl font-semibold">Cambiar contraseña</h2>
-            <div className="mb-4">
-                <label htmlFor="email" className="mb-1 block font-medium">
+            <h2 className="mb-6 text-2xl font-bold text-gray-800">
+                Cambiar contraseña
+            </h2>
+            <div className="mb-5">
+                <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                >
                     Correo electrónico
                 </label>
                 <input
@@ -65,18 +74,18 @@ const ChangePassword = () => {
                     id="email"
                     {...register("email")}
                     placeholder="tu@correo.com"
-                    className="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors.email && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mt-1 text-sm font-medium text-red-600">
                         {errors.email.message}
                     </p>
                 )}
             </div>
-            <div className="mb-4">
+            <div className="mb-5">
                 <label
                     htmlFor="old_password"
-                    className="mb-1 block font-medium"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                 >
                     Contraseña antigua
                 </label>
@@ -85,18 +94,18 @@ const ChangePassword = () => {
                     id="old_password"
                     {...register("old_password")}
                     placeholder="Ingresa tu contraseña actual"
-                    className="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors.old_password && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mt-1 text-sm font-medium text-red-600">
                         {errors.old_password.message}
                     </p>
                 )}
             </div>
-            <div className="mb-4">
+            <div className="mb-5">
                 <label
                     htmlFor="new_password"
-                    className="mb-1 block font-medium"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                 >
                     Nueva contraseña
                 </label>
@@ -105,10 +114,10 @@ const ChangePassword = () => {
                     id="new_password"
                     {...register("new_password")}
                     placeholder="Ingresa la nueva contraseña"
-                    className="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors.new_password && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mt-1 text-sm font-medium text-red-600">
                         {errors.new_password.message}
                     </p>
                 )}
@@ -116,7 +125,7 @@ const ChangePassword = () => {
             <div className="mb-6">
                 <label
                     htmlFor="confirm_new_password"
-                    className="mb-1 block font-medium"
+                    className="mb-2 block text-sm font-medium text-gray-700"
                 >
                     Confirmar nueva contraseña
                 </label>
@@ -125,21 +134,22 @@ const ChangePassword = () => {
                     id="confirm_new_password"
                     {...register("confirm_new_password")}
                     placeholder="Repite la nueva contraseña"
-                    className="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {errors.confirm_new_password && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mt-1 text-sm font-medium text-red-600">
                         {errors.confirm_new_password.message}
                     </p>
                 )}
             </div>
-            <button
+            <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+                className="flex w-full items-center justify-center rounded px-4 py-3 font-semibold text-white transition disabled:opacity-75"
             >
-                Cambiar contraseña
-            </button>
+                {isSubmitting && <FaSpinner className="mr-2 animate-spin" />}
+                {isSubmitting ? "" : "Cambiar contraseña"}
+            </Button>
         </form>
     )
 }

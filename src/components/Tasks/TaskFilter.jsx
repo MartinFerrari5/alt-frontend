@@ -3,11 +3,11 @@ import { useEffect, useCallback, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
-import useAuthStore from "../../store/authStore"
-import { useOptionsStore } from "../../store/optionsStore"
+import useAuthStore from "../../store/modules/authStore"
 import Dropdown from "../Dropdown/Dropdown"
 import Button from "../Button"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import { useOptionsStore } from "../../store/modules/optionsStore"
 
 /**
  * Componente para filtrar tareas. Permite seleccionar empresa, proyecto,
@@ -18,7 +18,7 @@ import { getCompanyProjects } from "../../hooks/data/options/optionsService"
  * @returns {ReactElement}
  */
 const TaskFilter = ({ onFilter, currentPath }) => {
-    const role = useAuthStore((state) => state.role)
+    const user = useAuthStore((state) => state.user)
     const [searchParams] = useSearchParams()
     const {
         register,
@@ -38,7 +38,8 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         },
     })
 
-    const { companies_table, hour_type_table, fetchOptions } = useOptionsStore()
+    const { companies_table, hour_type_table, fetchOptions, projects_table } =
+        useOptionsStore()
     // Estado para almacenar la lista de proyectos relacionados según la compañía seleccionada
     const [filteredProjects, setFilteredProjects] = useState([])
 
@@ -94,6 +95,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     const selectedCompanyId = watch("company")
     useEffect(() => {
         if (
+            user.role !== "admin" &&
             selectedCompanyId &&
             companies_table &&
             companies_table.length > 0
@@ -105,8 +107,8 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                     c.id === selectedCompanyId
             )
 
-            if ((companyObj && companyObj.relationship_id) || companyObj.id) {
-                getCompanyProjects(companyObj.relationship_id || "")
+            if ((companyObj && companyObj.company_id) || companyObj.id) {
+                getCompanyProjects(companyObj.company_id || "")
                     .then((projects) => {
                         setFilteredProjects(projects)
                         // Si el usuario aún no ha seleccionado un proyecto, asignar el primer proyecto (usando project_id)
@@ -124,11 +126,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 setFilteredProjects([])
                 setValue("project", "")
             }
-        } else {
+        } else if (user.role === "admin") {
+            // Si es administrador, no buscar proyectos relacionados
             setFilteredProjects([])
             setValue("project", "")
         }
-    }, [selectedCompanyId, companies_table, setValue, watch])
+    }, [user.role, selectedCompanyId, companies_table, setValue, watch])
 
     /**
      * Función que se encarga de procesar la búsqueda de tareas cuando se envía el formulario.
@@ -166,7 +169,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             onSubmit={handleSubmit(onSubmit)}
             className="mb-1 flex flex-col gap-4 sm:flex-row sm:items-center"
         >
-            {role === "admin" && (
+            {user.role === "admin" && (
                 <input
                     type="text"
                     placeholder="Buscar por nombre"
@@ -181,22 +184,34 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.company}
                 isLoading={!companies_table || companies_table.length === 0}
                 isError={false}
-                items={companies_table}
+                items={Array.isArray(companies_table) ? companies_table : []}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
-                valueKey={role === "admin" ? "id" : "company_id"}
+                valueKey={user.role === "admin" ? "id" : "company_id"}
             />
             <Dropdown
                 id="project"
                 label="Proyecto"
                 register={register}
                 error={errors.project}
-                isLoading={!filteredProjects || filteredProjects.length === 0}
+                isLoading={
+                    user.role === "admin"
+                        ? !projects_table || projects_table.length === 0
+                        : !filteredProjects || filteredProjects.length === 0
+                }
                 isError={false}
-                items={filteredProjects}
+                items={
+                    user.role === "admin"
+                        ? Array.isArray(projects_table)
+                            ? projects_table
+                            : []
+                        : Array.isArray(filteredProjects)
+                          ? filteredProjects
+                          : []
+                }
                 loadingText="Cargando proyectos..."
                 errorText="Error cargando proyectos"
-                valueKey={role === "admin" ? "id" : "project_id"}
+                valueKey={user.role === "admin" ? "id" : "project_id"}
             />
             <Dropdown
                 id="hourtype"
@@ -205,7 +220,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 error={errors.hourtype}
                 isLoading={!hour_type_table || hour_type_table.length === 0}
                 isError={false}
-                items={hour_type_table}
+                items={Array.isArray(hour_type_table) ? hour_type_table : []}
                 valueKey="hour_type_id"
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
@@ -239,7 +254,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             <Button
                 type="submit"
                 color="primary"
-                size="large"
+                size="lg"
                 className="rounded-lg transition-transform active:scale-95"
             >
                 Filtrar

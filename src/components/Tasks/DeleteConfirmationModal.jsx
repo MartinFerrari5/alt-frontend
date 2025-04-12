@@ -88,8 +88,8 @@ DeleteConfirmationModal.propTypes = {
 
 DeleteConfirmationModal.defaultProps = {
     message: "¿Estás seguro de que deseas eliminar esta tarea?",
-    confirmText: "Si, estoy seguro",
-    cancelText: "No, cancel",
+    confirmText: "Aceptar",
+    cancelText: "Cancelar",
 }
 
 export default DeleteConfirmationModal

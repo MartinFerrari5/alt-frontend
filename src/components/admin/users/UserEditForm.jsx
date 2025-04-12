@@ -89,7 +89,10 @@ const UserEditForm = ({ user, onSave }) => {
                 ) : (
                     <div className="flex items-center">
                         <span className="mr-2">{role}</span>
-                        <button onClick={() => setEditingRole(true)} title="Edit role">
+                        <button
+                            onClick={() => setEditingRole(true)}
+                            title="Edit role"
+                        >
                             <FaEdit className="cursor-pointer" />
                         </button>
                     </div>

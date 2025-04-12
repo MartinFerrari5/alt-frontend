@@ -2,7 +2,7 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { useOptionsStore } from "../../store/optionsStore"
+import { useOptionsStore } from "../../store/modules/optionsStore"
 import { useEmailMutations } from "../../hooks/data/email/use-email-mutations"
 import ModalWrapper from "./ModalWrapper"
 import Button from "../Button"

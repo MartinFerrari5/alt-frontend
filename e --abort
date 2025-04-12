@@ -1,0 +1,218 @@
+[33m4ff5686[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtest[m[33m, [m[1;31morigin/test[m[33m)[m HEAD@{0}: checkout: moving from restructuracion to test
+[33md883349[m[33m ([m[1;31morigin/restructuracion[m[33m, [m[1;32mrestructuracion[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33md883349[m[33m ([m[1;31morigin/restructuracion[m[33m, [m[1;32mrestructuracion[m[33m)[m HEAD@{2}: pull origin restructuracion: Fast-forward
+[33mfc33581[m HEAD@{3}: reset: moving to HEAD
+[33mfc33581[m HEAD@{4}: pull origin restructuracion: Fast-forward
+[33m0a0553f[m HEAD@{5}: pull origin restructuracion: Fast-forward
+[33ma97eda7[m HEAD@{6}: pull origin restructuracion: Fast-forward
+[33m36ff7e4[m HEAD@{7}: pull origin restructuracion: Fast-forward
+[33m1485ffe[m HEAD@{8}: pull origin restructuracion: Fast-forward
+[33ma7871a5[m HEAD@{9}: pull origin restructuracion: Fast-forward
+[33m7a6eb49[m HEAD@{10}: reset: moving to HEAD
+[33m7a6eb49[m HEAD@{11}: pull: Fast-forward
+[33m2c85174[m HEAD@{12}: checkout: moving from main to restructuracion
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{13}: checkout: moving from restructuracion to main
+[33m2c85174[m HEAD@{14}: checkout: moving from main to restructuracion
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{15}: checkout: moving from restructuracion to main
+[33m2c85174[m HEAD@{16}: checkout: moving from main to restructuracion
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{17}: checkout: moving from restructuracion to main
+[33m2c85174[m HEAD@{18}: checkout: moving from main to restructuracion
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{19}: checkout: moving from restructuracion to main
+[33m2c85174[m HEAD@{20}: pull origin restructuracion: Fast-forward
+[33mada7890[m HEAD@{21}: checkout: moving from developer to restructuracion
+[33m9ff4231[m[33m ([m[1;32mdeveloper[m[33m)[m HEAD@{22}: pull --rebase origin developer (finish): returning to refs/heads/developer
+[33m9ff4231[m[33m ([m[1;32mdeveloper[m[33m)[m HEAD@{23}: pull --rebase origin developer (pick): fix: routes
+[33m5920d0b[m[33m ([m[1;31morigin/developer[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{24}: pull --rebase origin developer (start): checkout 5920d0bfdadc2d4025fc81e94f750e81202fa14c
+[33m1090261[m HEAD@{25}: reset: moving to HEAD
+[33m1090261[m HEAD@{26}: reset: moving to HEAD
+[33m1090261[m HEAD@{27}: pull origin developer: updating HEAD
+[33m1090261[m HEAD@{28}: pull: updating HEAD
+[33m1090261[m HEAD@{29}: checkout: moving from developer to developer
+[33m1090261[m HEAD@{30}: reset: moving to HEAD
+[33m1090261[m HEAD@{31}: reset: moving to HEAD
+[33m1090261[m HEAD@{32}: reset: moving to HEAD
+[33m1090261[m HEAD@{33}: reset: moving to HEAD
+[33m1090261[m HEAD@{34}: checkout: moving from main to developer
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{35}: reset: moving to HEAD
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{36}: checkout: moving from restructuracion to main
+[33mada7890[m HEAD@{37}: pull origin restructuracion: Fast-forward
+[33m411d3e3[m HEAD@{38}: checkout: moving from main to restructuracion
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{39}: checkout: moving from test to main
+[33m4ff5686[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtest[m[33m, [m[1;31morigin/test[m[33m)[m HEAD@{40}: reset: moving to HEAD
+[33m4ff5686[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtest[m[33m, [m[1;31morigin/test[m[33m)[m HEAD@{41}: reset: moving to HEAD
+[33m4ff5686[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtest[m[33m, [m[1;31morigin/test[m[33m)[m HEAD@{42}: commit: fix: Enviar company_id
+[33ma8dd3d5[m HEAD@{43}: checkout: moving from restructuracion to test
+[33m411d3e3[m HEAD@{44}: checkout: moving from test to restructuracion
+[33ma8dd3d5[m HEAD@{45}: checkout: moving from restructuracion to test
+[33m411d3e3[m HEAD@{46}: checkout: moving from test to restructuracion
+[33ma8dd3d5[m HEAD@{47}: commit: fix: Enviar company_id
+[33m4988ffb[m HEAD@{48}: checkout: moving from restructuracion to test
+[33m411d3e3[m HEAD@{49}: commit: fix: Enviar company_id
+[33m7134db0[m HEAD@{50}: pull: Fast-forward
+[33meb5613e[m HEAD@{51}: checkout: moving from test to restructuracion
+[33m4988ffb[m HEAD@{52}: commit: fix: routes
+[33mf339bac[m HEAD@{53}: commit: fix: routes
+[33m7f567e7[m HEAD@{54}: checkout: moving from main to test
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{55}: reset: moving to HEAD
+[33m888ac0e[m[33m ([m[1;32mmain[m[33m)[m HEAD@{56}: pull origin developer: Fast-forward
+[33m4ccbb7b[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{57}: checkout: moving from test to main
+[33m7f567e7[m HEAD@{58}: reset: moving to HEAD
+[33m7f567e7[m HEAD@{59}: pull origin main: Merge made by the 'ort' strategy.
+[33m4688aba[m HEAD@{60}: checkout: moving from main to test
+[33m4ccbb7b[m[33m ([m[1;31morigin/main[m[33m)[m HEAD@{61}: pull origin main: Fast-forward
+[33m7faf7ea[m HEAD@{62}: pull origin developer: Fast-forward
+[33m279f2c0[m HEAD@{63}: reset: moving to HEAD
+[33m279f2c0[m HEAD@{64}: pull origin main: Fast-forward
+[33m402db0e[m HEAD@{65}: checkout: moving from test to main
+[33m4688aba[m HEAD@{66}: commit: fix: routes
+[33m66e329c[m HEAD@{67}: pull origin developer: Merge made by the 'ort' strategy.
+[33me24e5f7[m HEAD@{68}: checkout: moving from developer to test
+[33m1090261[m HEAD@{69}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{70}: checkout: moving from developer to test
+[33m1090261[m HEAD@{71}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{72}: checkout: moving from developer to test
+[33m1090261[m HEAD@{73}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{74}: checkout: moving from developer to test
+[33m1090261[m HEAD@{75}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{76}: checkout: moving from developer to test
+[33m1090261[m HEAD@{77}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{78}: checkout: moving from developer to test
+[33m1090261[m HEAD@{79}: checkout: moving from test to developer
+[33me24e5f7[m HEAD@{80}: merge developer: Merge made by the 'ort' strategy.
+[33m2308e13[m HEAD@{81}: checkout: moving from developer to test
+[33m1090261[m HEAD@{82}: checkout: moving from test to developer
+[33m2308e13[m HEAD@{83}: commit (merge): fix: routes
+[33m7c9e234[m HEAD@{84}: checkout: moving from developer to test
+[33m1090261[m HEAD@{85}: checkout: moving from test to developer
+[33m7c9e234[m HEAD@{86}: checkout: moving from developer to test
+[33m1090261[m HEAD@{87}: pull: Merge made by the 'ort' strategy.
+[33mab78138[m HEAD@{88}: pull: Merge made by the 'ort' strategy.
+[33m90ccf53[m HEAD@{89}: checkout: moving from test to developer
+[33m7c9e234[m HEAD@{90}: commit: fix: routes
+[33m149c939[m HEAD@{91}: checkout: moving from developer to test
+[33m90ccf53[m HEAD@{92}: commit: fix: routes
+[33mf7faa3d[m HEAD@{93}: checkout: moving from test to developer
+[33m149c939[m HEAD@{94}: commit: fix: routes
+[33mbbc6714[m HEAD@{95}: pull origin developer: Merge made by the 'ort' strategy.
+[33m4a93581[m HEAD@{96}: checkout: moving from developer to test
+[33mf7faa3d[m HEAD@{97}: reset: moving to HEAD
+[33mf7faa3d[m HEAD@{98}: pull: Fast-forward
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{99}: checkout: moving from test to developer
+[33m4a93581[m HEAD@{100}: commit: fix: routes
+[33meea5880[m HEAD@{101}: checkout: moving from developer to test
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{102}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{103}: checkout: moving from test to developer
+[33meea5880[m HEAD@{104}: commit: fix: routes
+[33md5e3437[m HEAD@{105}: checkout: moving from developer to test
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{106}: checkout: moving from test to developer
+[33md5e3437[m HEAD@{107}: commit: fix: routes
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{108}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{109}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{110}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{111}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{112}: checkout: moving from developer to test
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{113}: checkout: moving from test to developer
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{114}: pull origin developer: Fast-forward
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{115}: checkout: moving from main to test
+[33m402db0e[m HEAD@{116}: checkout: moving from developer to main
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{117}: checkout: moving from changes to developer
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{118}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{119}: checkout: moving from developer to changes
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{120}: reset: moving to HEAD
+[33mea6b47a[m[33m ([m[1;32mchanges[m[33m)[m HEAD@{121}: pull: Fast-forward
+[33m7090f54[m HEAD@{122}: pull: Fast-forward
+[33mea0b8cb[m HEAD@{123}: pull origin developer: Fast-forward
+[33mca97e1a[m HEAD@{124}: reset: moving to HEAD
+[33mca97e1a[m HEAD@{125}: pull: Fast-forward
+[33m6626dca[m HEAD@{126}: pull: Fast-forward
+[33mbfa1f70[m HEAD@{127}: reset: moving to HEAD
+[33mbfa1f70[m HEAD@{128}: pull: Fast-forward
+[33m6f2bd21[m HEAD@{129}: pull: Fast-forward
+[33mfa0e03b[m HEAD@{130}: reset: moving to HEAD
+[33mfa0e03b[m HEAD@{131}: pull: Fast-forward
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{132}: checkout: moving from l to developer
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{133}: pull origin developer: Fast-forward
+[33m04e4af3[m HEAD@{134}: checkout: moving from h to l
+[33m6deb2f6[m[33m ([m[1;32mh[m[33m)[m HEAD@{135}: checkout: moving from 607c54c04ed485b8571e29523549ba73725b20f2 to h
+[33m607c54c[m HEAD@{136}: checkout: moving from developer to 607c54c04ed485b8571e29523549ba73725b20f2
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{137}: checkout: moving from test to developer
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{138}: pull origin developer: Fast-forward
+[33mf3ed012[m HEAD@{139}: checkout: moving from main to test
+[33m402db0e[m HEAD@{140}: pull origin main: Fast-forward
+[33mdbb4d80[m HEAD@{141}: checkout: moving from developer to main
+[33mc8a6a35[m[33m ([m[1;31morigin/l[m[33m, [m[1;32ml[m[33m)[m HEAD@{142}: pull: Fast-forward
+[33m873bd70[m HEAD@{143}: reset: moving to HEAD
+[33m873bd70[m HEAD@{144}: pull: Fast-forward
+[33m607c54c[m HEAD@{145}: pull: Fast-forward
+[33mb54117e[m HEAD@{146}: pull: Fast-forward
+[33m2b5de2f[m HEAD@{147}: checkout: moving from final to developer
+[33m683a6ad[m[33m ([m[1;32mfinal[m[33m)[m HEAD@{148}: reset: moving to HEAD
+[33m683a6ad[m[33m ([m[1;32mfinal[m[33m)[m HEAD@{149}: commit: fix:parametros opciones put
+[33md6145bc[m HEAD@{150}: pull origin developer: Fast-forward
+[33m57b4a19[m HEAD@{151}: reset: moving to HEAD
+[33m57b4a19[m HEAD@{152}: pull origin developer: Fast-forward
+[33m3925e6e[m HEAD@{153}: pull origin developer: Fast-forward
+[33mf1a6bb0[m HEAD@{154}: pull origin developer: Fast-forward
+[33m7e963fe[m HEAD@{155}: reset: moving to HEAD
+[33m7e963fe[m HEAD@{156}: pull origin developer: Fast-forward
+[33m8f4a14c[m[33m ([m[1;32mtesting[m[33m)[m HEAD@{157}: reset: moving to HEAD
+[33m8f4a14c[m[33m ([m[1;32mtesting[m[33m)[m HEAD@{158}: checkout: moving from testing to final
+[33m8f4a14c[m[33m ([m[1;32mtesting[m[33m)[m HEAD@{159}: pull origin developer: Fast-forward
+[33mb2f2acc[m HEAD@{160}: pull origin developer: Fast-forward
+[33m70367fc[m HEAD@{161}: checkout: moving from developer to testing
+[33m2b5de2f[m HEAD@{162}: reset: moving to HEAD
+[33m2b5de2f[m HEAD@{163}: pull: Fast-forward
+[33m76abf48[m HEAD@{164}: reset: moving to HEAD
+[33m76abf48[m HEAD@{165}: reset: moving to HEAD
+[33m76abf48[m HEAD@{166}: pull: Fast-forward
+[33m55acaeb[m HEAD@{167}: reset: moving to HEAD
+[33m55acaeb[m HEAD@{168}: pull: Fast-forward
+[33m197a4f4[m HEAD@{169}: pull: Fast-forward
+[33m163d491[m HEAD@{170}: pull: Fast-forward
+[33mf07f03c[m HEAD@{171}: reset: moving to HEAD
+[33mf07f03c[m HEAD@{172}: reset: moving to HEAD
+[33mf07f03c[m HEAD@{173}: pull: Fast-forward
+[33m35852f9[m HEAD@{174}: pull: Fast-forward
+[33mb047bd9[m HEAD@{175}: pull: Fast-forward
+[33mab0d779[m HEAD@{176}: pull: Fast-forward
+[33mddd6f6c[m HEAD@{177}: reset: moving to HEAD
+[33mddd6f6c[m HEAD@{178}: pull: Fast-forward
+[33m6061cec[m HEAD@{179}: pull: Fast-forward
+[33m70367fc[m HEAD@{180}: checkout: moving from testing to developer
+[33m70367fc[m HEAD@{181}: reset: moving to HEAD
+[33m70367fc[m HEAD@{182}: checkout: moving from developer to testing
+[33m70367fc[m HEAD@{183}: pull: Fast-forward
+[33mca53ee8[m HEAD@{184}: checkout: moving from test to developer
+[33mf3ed012[m HEAD@{185}: pull origin developer: Fast-forward
+[33mca53ee8[m HEAD@{186}: reset: moving to HEAD
+[33mca53ee8[m HEAD@{187}: checkout: moving from developer to test
+[33mca53ee8[m HEAD@{188}: pull: Fast-forward
+[33mffc9ad9[m HEAD@{189}: reset: moving to HEAD
+[33mffc9ad9[m HEAD@{190}: pull: Fast-forward
+[33m2a98542[m HEAD@{191}: reset: moving to HEAD
+[33m2a98542[m HEAD@{192}: pull: Fast-forward
+[33m9c24e04[m HEAD@{193}: pull: Fast-forward
+[33m64a8547[m HEAD@{194}: pull: Fast-forward
+[33me5c306b[m HEAD@{195}: pull: Fast-forward
+[33mc1e0d9e[m HEAD@{196}: reset: moving to HEAD
+[33mc1e0d9e[m HEAD@{197}: pull: Fast-forward
+[33mab12614[m[33m ([m[1;31morigin/fix/useTasks-corrections[m[33m)[m HEAD@{198}: pull: Fast-forward
+[33m2f53c56[m HEAD@{199}: reset: moving to HEAD
+[33m2f53c56[m HEAD@{200}: pull: Fast-forward
+[33m236add0[m HEAD@{201}: reset: moving to HEAD
+[33m236add0[m HEAD@{202}: pull: Fast-forward
+[33m78c8444[m HEAD@{203}: pull origin developer: Fast-forward
+[33md03366a[m HEAD@{204}: reset: moving to HEAD
+[33md03366a[m HEAD@{205}: pull: Fast-forward
+[33mfad6502[m HEAD@{206}: reset: moving to HEAD
+[33mfad6502[m HEAD@{207}: pull: Fast-forward
+[33me89b7c1[m HEAD@{208}: checkout: moving from main to developer
+[33mdbb4d80[m HEAD@{209}: pull origin developer: Fast-forward
+[33me89b7c1[m HEAD@{210}: reset: moving to HEAD
+[33me89b7c1[m HEAD@{211}: checkout: moving from developer to main
+[33me89b7c1[m HEAD@{212}: checkout: moving from developer to developer
+[33me89b7c1[m HEAD@{213}: checkout: moving from main to developer
+[33me89b7c1[m HEAD@{214}: checkout: moving from main to main
+[33me89b7c1[m HEAD@{215}: checkout: moving from developer to main
+[33me89b7c1[m HEAD@{216}: Branch: renamed refs/heads/master to refs/heads/developer
+[33me89b7c1[m HEAD@{218}: commit (initial): file(README.md): first commit

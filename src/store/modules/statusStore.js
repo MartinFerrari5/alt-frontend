@@ -6,7 +6,7 @@ import {
     postStatus,
     putStatus,
     getStatusByTask,
-} from "../hooks/data/status/statusServer"
+} from "../../hooks/data/status/statusServer"
 import useAuthStore from "./authStore"
 
 const initialState = {

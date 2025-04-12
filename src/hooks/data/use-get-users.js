@@ -1,7 +1,7 @@
 // src/hooks/data/use-get-users.js
 import { useQuery } from "@tanstack/react-query"
 import { api } from "../../lib/axios"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 
 /**
  * Claves de consulta para usuarios.
@@ -20,7 +20,7 @@ export const userQueryKeys = {
  * @param {string|null} userId - ID del usuario a obtener (opcional).
  */
 export const useGetUsers = (userId = null) => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
 
     return useQuery({
         queryKey: userId

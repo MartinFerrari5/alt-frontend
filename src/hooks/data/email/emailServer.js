@@ -1,4 +1,4 @@
-// /src/api/emailServer.js
+// /src/hooks/data/email/emailServer.js
 
 import { api } from "../../../lib/axios"
 

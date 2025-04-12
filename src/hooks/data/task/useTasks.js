@@ -2,7 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { taskMutationKeys } from "../../../keys/mutations"
 import { taskQueryKeys } from "../../../keys/queries"
-import useTaskStore from "../../../store/taskStore"
+import useTaskStore from "../../../store/modules/taskStore"
 import { handleApiError } from "../../../lib/errorHandler"
 import {
     getAllTasks,
@@ -22,15 +22,13 @@ const mutationFactory = (queryClient) => (config) => ({
 })
 
 export const useGetTask = (taskId) => {
-    const { tasks } = useTaskStore()
-
+    // const { tasks } = useTaskStore()
     return useQuery({
         queryKey: taskQueryKeys.getOne(taskId),
         queryFn: async () => {
-            const existingTask = tasks.find(
-                (t) => t.id.toString() === taskId.toString()
-            )
-            return existingTask || getTaskByIdApi(taskId)
+            // const existingTask = tasks.find((t) => t.id.toString() === taskId.toString())
+            // return existingTask || getTaskByIdApi(taskId)
+            return getTaskByIdApi(taskId)
         },
         onError: (error) => handleApiError(error, "Error al obtener la tarea"),
         enabled: !!taskId,

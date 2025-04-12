@@ -1,5 +1,6 @@
 // /src/components/Users/Users.jsx
-import { useGetUsers } from "../../../hooks/data/users/useUserHooks"
+
+import { useGetUsers } from "../../../store/modules/userStore"
 import Header from "../../layout/Header"
 
 import UsersItem from "./UsersItem"
@@ -16,7 +17,7 @@ const Users = () => {
     }
 
     return (
-        <div className="w-full space-y-6 px-8 py-9">
+        <div className="w-full space-y-6">
             <Header subtitle="Lista de Usuarios" title="Usuarios" />
             <div className="rounded-xl bg-white p-6">
                 <div className="relative max-h-[900px] overflow-y-auto shadow-md sm:rounded-lg">
@@ -26,7 +27,6 @@ const Users = () => {
                                 <th className="px-6 py-3">Nombre</th>
                                 <th className="px-6 py-3">Email</th>
                                 <th className="px-6 py-3">Rol</th>
-                                <th className="px-6 py-3">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +34,7 @@ const Users = () => {
                                 <tr>
                                     <td
                                         colSpan="4"
-                                        className="px-6 py-4 text-center text-sm text-brand-text-gray"
+                                        className="text-brand-text-gray px-6 py-4 text-center text-sm"
                                     >
                                         No hay usuarios disponibles.
                                     </td>

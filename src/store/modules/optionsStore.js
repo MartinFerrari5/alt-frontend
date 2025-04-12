@@ -1,3 +1,4 @@
+// /src/store/optionsStore.js
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import {
@@ -5,13 +6,19 @@ import {
     deleteOption,
     getOptions,
     updateOption,
-} from "../hooks/data/options/optionsService"
+} from "../../hooks/data/options/optionsService"
 
 const initialState = {
     companies_table: [],
     hour_type_table: [],
     projects_table: [],
     types_table: [],
+    loading: {
+        companies_table: false,
+        hour_type_table: false,
+        projects_table: false,
+        types_table: false,
+    },
     error: null,
 }
 
@@ -23,20 +30,34 @@ export const useOptionsStore = create(
             setError: (error) => set({ error }),
 
             fetchOptions: async (table) => {
+                set((state) => ({
+                    loading: { ...state.loading, [table]: true },
+                }))
                 try {
-                    const data = await getOptions(table)
-                    set({ [table]: data })
+                    const response = await getOptions(table)
+                    const data = Array.isArray(response.data)
+                        ? response.data
+                        : []
+                    set((state) => ({
+                        [table]: data,
+                        loading: { ...state.loading, [table]: false },
+                    }))
                 } catch (error) {
                     console.error(`Error en fetchOptions para ${table}:`, error)
+                    set((state) => ({
+                        loading: { ...state.loading, [table]: false },
+                    }))
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error
                 }
             },
 
             addOption: async (table, option) => {
                 try {
-                    const newOption = await addOption(table, option)
+                    const response = await addOption(table, option)
+                    const newOption = response.data
                     set((state) => ({
+                        ...state,
                         [table]: [...state[table], newOption],
                     }))
                 } catch (error) {
@@ -48,12 +69,10 @@ export const useOptionsStore = create(
 
             updateOption: async (table, id, updatedData) => {
                 try {
-                    const updatedOption = await updateOption(
-                        table,
-                        id,
-                        updatedData
-                    )
+                    const response = await updateOption(table, id, updatedData)
+                    const updatedOption = response.data
                     set((state) => ({
+                        ...state,
                         [table]: state[table].map((item) =>
                             item.id === id ? updatedOption : item
                         ),
@@ -61,7 +80,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en updateOption para ${table}:`, error)
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error
                 }
             },
 
@@ -74,7 +93,7 @@ export const useOptionsStore = create(
                 } catch (error) {
                     console.error(`Error en deleteOption para ${table}:`, error)
                     get().setError(error.message)
-                    throw error // Re-lanza el error
+                    throw error
                 }
             },
         }),

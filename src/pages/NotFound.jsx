@@ -9,7 +9,7 @@ export default function NotFound() {
         const interval = setInterval(() => {
             setCountdown((prev) => {
                 if (prev <= 1) {
-                    navigate("/")
+                    navigate("/rraa")
                     clearInterval(interval)
                     return 0
                 }
@@ -29,7 +29,7 @@ export default function NotFound() {
             </p>
             <button
                 className="mt-6 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/rraa")}
             >
                 Volver a inicio
             </button>

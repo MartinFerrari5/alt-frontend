@@ -9,8 +9,9 @@ import { FaTrash } from "react-icons/fa"
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 import { useTasks } from "../../hooks/data/task/useTasks"
-import useAuthStore from "../../store/authStore"
+import useAuthStore from "../../store/modules/authStore"
 import Button from "../Button"
+import { Trash } from "lucide-react"
 
 const formatDate = (dateString) => {
     if (!dateString) return "Fecha no disponible"
@@ -33,7 +34,7 @@ const TaskItem = ({
     onSelectTask,
     currentPath,
 }) => {
-    const role = useAuthStore((state) => state.role)
+    const role = useAuthStore((state) => state.user.role)
     const { deleteTaskMutation, updateTaskMutation } = useTasks()
     const { mutate: deleteTask, isLoading: deleteTaskIsLoading } =
         deleteTaskMutation
@@ -133,6 +134,7 @@ const TaskItem = ({
                                 e.stopPropagation()
                                 onSelectTask(task.id)
                             }}
+                            className="h-6 w-6 cursor-pointer appearance-none rounded-full border-2 border-gray-300 transition duration-200 checked:border-green-500 checked:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
                         />
                     </td>
                 )}
@@ -164,14 +166,16 @@ const TaskItem = ({
                 <td className="flex gap-2 px-4 py-5 text-right">
                     {role === "user" && currentPath === "/rraa" && (
                         <Button
-                            color="ghost"
+                            color="secondary"
+                            variant="outline"
                             onClick={handleDeleteButtonClick}
                             disabled={deleteTaskIsLoading}
+                            className="text-red-500 hover:text-red-700"
                         >
                             {deleteTaskIsLoading ? (
-                                <AiOutlineLoading3Quarters className="animate-spin text-brand-text-gray" />
+                                <AiOutlineLoading3Quarters className="text-brand-text-gray animate-spin" />
                             ) : (
-                                <FaTrash className="h-5 w-5" />
+                                <Trash className="h-4 w-4" />
                             )}
                         </Button>
                     )}

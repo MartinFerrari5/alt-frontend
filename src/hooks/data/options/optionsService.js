@@ -23,18 +23,22 @@ export const getOptions = async (table) => {
  * @param {string} relationship_id - ID de la relación de la compañía.
  * @returns {Promise<Array>} Array con los proyectos.
  */
-export const getCompanyProjects = async (relationship_id) => {
+export const getCompanyProjects = async (company_id) => {
+    if (!company_id) {
+        throw new Error(
+            "El ID de la relación es obligatorio para obtener los proyectos."
+        )
+    }
     try {
         const table = "projects_table"
         const { data } = await api.get("/options", {
-            params: { table, relationship_id },
+            params: { table, company_id },
         })
-        console.log(data)
-        return data
+        return data.data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
-            `Error obteniendo proyectos para la compañía con relationship_id ${relationship_id}: ${backendMsg}`
+            `Error obteniendo proyectos para la compañía con company_id ${company_id}: ${backendMsg}`
         )
     }
 }
@@ -48,7 +52,7 @@ export const getCompanyProjects = async (relationship_id) => {
 export const addOption = async (table, option) => {
     try {
         const { data } = await api.post("/options", { table, option })
-        return data.option
+        return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
@@ -70,7 +74,7 @@ export const updateOption = async (table, id, updatedData) => {
             table,
             option: updatedData,
         })
-        return data.option
+        return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(

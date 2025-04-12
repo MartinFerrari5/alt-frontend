@@ -1,7 +1,7 @@
 // /src/hooks/data/reportes/use-kpi-hooks.js
 import { useQuery } from "@tanstack/react-query"
-import useKpiStore from "../../../store/kpiStore"
-import { getKpiReport } from "./reportesserver"
+import useKpiStore from "../../../store/modules/kpiStore"
+import { getKpiReport } from "./reportesServer"
 
 const kpiQueryKeys = {
     all: (group, filters) => ["kpiReport", group, filters],
