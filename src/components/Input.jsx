@@ -7,6 +7,7 @@ import InputErrorMessage from "./InputErrorMessage"
 import InputLabel from "./InputLabel"
 
 const Input = forwardRef(({ label, errorMessage, ...rest }, ref) => {
+    console.log("Input component rendered", rest)
     return (
         <div className="col-span-2">
             <InputLabel htmlFor={rest.id}>{label}</InputLabel>
@@ -31,5 +32,3 @@ Input.propTypes = {
 }
 
 export default Input
-
-// className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"

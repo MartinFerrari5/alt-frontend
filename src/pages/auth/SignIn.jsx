@@ -1,22 +1,12 @@
 // src/pages/auth/SignIn.jsx
 import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios" // Importar axios
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
-import { z } from "zod"
 import useAuthStore from "../../store/modules/authStore"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
-// Esquema de validación usando zod
-const schema = z.object({
-    email: z
-        .string()
-        .email("Formato de correo electrónico inválido")
-        .nonempty("El correo electrónico es obligatorio"),
-    password: z
-        .string()
-        .min(6, "La contraseña debe tener al menos 6 caracteres")
-        .nonempty("La contraseña es obligatoria"),
-})
+import { schemaSignIn } from "../../util/validationSchema"
 
 const SignIn = () => {
     const {
@@ -24,7 +14,7 @@ const SignIn = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(schemaSignIn),
     })
 
     const login = useAuthStore((state) => state.login)
@@ -33,56 +23,17 @@ const SignIn = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch(
+            // Reemplazar fetch con axios.post
+            const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/login`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data),
-                }
+                data
             )
-
-            if (!response.ok) {
-                let errorMsg = "Error al iniciar sesión. Intenta nuevamente."
-                try {
-                    const errorData = await response.json()
-                    if (errorData?.message) {
-                        // Mensaje personalizado según el código de estado
-                        if (response.status === 401) {
-                            errorMsg =
-                                "Credenciales incorrectas. Verifica tu correo y contraseña."
-                        } else {
-                            errorMsg = errorData.message
-                        }
-                    }
-                } catch (parseError) {
-                    console.error(
-                        "Error al parsear la respuesta de error:",
-                        parseError
-                    )
-                }
-                setMessage({ type: "error", text: errorMsg })
-                return
-            }
-
-            const { token, refreshToken } = await response.json()
+            const { token, refreshToken } = response.data
             login({ token, refreshToken })
-            setMessage({ type: "success", text: "¡Inicio de sesión exitoso!" })
-
-            setTimeout(() => {
-                navigate("/")
-            }, 1000)
+            navigate("/")
         } catch (error) {
-            console.error("Error de red o inesperado:", error)
-            let errorText = "Ocurrió un error inesperado. Intenta nuevamente."
-            if (
-                error.message === "Failed to fetch" ||
-                error instanceof TypeError
-            ) {
-                errorText = "Error de red. Revisa tu conexión a internet."
-            }
+            console.error("Error de inicio de sesión:", error)
+            let errorText = error.response?.data.message || "Error desconocido"
             setMessage({ type: "error", text: errorText })
         }
     }
