@@ -7,7 +7,9 @@ import { toast } from "react-toastify"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
-    const { mutate: sendToRRHH, isLoading } = useSendStatusToRRHH()
+    // Cambiar isLoading por isPending
+    const { mutate: sendToRRHH, isPending } = useSendStatusToRRHH()
+    console.log("isPending:", isPending)
 
     // Función para eliminar parámetros vacíos del objeto queryParams
     const cleanQueryParams = (params) =>
@@ -59,12 +61,16 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     }, [tasks, queryParams, sendToRRHH, role])
 
     return (
-        <>
-            {isLoading && <LoadingSpinner />}
-            <Button onClick={handleClick} disabled={isLoading}>
-                {role === "admin" ? "Finalizar tareas" : "Enviar a RRHH"}
-            </Button>
-        </>
+        // Usar isPending en lugar de isLoading
+        <Button onClick={handleClick} disabled={isPending}>
+            {isPending ? (
+                <LoadingSpinner />
+            ) : role === "admin" ? (
+                "Finalizar tareas"
+            ) : (
+                "Enviar a RRHH"
+            )}
+        </Button>
     )
 }
 

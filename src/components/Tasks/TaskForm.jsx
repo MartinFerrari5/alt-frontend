@@ -5,6 +5,7 @@ import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
 import { toast } from "react-toastify"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 const TaskForm = ({
     register,
@@ -149,15 +150,11 @@ const TaskForm = ({
                 </div>
                 <div className="mt-4 flex w-full justify-end gap-3">
                     <Button
-                        size="large"
                         color="primary"
                         disabled={isSubmitting}
                         type="submit"
                     >
-                        {isSubmitting && (
-                            <span className="animate-spin">⏳</span>
-                        )}{" "}
-                        Guardar
+                        {isSubmitting ? <LoadingSpinner /> : "Guardar"}{" "}
                     </Button>
                 </div>
             </div>
