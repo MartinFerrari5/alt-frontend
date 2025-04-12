@@ -65,7 +65,6 @@ const CompaniesSection = ({
 
     // Función para agregar relación utilizando el store global
     const handleAddRelation = async (companyId) => {
-        console.log("handleAddRelation: ", userId, companyId)
         try {
             const relationData = { user_id: userId, company_id: companyId }
             await addCompanyUserRelation(relationData, userId)

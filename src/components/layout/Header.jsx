@@ -12,7 +12,6 @@ import AddTaskDialog from "../Tasks/AddTaskDialog"
 // import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 function Header({ subtitle, title, tasks }) {
-    console.log("Tareas seleccionadas:", tasks)
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false)
     const location = useLocation()
     const [searchParams] = useSearchParams()

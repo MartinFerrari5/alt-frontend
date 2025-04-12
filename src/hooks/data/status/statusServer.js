@@ -66,7 +66,7 @@ export const postStatusRRHH = async (queryParams, payload) => {
         const { data } = await api.post("/status/rrhh", payload, {
             params: queryParams,
         })
-        return data.data
+        return data
     } catch (error) {
         console.error("Error en postStatusRRHH:", error)
 

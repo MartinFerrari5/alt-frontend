@@ -94,7 +94,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
     // Se busca en companies_table el objeto que corresponda para extraer el relationship_id y obtener los proyectos.
     const selectedCompanyId = watch("company")
     useEffect(() => {
-        if (user.role !== "admin" && selectedCompanyId && companies_table && companies_table.length > 0) {
+        if (
+            user.role !== "admin" &&
+            selectedCompanyId &&
+            companies_table &&
+            companies_table.length > 0
+        ) {
             // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
             const companyObj = companies_table.find(
                 (c) =>
@@ -158,8 +163,6 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             hourtype,
         })
     }
-    console.log("filteredProjects", filteredProjects)
-    console.log("projects_table", projects_table)
 
     return (
         <form

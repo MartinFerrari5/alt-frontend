@@ -4,6 +4,7 @@ import { useParams, useLocation, Link } from "react-router-dom"
 import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { useRelationsStore } from "../../store/modules/relationsStore"
+import DeleteConfirmationModal from "../../components/Tasks/DeleteConfirmationModal"
 
 const CompanyDetail = () => {
     const { id } = useParams()
@@ -26,6 +27,10 @@ const CompanyDetail = () => {
     // Estados para los filtros de búsqueda individuales
     const [filterRelated, setFilterRelated] = useState("")
     const [filterAvailable, setFilterAvailable] = useState("")
+
+    // Estado para el modal de confirmación
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [selectedProject, setSelectedProject] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,16 +62,40 @@ const CompanyDetail = () => {
     }
 
     /**
-     * Elimina un proyecto de la compañía y actualiza ambos listados.
+     * Muestra el modal de confirmación para eliminar un proyecto.
      */
-    const handleRemoveProject = async (projectId) => {
+    const handleRemoveProject = (project) => {
+        setSelectedProject(project) // Guardar el proyecto seleccionado
+        setShowDeleteModal(true) // Mostrar el modal
+    }
+
+    /**
+     * Confirma la eliminación de un proyecto y actualiza ambos listados.
+     */
+    const confirmRemoveProject = async () => {
         try {
-            await deleteCompanyProjectRelation(projectId, id)
-            toast.success("Proyecto eliminado exitosamente")
+            if (selectedProject) {
+                await deleteCompanyProjectRelation(
+                    selectedProject.relationship_id,
+                    id
+                )
+                toast.success("Proyecto eliminado exitosamente")
+            }
         } catch (err) {
             toast.error(`Error al eliminar el proyecto: ${err.message}`)
             console.error("Error removing project:", err)
+        } finally {
+            setShowDeleteModal(false) // Cerrar el modal
+            setSelectedProject(null) // Limpiar la selección
         }
+    }
+
+    /**
+     * Cancela la eliminación de un proyecto y cierra el modal.
+     */
+    const cancelRemoveProject = () => {
+        setShowDeleteModal(false) // Cerrar el modal
+        setSelectedProject(null) // Limpiar la selección
     }
 
     if (isLoading) {
@@ -159,7 +188,7 @@ const CompanyDetail = () => {
                                                             <button
                                                                 onClick={() =>
                                                                     handleRemoveProject(
-                                                                        project.relationship_id
+                                                                        project
                                                                     )
                                                                 }
                                                                 className="btn bg-destructive text-sm text-white hover:bg-red-500"
@@ -246,6 +275,17 @@ const CompanyDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de confirmación */}
+            {showDeleteModal && (
+                <DeleteConfirmationModal
+                    onConfirm={confirmRemoveProject}
+                    onCancel={cancelRemoveProject}
+                    message="¿Estás seguro de que deseas eliminar este proyecto?"
+                    confirmText="Eliminar"
+                    cancelText="Cancelar"
+                />
+            )}
         </MainLayout>
     )
 }

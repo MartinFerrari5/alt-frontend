@@ -8,6 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../../ui/dialog"
+import DeleteConfirmationModal from "../../Tasks/DeleteConfirmationModal"
+import { useState } from "react"
 
 export const RelationSection = ({
     icon,
@@ -18,8 +20,28 @@ export const RelationSection = ({
     onAddRelation,
     onDeleteRelation,
     customModal,
-    customSelector, // nuevo prop para renderizar un selector (por ejemplo, CompanySelector)
+    customSelector,
 }) => {
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
+
+    const handleDeleteClick = (item) => {
+        setSelectedItem(item)
+        setShowDeleteModal(true)
+    }
+
+    const handleConfirmDelete = () => {
+        if (selectedItem) {
+            onDeleteRelation(selectedItem)
+        }
+        setShowDeleteModal(false)
+        setSelectedItem(null)
+    }
+
+    const handleCancelDelete = () => {
+        setShowDeleteModal(false)
+        setSelectedItem(null)
+    }
     return (
         <div>
             <div className="mb-2 flex flex-col">
@@ -85,7 +107,7 @@ export const RelationSection = ({
                                 <span>{item[displayProp]}</span>
                                 {onDeleteRelation && (
                                     <button
-                                        onClick={() => onDeleteRelation(item)}
+                                        onClick={() => handleDeleteClick(item)}
                                         title="Eliminar relación"
                                         className="text-red-500 hover:text-red-700"
                                     >
@@ -101,6 +123,16 @@ export const RelationSection = ({
                     </div>
                 )}
             </div>
+            {/* Modal de confirmación */}
+            {showDeleteModal && (
+                <DeleteConfirmationModal
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                    message={`¿Estás seguro de que deseas eliminar esta ${title.toLowerCase()}?`}
+                    confirmText="Eliminar"
+                    cancelText="Cancelar"
+                />
+            )}
         </div>
     )
 }

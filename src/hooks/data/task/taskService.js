@@ -24,7 +24,6 @@ export const getAllTasksAll = async () => {
 
 export const createTask = async (task) => {
     const { data } = await api.post("/tasks", task)
-    // console.log("Tarea creada:", data.data)
     return data.data
 }
 

@@ -131,7 +131,6 @@ const AddTaskForm = ({ onClose }) => {
      */
     useEffect(() => {
         if (selectedCompany) {
-            console.log("selectedCompany: ", selectedCompany)
             getCompanyProjects(selectedCompany)
                 .then((projects) => {
                     setFilteredProjects(projects)
@@ -177,7 +176,6 @@ const AddTaskForm = ({ onClose }) => {
      * @param {Object} data: Datos del formulario
      */
     const handleSaveClick = (data) => {
-        // console.log("data: ", data)
         const formattedDate = formatDateForBackend(taskDate)
         const selectedCompanyObj = companies_table.find(
             (comp) => comp.relationship_id === data.company
@@ -198,8 +196,6 @@ const AddTaskForm = ({ onClose }) => {
             status: "0",
             task_date: formattedDate,
         }
-
-        // console.log("taskPayload: ", taskPayload)
 
         addTaskMutation.mutate(taskPayload, {
             onSuccess: () => {

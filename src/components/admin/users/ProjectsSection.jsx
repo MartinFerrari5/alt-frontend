@@ -35,6 +35,30 @@ const ProjectsSection = ({ userId }) => {
         }
     }, [relatedCompanies, selectedCompanyRelId])
 
+    // Función para eliminar relación utilizando el store global
+    const handleDeleteRelation = async (relation) => {
+        if (!relation?.relationship_id) {
+            toast.error("No se puede eliminar la relación: ID no válido.")
+            console.error(
+                "El objeto relación no contiene un ID válido:",
+                relation
+            )
+            return
+        }
+
+        try {
+            await deleteProjectUserRelation(
+                relation.relationship_id,
+                userId,
+                selectedCompanyRelId
+            )
+            toast.success("Relación con el proyecto eliminada exitosamente")
+        } catch (error) {
+            console.error("Error al eliminar relación de proyecto:", error)
+            toast.error("Error al eliminar relación de proyecto")
+        }
+    }
+
     const handleAddRelation = async (relationData) => {
         try {
             await addProjectUserRelation(
@@ -63,9 +87,10 @@ const ProjectsSection = ({ userId }) => {
             <RelationSection
                 icon={<Briefcase className="h-5 w-5 text-blue-600" />}
                 title="Proyectos"
-                relatedItems={mapProjects(relatedProjects || [])}
+                relatedItems={relatedProjects}
                 displayProp="option"
                 customModal={ProjectModal}
+                onDeleteRelation={handleDeleteRelation}
                 customSelector={
                     <CompanySelector
                         mappedRelatedCompanies={mapCompanies(relatedCompanies)}
