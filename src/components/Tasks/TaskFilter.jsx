@@ -241,7 +241,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                     isLoading={false}
                     isError={false}
                     items={statusOptions}
-                    valueKey="id" 
+                    valueKey="id"
                 />
             )}
             <input

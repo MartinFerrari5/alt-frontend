@@ -15,6 +15,15 @@ const TaskFormFields = ({
 }) => {
     const user = useAuthStore((state) => state.user)
     const role = user?.role || "user"
+
+    // Obtener la fecha actual y formatearla
+    const today = new Date()
+    const formattedToday = today.toLocaleDateString("es-ES", {
+        // 'es-ES' para formato español
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    })
     return (
         <div className="mx-auto grid max-w-4xl gap-6">
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -99,7 +108,15 @@ const TaskFormFields = ({
             </div>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {/* DatePicker y Horas de Almuerzo*/}
-                <DatePicker value={taskDate} onChange={setTaskDate} />
+                <div>
+                    {" "}
+                    {/* Envuelve DatePicker y el span en un div */}
+                    <DatePicker value={taskDate} onChange={setTaskDate} />
+                    {/* Span para mostrar la fecha actual */}
+                    <span className="mt-1 block text-sm text-gray-500">
+                        {formattedToday}
+                    </span>
+                </div>
                 <Input
                     id="lunch_hours"
                     label="Horas de Almuerzo"
