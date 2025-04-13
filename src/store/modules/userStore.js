@@ -164,6 +164,4 @@ export const useChangePassword = () => {
     })
 }
 
-// Además, exportamos el store por si alguna parte de la aplicación
-// requiere acceder o manipular el estado global directamente.
 export { useUserStore }

@@ -5,7 +5,7 @@ import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { useRelationsStore } from "../../store/modules/relationsStore"
 import DeleteConfirmationModal from "../../components/Tasks/DeleteConfirmationModal"
-import { Trash } from "lucide-react"
+import { ArrowLeft, Trash } from "lucide-react"
 
 const CompanyDetail = () => {
     const { id } = useParams()
@@ -130,17 +130,17 @@ const CompanyDetail = () => {
     return (
         <MainLayout>
             <div className="rounded-md bg-card p-6 shadow">
-                <div className="mb-4">
+                <div className="mb-6 flex items-center gap-2">
                     <Link
                         to="/admin/companies"
-                        className="text-greenApp hover:underline"
+                        className="hover:text-green hover:bg-grey-bg rounded-full p-2 text-gray-500 transition-colors"
                     >
-                        &larr; Volver a la lista de compañías
+                        <ArrowLeft className="h-5 w-5" />
                     </Link>
+                    <h1 className="text-main-color text-2xl font-bold">
+                        Compañía: {companyNameFromQuery}
+                    </h1>
                 </div>
-                <h1 className="mb-4 text-2xl font-bold text-foreground">
-                    Compañía: {companyNameFromQuery}
-                </h1>
                 <p className="mb-4 text-sm text-muted">ID: {id}</p>
 
                 {/* Contenedor responsivo para las dos tablas */}
