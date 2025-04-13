@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { useRelationsStore } from "../../store/modules/relationsStore"
 import DeleteConfirmationModal from "../../components/Tasks/DeleteConfirmationModal"
+import { Trash } from "lucide-react"
 
 const CompanyDetail = () => {
     const { id } = useParams()
@@ -191,9 +192,10 @@ const CompanyDetail = () => {
                                                                         project
                                                                     )
                                                                 }
-                                                                className="btn bg-destructive text-sm text-white hover:bg-red-500"
+                                                                className="rounded-md border-2 p-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+                                                                title="Eliminar proyecto"
                                                             >
-                                                                Eliminar
+                                                                <Trash className="h-4 w-4" />
                                                             </button>
                                                         </td>
                                                     </tr>

@@ -4,6 +4,7 @@ import Dropdown from "../../Dropdown/Dropdown"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
 import { DialogClose } from "../../ui/dialog"
 import { LoadingSpinner } from "../../../util/LoadingSpinner"
+import { Save, X } from "lucide-react"
 
 export const EditProjectRelationModal = ({
     title,
@@ -195,7 +196,12 @@ export const EditProjectRelationModal = ({
                 {/* Pie de modal con botones */}
                 <footer className="mt-8 flex justify-end gap-4">
                     <DialogClose asChild>
-                        <Button variant="outline" disabled={isLoading}>
+                        <Button
+                            variant="outline"
+                            disabled={isLoading}
+                            className="text-red-600 hover:bg-red-100"
+                        >
+                            <X className="h-4 w-4" />
                             Cancelar
                         </Button>
                     </DialogClose>
@@ -207,7 +213,12 @@ export const EditProjectRelationModal = ({
                             isLoading
                         }
                     >
-                        {isLoading ? <LoadingSpinner size="sm" /> : "Agregar"}
+                        {isLoading ? (
+                            <LoadingSpinner size="sm" />
+                        ) : (
+                            <Save className="h-4 w-4" />
+                        )}
+                        {isLoading ? "" : "Agregar"}
                     </Button>
                 </footer>
             </div>

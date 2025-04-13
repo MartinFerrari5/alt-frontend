@@ -12,9 +12,6 @@ const CompanySelector = ({
     selectedCompanyRelId,
     setSelectedCompanyRelId,
 }) => {
-    // Si no hay compañías relacionadas, no se renderiza el componente.
-    if (!mappedRelatedCompanies.length) return null
-
     return (
         <div className="mb-4">
             <label htmlFor="companySelector" className="mb-1 block font-bold">
@@ -25,13 +22,29 @@ const CompanySelector = ({
                 value={selectedCompanyRelId}
                 onChange={(e) => setSelectedCompanyRelId(e.target.value)}
                 className="w-full rounded border p-2"
+                // Deshabilitar si no hay compañías
+                disabled={
+                    !mappedRelatedCompanies ||
+                    mappedRelatedCompanies.length === 0
+                }
             >
-                {mappedRelatedCompanies.map((company) => (
-                    <option key={company.id} value={company.id}>
-                        {company.option}
-                    </option>
-                ))}
+                {/* Opción por defecto/vacía - Se eliminó el atributo 'disabled' */}
+                <option value="">Seleccione una compañía</option>
+                {/* Mapeo de las compañías existentes */}
+                {mappedRelatedCompanies &&
+                    mappedRelatedCompanies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                            {company.option}
+                        </option>
+                    ))}
             </select>
+            {/* Mensaje si no hay compañías */}
+            {(!mappedRelatedCompanies ||
+                mappedRelatedCompanies.length === 0) && (
+                <p className="mt-1 text-sm text-gray-500">
+                    No hay compañías asociadas.
+                </p>
+            )}
         </div>
     )
 }

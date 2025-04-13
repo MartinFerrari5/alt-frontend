@@ -74,10 +74,21 @@ const UserProfile = () => {
         )
     }
 
+    const getRoleDisplayName = (role) => {
+        switch (role) {
+            case "admin":
+                return "Administrador"
+            case "user":
+                return "Colaborador"
+            default:
+                return role // Fallback to the original value
+        }
+    }
+
     const userInfoItems = [
         { icon: IdCard, label: "User ID", value: user.id },
         { icon: Mail, label: "Email", value: user.email },
-        { icon: Shield, label: "Role", value: user.role },
+        { icon: Shield, label: "Role", value: getRoleDisplayName(user.role) },
     ]
 
     return (

@@ -4,8 +4,6 @@ import { useState, useCallback, useEffect } from "react"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
-import { FaTrash } from "react-icons/fa"
-
 import StatusIndicator from "./StatusIndicator"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 import { useTasks } from "../../hooks/data/task/useTasks"
@@ -169,7 +167,7 @@ const TaskItem = ({
                             variant="outline"
                             onClick={handleDeleteButtonClick}
                             disabled={deleteTaskIsLoading}
-                            className="text-red-500 hover:text-red-700"
+                            className="rounded-md border-2 p-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
                         >
                             {deleteTaskIsLoading ? (
                                 <AiOutlineLoading3Quarters className="text-brand-text-gray animate-spin" />

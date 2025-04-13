@@ -2,6 +2,7 @@ import { useState } from "react"
 import Button from "../../Button"
 import Dropdown from "../../Dropdown/Dropdown"
 import { DialogClose } from "../../ui/dialog"
+import { Save, X } from "lucide-react"
 
 const EditRelationModal = ({
     title,
@@ -93,6 +94,7 @@ const EditRelationModal = ({
                             variant="outline"
                             className="text-red-600 hover:bg-red-100"
                         >
+                            <X className="h-4 w-4" />
                             Cancelar
                         </Button>
                     </DialogClose>
@@ -100,6 +102,7 @@ const EditRelationModal = ({
                         onClick={handleAddRelation}
                         disabled={!selectedItem}
                     >
+                        <Save className="h-4 w-4" />
                         Agregar
                     </Button>
                 </footer>

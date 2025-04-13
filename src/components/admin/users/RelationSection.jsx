@@ -110,7 +110,7 @@ export const RelationSection = ({
                                     <button
                                         onClick={() => handleDeleteClick(item)}
                                         title="Eliminar relación"
-                                        className="text-red-500 hover:text-red-700"
+                                        className="rounded-md border-2 p-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
                                     >
                                         <Trash className="h-4 w-4" />
                                     </button>

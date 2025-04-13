@@ -24,7 +24,7 @@ const CompaniesList = ({ title, data }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((company) => (
+                        {data.map((company, index) => (
                             <tr
                                 key={company.id}
                                 className="cursor-pointer transition-colors hover:bg-muted"
@@ -33,7 +33,7 @@ const CompaniesList = ({ title, data }) => {
                                 }
                             >
                                 <td className="border-b border-border px-4 py-2 text-foreground">
-                                    {company.id}
+                                    {index + 1}
                                 </td>
                                 <td className="border-b border-border px-4 py-2 text-foreground">
                                     {company.option}
