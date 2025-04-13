@@ -56,11 +56,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                         : "flex justify-center"
                 }`}
             >
-                <UserAvatar
-                    name={user?.full_name || "Usuario"}
-                    imageUrl={user?.avatar || null}
-                    size="md"
-                />
+                <Link to="/rraa/user/user-profile">
+                    <UserAvatar
+                        name={user?.full_name || "Usuario"}
+                        imageUrl={user?.avatar || null}
+                        size="md"
+                    />
+                </Link>
                 {isOpen && (
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
@@ -70,15 +72,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                             {user?.email || "correo@ejemplo.com"}
                         </p>
                         <div className="mt-1 flex items-center gap-2">
-                            <span className="inline-block rounded bg-blue-600 px-2 py-0.5 text-[10px] font-semibold uppercase leading-none text-white">
-                                {user.role === "admin" ? "Admin" : "User"}
+                            <span className="inline-block rounded bg-blue-600 px-2 py-0.5 text-[11px] font-semibold uppercase leading-none text-white">
+                                {user.role === "admin"
+                                    ? "Administrador"
+                                    : "Colaborador"}
                             </span>
-                            <Link
-                                to="/rraa/user/user-profile"
-                                className="text-xs text-greenApp transition-colors hover:text-darkGreen2"
-                            >
-                                Ver Perfil
-                            </Link>
                         </div>
                     </div>
                 )}

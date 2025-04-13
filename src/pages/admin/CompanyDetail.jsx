@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import MainLayout from "../../components/layout/MainLayout"
 import { useRelationsStore } from "../../store/modules/relationsStore"
 import DeleteConfirmationModal from "../../components/Tasks/DeleteConfirmationModal"
+import { ArrowLeft, Trash } from "lucide-react"
 
 const CompanyDetail = () => {
     const { id } = useParams()
@@ -129,18 +130,18 @@ const CompanyDetail = () => {
     return (
         <MainLayout>
             <div className="rounded-md bg-card p-6 shadow">
-                <div className="mb-4">
+                <div className="mb-6 flex items-center gap-2">
                     <Link
                         to="/rraa/admin/companies"
-                        className="text-greenApp hover:underline"
+                        className="hover:text-green hover:bg-grey-bg rounded-full p-2 text-gray-500 transition-colors"
                     >
-                        &larr; Volver a la lista de compañías
+                        <ArrowLeft className="h-5 w-5" />
                     </Link>
+                    <h1 className="text-main-color text-2xl font-bold">
+                        Compañía: {companyNameFromQuery}
+                    </h1>
                 </div>
-                <h1 className="mb-4 text-2xl font-bold text-foreground">
-                    Compañía: {companyNameFromQuery}
-                </h1>
-                <p className="mb-4 text-sm text-muted">ID: {id}</p>
+                {/* <p className="mb-4 text-sm text-muted">ID: {id}</p> */}
 
                 {/* Contenedor responsivo para las dos tablas */}
                 <div className="flex flex-col gap-6 md:flex-row">
@@ -191,9 +192,10 @@ const CompanyDetail = () => {
                                                                         project
                                                                     )
                                                                 }
-                                                                className="btn bg-destructive text-sm text-white hover:bg-red-500"
+                                                                className="rounded-md border-2 p-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
+                                                                title="Eliminar proyecto"
                                                             >
-                                                                Eliminar
+                                                                <Trash className="h-4 w-4" />
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -204,7 +206,7 @@ const CompanyDetail = () => {
                                 </div>
                             </div>
                         ) : (
-                            <p className="text-muted">
+                            <p className="text-gray-400">
                                 No hay proyectos relacionados.
                             </p>
                         )}
@@ -268,7 +270,7 @@ const CompanyDetail = () => {
                                 </div>
                             </div>
                         ) : (
-                            <p className="text-muted">
+                            <p className="text-gray-400">
                                 No hay proyectos disponibles para agregar.
                             </p>
                         )}

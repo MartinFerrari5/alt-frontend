@@ -77,7 +77,7 @@ const Dropdown = ({
                 disabled={isLoading}
                 className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-lg text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
             >
-                <option value="">Seleccione {label}</option>
+                <option value="">Seleccione un {label}</option>
                 {getOptions()}
             </select>
             {error && <p className="text-lg text-red-500">{error.message}</p>}

@@ -42,6 +42,7 @@ export const RelationSection = ({
         setShowDeleteModal(false)
         setSelectedItem(null)
     }
+
     return (
         <div>
             <div className="mb-2 flex flex-col">
@@ -50,7 +51,7 @@ export const RelationSection = ({
                         {icon && (
                             <span className="text-main-color">{icon}</span>
                         )}
-                        Associated {title}
+                        {title}
                     </h3>
                     {/* Botón para abrir el modal de edición */}
                     <Dialog>
@@ -61,7 +62,7 @@ export const RelationSection = ({
                                 title={`Editar ${title}`}
                             >
                                 <span className="h-4 w-4">+</span>
-                                Add Company
+                                Agregar
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -93,7 +94,7 @@ export const RelationSection = ({
                     </Dialog>
                 </div>
                 {/* Aquí se renderiza el componente selector, si se pasó */}
-                {customSelector && <div className="mt-2">{customSelector}</div>}
+                {customSelector && <>{customSelector}</>}
             </div>
 
             <div className="bg-grey-bg rounded border p-2">
@@ -109,7 +110,7 @@ export const RelationSection = ({
                                     <button
                                         onClick={() => handleDeleteClick(item)}
                                         title="Eliminar relación"
-                                        className="text-red-500 hover:text-red-700"
+                                        className="rounded-md border-2 p-2 text-red-500 transition-colors hover:bg-red-500 hover:text-white"
                                     >
                                         <Trash className="h-4 w-4" />
                                     </button>

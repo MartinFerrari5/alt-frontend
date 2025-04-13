@@ -5,6 +5,7 @@ import Button from "../Button"
 import Dropdown from "../Dropdown/Dropdown"
 import { toast } from "react-toastify"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
+import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 const TaskForm = ({
     register,
@@ -18,11 +19,8 @@ const TaskForm = ({
     companies,
     projects,
     hourTypes,
-    setValue,
     reset,
 }) => {
-    if (!task) return null
-
     const isLoadingCompanies = companies.length === 0
     const [filteredProjects, setFilteredProjects] = useState(projects)
     const isLoadingProjects = filteredProjects.length === 0
@@ -53,6 +51,7 @@ const TaskForm = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
 
+    if (!task) return null
     return (
         <form onSubmit={handleSubmit}>
             <div className="bg-brand-white space-y-6 rounded-xl p-6">
@@ -149,15 +148,11 @@ const TaskForm = ({
                 </div>
                 <div className="mt-4 flex w-full justify-end gap-3">
                     <Button
-                        size="large"
                         color="primary"
                         disabled={isSubmitting}
                         type="submit"
                     >
-                        {isSubmitting && (
-                            <span className="animate-spin">⏳</span>
-                        )}{" "}
-                        Guardar
+                        {isSubmitting ? <LoadingSpinner /> : "Guardar"}{" "}
                     </Button>
                 </div>
             </div>

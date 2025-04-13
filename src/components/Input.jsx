@@ -31,5 +31,3 @@ Input.propTypes = {
 }
 
 export default Input
-
-// className="rounded-lg border border-solid border-brand-border px-4 py-3 outline-brand-custom-green placeholder:text-sm placeholder:text-brand-text-gray"

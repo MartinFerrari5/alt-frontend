@@ -9,7 +9,7 @@ import * as usersApi from "./../../hooks/data/users/useUserHooks"
 // de la lista de usuarios y del usuario seleccionado, para usos globales.
 const useUserStore = create(
     persist(
-        (set, get) => ({
+        (set) => ({
             users: [],
             selectedUser: null,
             isLoading: false,
@@ -164,6 +164,4 @@ export const useChangePassword = () => {
     })
 }
 
-// Además, exportamos el store por si alguna parte de la aplicación
-// requiere acceder o manipular el estado global directamente.
 export { useUserStore }

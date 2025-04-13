@@ -105,15 +105,15 @@ const UsersDetail = () => {
                             <ArrowLeft className="h-5 w-5" />
                         </Link>
                         <h1 className="text-main-color text-2xl font-bold">
-                            User Details
+                            Detalle del Usuario
                         </h1>
                     </div>
 
                     <div className="grid gap-6 md:grid-cols-3">
                         {/* User information column */}
                         <div className="md:col-span-1">
-                            <div className="card-container mb-6 rounded-lg bg-white p-4 shadow">
-                                <div className="mb-4 flex flex-col items-center text-center">
+                            <article className="mb-6 rounded-lg bg-white p-4 shadow transition-transform">
+                                <header className="mb-4 flex flex-col items-center text-center">
                                     <div className="bg-green mb-3 flex h-20 w-20 items-center justify-center rounded-full text-white">
                                         <User className="h-10 w-10" />
                                     </div>
@@ -124,19 +124,19 @@ const UsersDetail = () => {
                                         {userData.email}
                                     </p>
                                     <div className="bg-grey-bg mt-4 w-full rounded-md p-2 text-center text-sm">
-                                        <span className="font-medium">
+                                        {/* <strong className="font-medium">
                                             ID:{" "}
-                                        </span>
-                                        <span className="text-gray-500">
+                                        </strong> */}
+                                        {/* <span className="text-gray-500">
                                             {userData.id}
-                                        </span>
+                                        </span> */}
                                     </div>
-                                </div>
+                                </header>
 
-                                <div className="space-y-3 text-sm">
-                                    <div className="border-grey-strong-bg flex items-center justify-between border-b py-2">
+                                <section className="space-y-3 text-sm">
+                                    <div className="flex items-center justify-between border-b border-gray-200 py-2">
                                         <span className="text-gray-500">
-                                            Created On
+                                            Fecha de Creación
                                         </span>
                                         <div className="text-main-color flex items-center gap-1">
                                             <Calendar className="h-4 w-4" />
@@ -148,27 +148,21 @@ const UsersDetail = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-between py-2">
-                                        <span className="text-gray-500">
-                                            Last Login
-                                        </span>
-                                        <div className="text-main-color flex items-center gap-1">
+                                    {/*
+                                        <div className="flex items-center justify-between py-2">
+                                        <span className="text-gray-500">Último Acceso</span>
+                                        <div className="flex items-center gap-1 text-main-color">
                                             <Calendar className="h-4 w-4" />
-                                            <span>
-                                                {formatDate(
-                                                    userData.lastLogin ||
-                                                        userData.last_login ||
-                                                        "N/A"
-                                                )}
-                                            </span>
+                                            <span>{formatDate(userData.lastLogin || userData.last_login || "N/A")}</span>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
+                                        </div>
+                                    */}
+                                </section>
+                            </article>
 
                             <div className="card-container rounded-lg bg-white p-4 shadow">
                                 <h3 className="section-title mb-2 text-lg font-semibold">
-                                    Edit User
+                                    Editar usuario
                                 </h3>
                                 <UserEditForm
                                     user={userData}

@@ -60,3 +60,15 @@ export const schema = z
             path: ["exit_time"],
         }
     )
+
+// Esquema de validación usando zod Login
+export const schemaSignIn = z.object({
+    email: z
+        .string()
+        .email("Formato de correo electrónico inválido")
+        .nonempty("El correo electrónico es obligatorio"),
+    password: z
+        .string()
+        .min(6, "La contraseña debe tener al menos 6 caracteres")
+        .nonempty("La contraseña es obligatoria"),
+})

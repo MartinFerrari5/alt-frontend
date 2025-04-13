@@ -140,13 +140,13 @@ const TaskFilter = ({ onFilter, currentPath }) => {
      */
     const onSubmit = (data) => {
         const {
-            fullname, // Nombre del usuario
-            company, // ID de la compañía
-            project, // ID del proyecto
-            status, // ID del estado
-            startDate, // Fecha de inicio
-            endDate, // Fecha de fin
-            hourtype, // Tipo de hora (morning, afternoon, evening)
+            fullname,
+            company,
+            project,
+            status,
+            startDate,
+            endDate,
+            hourtype,
         } = data
 
         // Se crea un string con la fecha de inicio y fin (si se ha proporcionado)
@@ -163,6 +163,12 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             hourtype,
         })
     }
+
+    const statusOptions = [
+        { id: "0", option: "En Progreso" },
+        { id: "1", option: "Enviado a RRHH" },
+        { id: "2", option: "Finalizado" },
+    ]
 
     return (
         <form
@@ -225,21 +231,18 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 loadingText="Cargando tipos de hora..."
                 errorText="Error cargando tipos de hora"
             />
+
             {currentPath === "/rraa/history" && (
-                <div className="group relative z-0 mb-5 w-full">
-                    <label className="mb-2 block text-sm font-medium">
-                        Tipo de estado
-                    </label>
-                    <select
-                        {...register("status")}
-                        className="peer block w-full appearance-none border-0 border-b-2 border-gray-200 bg-transparent px-0 py-2.5 text-sm text-gray-500 focus:border-green-300 focus:outline-none focus:ring-0"
-                    >
-                        <option value="">estado</option>
-                        <option value="0">En Progreso</option>
-                        <option value="1">Enviado a RRHH</option>
-                        <option value="2">Finalizado</option>
-                    </select>
-                </div>
+                <Dropdown
+                    id="status"
+                    label="Estado"
+                    register={register}
+                    error={errors.status}
+                    isLoading={false}
+                    isError={false}
+                    items={statusOptions}
+                    valueKey="id"
+                />
             )}
             <input
                 type="date"

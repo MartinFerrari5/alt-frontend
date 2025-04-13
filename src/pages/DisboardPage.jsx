@@ -181,7 +181,7 @@ const DisboardPage = () => {
     return (
         <MainLayout>
             <div className="space-y-6">
-                <Header subtitle="Panel" title="Panel" tasks={validTasks} />
+                <Header subtitle="Panel" title="Historial" tasks={validTasks} />
                 <DashboardCards filters={filters} currentPath={currentPath} />
                 <div className="space-y-3 rounded-xl bg-white p-1">
                     <div className="overflow-x-auto">

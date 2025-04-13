@@ -50,7 +50,7 @@ const AdminSubmenu = ({ showLabels }) => {
                                     to="/rraa/admin/users"
                                     className="cursor-pointer hover:bg-sidebar-accent"
                                 >
-                                    Users
+                                    Usuarios
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
@@ -66,7 +66,7 @@ const AdminSubmenu = ({ showLabels }) => {
                                     to="/rraa/admin/management"
                                     className="cursor-pointer hover:bg-sidebar-accent"
                                 >
-                                    Management
+                                    Gestion de Opciones
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -89,7 +89,7 @@ const AdminSubmenu = ({ showLabels }) => {
             >
                 <div className="flex items-center gap-3">
                     <Settings size={20} />
-                    <span>Administration</span>
+                    <span>Administracion</span>
                 </div>
                 {adminMenuOpen ? (
                     <ChevronDown size={16} />
@@ -112,7 +112,7 @@ const AdminSubmenu = ({ showLabels }) => {
                                     : ""
                             }`}
                         >
-                            Users
+                            Usuarios
                         </Link>
                     </li>
                     <li>
@@ -136,7 +136,7 @@ const AdminSubmenu = ({ showLabels }) => {
                                     : ""
                             }`}
                         >
-                            Management
+                            Gestion de Opciones
                         </Link>
                     </li>
                 </ul>

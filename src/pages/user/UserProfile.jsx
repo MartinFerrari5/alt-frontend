@@ -9,6 +9,7 @@ import {
     Save,
     X,
     Loader2,
+    ArrowLeft,
 } from "lucide-react"
 
 import { useNavigate } from "react-router-dom"
@@ -74,10 +75,21 @@ const UserProfile = () => {
         )
     }
 
+    const getRoleDisplayName = (role) => {
+        switch (role) {
+            case "admin":
+                return "Administrador"
+            case "user":
+                return "Colaborador"
+            default:
+                return role // Fallback to the original value
+        }
+    }
+
     const userInfoItems = [
-        { icon: IdCard, label: "User ID", value: user.id },
+        { icon: IdCard, label: "ID del Usuario", value: user.id },
         { icon: Mail, label: "Email", value: user.email },
-        { icon: Shield, label: "Role", value: user.role },
+        { icon: Shield, label: "Rol", value: getRoleDisplayName(user.role) },
     ]
 
     return (
@@ -89,6 +101,7 @@ const UserProfile = () => {
                         onClick={() => navigate(-1)}
                         className="rounded-md bg-gray-200 px-4 py-2 font-medium text-gray-800 transition-colors hover:bg-gray-300"
                     >
+                        <ArrowLeft className="h-5 w-5" />
                         Volver
                     </Button>
                     <Button
@@ -125,12 +138,11 @@ const UserProfile = () => {
                                             autoFocus
                                         />
                                         <div className="flex gap-1">
-                                            <button
+                                            <Button
                                                 onClick={handleSave}
                                                 disabled={
                                                     updateUserMutation.isLoading
                                                 }
-                                                className="bg-green flex items-center gap-2 rounded-md p-2 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
                                             >
                                                 {updateUserMutation.isLoading ? (
                                                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -142,7 +154,7 @@ const UserProfile = () => {
                                                         </span>
                                                     </>
                                                 )}
-                                            </button>
+                                            </Button>
                                             <button
                                                 onClick={handleCancelEditing}
                                                 disabled={

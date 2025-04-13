@@ -92,7 +92,8 @@ const TaskHeader = ({ task, onBack, onEdit, onDeleteConfirmed, isEditing }) => {
                 <div className="mb-6 flex flex-col justify-between md:flex-row">
                     <div>
                         <h1 className="mb-1 text-2xl font-bold">
-                            {task?.task?.task_description ||
+                            
+                            {task?.task_description ||
                                 "Tarea sin descripción"}
                         </h1>
                         <p className="text-md font-medium text-gray-700">

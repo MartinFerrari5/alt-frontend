@@ -6,15 +6,16 @@ import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 import { useResetPassword } from "../../store/modules/userStore"
+import { ArrowLeft } from "lucide-react"
 
 const ResetPasswordPage = () => {
     const [email, setEmail] = useState("")
-    const resetPasswordMutation = useResetPassword()
+    const { mutate, isPending } = useResetPassword()
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        resetPasswordMutation.mutate(
+        mutate(
             { email },
             {
                 onSuccess: () =>
@@ -71,18 +72,25 @@ const ResetPasswordPage = () => {
                                 />
                             </div>
                             <div className="flex items-center justify-between">
-                                <Button type="submit">
-                                    {resetPasswordMutation.isLoading ? (
-                                        <LoadingSpinner />
+                                <Button
+                                    type="button"
+                                    color="secondary"
+                                    variant="outline"
+                                    onClick={() => navigate(-1)}
+                                >
+                                    <ArrowLeft className="h-4 w-4" />
+                                    Volver
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={isPending}
+                                    className="flex items-center justify-center gap-2"
+                                >
+                                    {isPending ? (
+                                        <LoadingSpinner size="sm" />
                                     ) : (
                                         "Enviar"
                                     )}
-                                </Button>
-                                <Button
-                                    type="button"
-                                    onClick={() => navigate(-1)}
-                                >
-                                    Cancelar
                                 </Button>
                             </div>
                         </form>

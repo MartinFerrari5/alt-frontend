@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useOptionsStore } from "../store/modules/optionsStore"
 import CompaniesList from "./CompaniesList"
 
-const CompaniesTable = ({ userId }) => {
+const CompaniesTable = () => {
     const { companies_table, fetchOptions } = useOptionsStore()
 
     useEffect(() => {

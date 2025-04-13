@@ -6,7 +6,7 @@ import { RelationSection } from "./RelationSection"
 import { EditProjectRelationModal } from "./EditProjectRelationModal"
 import { useRelationsStore } from "../../../store/modules/relationsStore"
 import CompanySelector from "../../ui/CompanySelector"
-import { mapCompanies, mapProjects } from "../../../util/mappers"
+import { mapCompanies } from "../../../util/mappers"
 
 const ProjectsSection = ({ userId }) => {
     const [selectedCompanyRelId, setSelectedCompanyRelId] = useState("")
@@ -83,7 +83,7 @@ const ProjectsSection = ({ userId }) => {
     )
 
     return (
-        <div className="mb-8">
+        <div>
             <RelationSection
                 icon={<Briefcase className="h-5 w-5 text-blue-600" />}
                 title="Proyectos"
