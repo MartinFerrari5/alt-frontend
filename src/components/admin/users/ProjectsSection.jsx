@@ -83,7 +83,7 @@ const ProjectsSection = ({ userId }) => {
     )
 
     return (
-        <div className="mb-8">
+        <div>
             <RelationSection
                 icon={<Briefcase className="h-5 w-5 text-blue-600" />}
                 title="Proyectos"

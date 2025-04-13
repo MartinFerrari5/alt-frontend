@@ -179,6 +179,7 @@ const AddTaskForm = ({ onClose }) => {
                     color="secondary"
                     variant="outline"
                     onClick={handleCancelClick}
+                    className="text-red-600 hover:bg-red-100"
                 >
                     Cancelar
                 </Button>

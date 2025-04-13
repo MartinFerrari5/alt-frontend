@@ -17,7 +17,7 @@ const UserAvatar = ({ name, imageUrl, size = "md", className = "" }) => {
 
     return (
         <Avatar
-            className={`${sizeClasses[size]} border-2 border-greenApp ${className}`}
+            className={`${sizeClasses[size]} border-2 border-greenApp ${className} transition-transform duration-200 ease-in-out hover:scale-110`} // Añadir clases de transición y hover
         >
             <AvatarImage src={imageUrl || undefined} alt={name} />
             <AvatarFallback className="bg-darkGreen text-white">

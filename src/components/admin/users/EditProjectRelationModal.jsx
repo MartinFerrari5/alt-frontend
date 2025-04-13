@@ -16,7 +16,6 @@ export const EditProjectRelationModal = ({
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState(null)
 
-    // Extraemos datos del store
     const {
         relatedCompanies,
         notRelatedProjects,
@@ -25,23 +24,20 @@ export const EditProjectRelationModal = ({
         updateNotRelatedProjectsForUser,
     } = useRelationsStore()
 
-    // Inicializar la compañía seleccionada si no hay ninguna seleccionada
+    // Inicializar la compañía seleccionada si aún no hay una
     useEffect(() => {
         if (relatedCompanies.length > 0 && !selectedRelationshipId) {
             setSelectedRelationshipId(relatedCompanies[0].company_id)
         }
     }, [relatedCompanies, selectedRelationshipId])
 
-    // Función para actualizar proyectos relacionados y no relacionados
+    // Función para actualizar relaciones y proyectos no relacionados
     const refreshRelations = useCallback(async () => {
         if (!selectedRelationshipId) return
-
         setIsLoading(true)
         setError(null)
         try {
-            // Actualiza proyectos relacionados
             await updateRelations(userId, selectedRelationshipId)
-            // Actualiza proyectos no relacionados
             await updateNotRelatedProjectsForUser(
                 userId,
                 selectedRelationshipId
@@ -62,7 +58,6 @@ export const EditProjectRelationModal = ({
         userId,
     ])
 
-    // Ejecutamos el refresco cada vez que cambia la compañía seleccionada
     useEffect(() => {
         refreshRelations()
     }, [refreshRelations])
@@ -74,7 +69,7 @@ export const EditProjectRelationModal = ({
                 company_id: selectedRelationshipId,
                 relationship_id: selectedProject,
             })
-            // Reiniciar estados para el formulario
+            // Reiniciar estados después de agregar
             setSelectedRelationshipId("")
             setSelectedProject("")
         }
@@ -88,99 +83,117 @@ export const EditProjectRelationModal = ({
     }
 
     return (
-        <div>
-            <div
-                role="dialog"
-                aria-labelledby="edit-project-relation-title"
-                aria-describedby="edit-project-relation-description"
-            >
-                <h2
-                    id="edit-project-relation-title"
-                    className="text-xl font-bold"
-                >
-                    {title}
-                </h2>
-                <p
-                    id="edit-project-relation-description"
-                    className="text-sm text-gray-500"
-                >
-                    Selecciona una compañía y un proyecto para gestionar las
-                    relaciones.
-                </p>
-                <div className="mt-4 flex gap-4">
-                    {/* Lista de proyectos asociados */}
-                    <div className="w-1/2">
-                        <h4 className="mb-2 text-lg font-semibold">
+        <div
+            role="dialog"
+            aria-labelledby="edit-project-relation-title"
+            aria-describedby="edit-project-relation-description"
+            className="max-h-[90vh] overflow-y-auto p-4"
+        >
+            {/* Contenedor principal del modal con ancho responsivo aumentado */}
+            {/* Clases max-w aumentadas: sm:max-w-4xl, md:max-w-6xl, lg:max-w-7xl */}
+            <div className="mx-auto w-full max-w-[95vw] rounded-lg bg-white p-8 shadow-xl sm:max-w-4xl md:max-w-6xl lg:max-w-7xl">
+                {/* Encabezado */}
+                <header className="mb-8">
+                    <h2
+                        id="edit-project-relation-title"
+                        className="text-2xl font-bold text-gray-800"
+                    >
+                        {title}
+                    </h2>
+                    <p
+                        id="edit-project-relation-description"
+                        className="text-sm text-gray-500"
+                    >
+                        Selecciona una compañía y un proyecto para gestionar las
+                        relaciones.
+                    </p>
+                </header>
+
+                {/* Contenido principal */}
+                <section className="flex flex-col gap-8 md:flex-row">
+                    {/* Panel de proyectos asociados */}
+                    <article className="md:w-1/2">
+                        <h3 className="mb-4 text-xl font-bold text-gray-800">
                             Proyectos Asociados
-                        </h4>
-                        {error && <p className="text-red-500">{error}</p>}
-                        <ul className="max-h-64 overflow-y-auto">
+                        </h3>
+                        {error && <p className="mb-2 text-red-500">{error}</p>}
+                        {/* Aumentada la altura máxima de la lista */}
+                        <ul className="max-h-80 overflow-y-auto rounded-lg border border-gray-200 p-4">
                             {relatedProjects && relatedProjects.length > 0 ? (
                                 relatedProjects.map((item) => (
                                     <li
                                         key={item.project_id}
-                                        className="flex items-center justify-between border-b py-2"
+                                        className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0"
                                     >
-                                        <span>
+                                        <span className="text-gray-700">
                                             {item.option || item.options}
                                         </span>
                                     </li>
                                 ))
                             ) : (
-                                <li>No hay {title.toLowerCase()} asociados.</li>
+                                <li className="py-2 italic text-gray-500">
+                                    No hay {title.toLowerCase()} asociados.
+                                </li>
                             )}
                         </ul>
-                    </div>
-                    {/* Sección para agregar nuevos proyectos */}
-                    <div className="w-1/2">
-                        <h4 className="mb-2 text-lg font-semibold">
+                    </article>
+
+                    {/* Panel para agregar nuevos proyectos */}
+                    <article className="md:w-1/2">
+                        <h3 className="mb-4 text-xl font-bold text-gray-800">
                             Agregar {title}
-                        </h4>
-                        <Dropdown
-                            id="companyDropdown"
-                            label="Seleccionar Compañía"
-                            register={() => ({
-                                onChange: (e) => {
-                                    setSelectedRelationshipId(e.target.value)
-                                    setSelectedProject("")
-                                },
-                                value: selectedRelationshipId,
-                            })}
-                            error={null}
-                            isLoading={isLoading}
-                            isError={!!error}
-                            items={
-                                Array.isArray(relatedCompanies)
-                                    ? relatedCompanies.map((item) => ({
-                                          id: item.company_id,
-                                          option: item.option,
-                                      }))
-                                    : []
-                            }
-                        />
-                        <Dropdown
-                            id="projectDropdown"
-                            label="Seleccionar Proyecto"
-                            register={() => ({
-                                onChange: (e) =>
-                                    setSelectedProject(e.target.value),
-                                value: selectedProject,
-                            })}
-                            error={null}
-                            isLoading={isLoading}
-                            isError={!!error}
-                            items={
-                                Array.isArray(notRelatedProjects)
-                                    ? notRelatedProjects.map((item) => ({
-                                          id: item.id,
-                                          option: item.option,
-                                      }))
-                                    : []
-                            }
-                        />
-                    </div>
-                </div>
-                <div className="mt-6 flex justify-end gap-3">
+                        </h3>
+                        <div className="flex flex-col gap-4">
+                            <Dropdown
+                                id="companyDropdown"
+                                label="Seleccionar Compañía"
+                                register={() => ({
+                                    onChange: (e) => {
+                                        setSelectedRelationshipId(
+                                            e.target.value
+                                        )
+                                        setSelectedProject("")
+                                    },
+                                    value: selectedRelationshipId,
+                                })}
+                                error={null}
+                                isLoading={isLoading}
+                                isError={!!error}
+                                items={
+                                    Array.isArray(relatedCompanies)
+                                        ? relatedCompanies.map((item) => ({
+                                              id: item.company_id,
+                                              option: item.option,
+                                          }))
+                                        : []
+                                }
+                            />
+                            <Dropdown
+                                id="projectDropdown"
+                                label="Seleccionar Proyecto"
+                                register={() => ({
+                                    onChange: (e) =>
+                                        setSelectedProject(e.target.value),
+                                    value: selectedProject,
+                                })}
+                                error={null}
+                                isLoading={isLoading}
+                                isError={!!error}
+                                items={
+                                    Array.isArray(notRelatedProjects)
+                                        ? notRelatedProjects.map((item) => ({
+                                              id: item.id,
+                                              option: item.option,
+                                          }))
+                                        : []
+                                }
+                            />
+                        </div>
+                    </article>
+                </section>
+
+                {/* Pie de modal con botones */}
+                <footer className="mt-8 flex justify-end gap-4">
                     <DialogClose asChild>
                         <Button variant="outline" disabled={isLoading}>
                             Cancelar
@@ -196,7 +209,7 @@ export const EditProjectRelationModal = ({
                     >
                         {isLoading ? <LoadingSpinner size="sm" /> : "Agregar"}
                     </Button>
-                </div>
+                </footer>
             </div>
         </div>
     )
