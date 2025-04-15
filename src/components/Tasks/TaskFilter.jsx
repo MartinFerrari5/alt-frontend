@@ -170,6 +170,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         { id: "2", option: "Finalizado" },
     ]
 
+
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}

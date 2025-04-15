@@ -27,9 +27,9 @@ const formatDate = (dateString) => {
 
 const TaskItem = ({
     task,
-    showCheckbox,
-    isSelected,
-    onSelectTask,
+    showCheckbox = false,
+    isSelected = false, 
+    onSelectTask = () => {},
     currentPath,
 }) => {
     const role = useAuthStore((state) => state.user.role)
@@ -127,7 +127,7 @@ const TaskItem = ({
                         <input
                             type="checkbox"
                             checked={isSelected}
-                            onClick={(e) => {
+                            onChange={(e) => {
                                 e.stopPropagation()
                                 onSelectTask(task.id)
                             }}
@@ -261,20 +261,17 @@ TaskItem.propTypes = {
         entry_time: PropTypes.string.isRequired,
         exit_time: PropTypes.string.isRequired,
         hour_type: PropTypes.string.isRequired,
-        lunch_hours: PropTypes.string,
+        // Allow both string and number for lunch_hours
+        lunch_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         worked_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
             .isRequired,
         status: PropTypes.number.isRequired,
+        task_description: PropTypes.string,
     }).isRequired,
     showCheckbox: PropTypes.bool,
     isSelected: PropTypes.bool,
     onSelectTask: PropTypes.func,
-}
-
-TaskItem.defaultProps = {
-    showCheckbox: false,
-    isSelected: false,
-    onSelectTask: () => {},
+    currentPath: PropTypes.string,
 }
 
 export default TaskItem
