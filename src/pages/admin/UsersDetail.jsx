@@ -182,12 +182,12 @@ const UsersDetail = () => {
                                     }
                                 />
                             </div>
-                            <div className="card-container mt-4 rounded-lg bg-white p-4 shadow">
+                            {/* <div className="card-container mt-4 rounded-lg bg-white p-4 shadow">
                                 <ProjectsSection
                                     userId={id}
                                     selectedCompanyRelId={selectedCompanyRelId}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

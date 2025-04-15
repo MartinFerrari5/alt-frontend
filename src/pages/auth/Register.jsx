@@ -119,7 +119,7 @@ const PageRegister = () => {
                         src="/src/assets/icons/Alt_Logo.png"
                         alt="logo"
                     />
-                    Tarea
+                    Reportes
                 </a>
                 <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
                     <div className="space-y-4 p-6 sm:p-8 md:space-y-6">

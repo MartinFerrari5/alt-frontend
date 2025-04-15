@@ -42,7 +42,7 @@ const ResetPasswordPage = () => {
                         src="/src/assets/icons/Alt_Logo.png"
                         alt="logo"
                     />
-                    Tarea
+                    Reportes
                 </a>
                 <div className="flex w-full flex-col rounded-xl bg-white p-10 shadow-xl">
                     <div>
