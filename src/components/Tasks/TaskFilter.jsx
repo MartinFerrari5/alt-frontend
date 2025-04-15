@@ -103,12 +103,11 @@ const TaskFilter = ({ onFilter, currentPath }) => {
             // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
             const companyObj = companies_table.find(
                 (c) =>
-                    c.company_id === selectedCompanyId ||
-                    c.id === selectedCompanyId
+                    c.company_id === selectedCompanyId
             )
 
-            if ((companyObj && companyObj.company_id) || companyObj.id) {
-                getCompanyProjects(companyObj.company_id || "")
+            if (companyObj && companyObj.company_id) {
+                getCompanyProjects(companyObj.company_id)
                     .then((projects) => {
                         setFilteredProjects(projects)
                         // Si el usuario aún no ha seleccionado un proyecto, asignar el primer proyecto (usando project_id)
@@ -193,7 +192,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
                 items={Array.isArray(companies_table) ? companies_table : []}
                 loadingText="Cargando empresas..."
                 errorText="Error cargando empresas"
-                valueKey={user.role === "admin" ? "id" : "company_id"}
+                valueKey={"company_id"}
             />
             <Dropdown
                 id="project"
