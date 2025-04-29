@@ -13,7 +13,7 @@ const sidebarStyle = tv({
     },
 })
 
-const SidebarButton = ({ children, to }) =>  (    
+const SidebarButton = ({ children, to }) => (
     <NavLink
         to={to}
         end
@@ -23,6 +23,6 @@ const SidebarButton = ({ children, to }) =>  (
     >
         {children}
     </NavLink>
-    )
+)
 
 export default SidebarButton

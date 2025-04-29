@@ -102,8 +102,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
         ) {
             // Buscar la compañía cuyo company_id sea igual al valor seleccionado.
             const companyObj = companies_table.find(
-                (c) =>
-                    c.company_id === selectedCompanyId
+                (c) => c.company_id === selectedCompanyId
             )
 
             if (companyObj && companyObj.company_id) {

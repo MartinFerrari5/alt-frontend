@@ -17,14 +17,13 @@ const Users = () => {
     }
 
     return (
-            <div className="w-full space-y-6">
+        <div className="w-full space-y-6">
             <div className="flex w-full items-center justify-between rounded-lg bg-white px-6 py-4 shadow-md">
-            <div>
-                <span className="text-brand-custom-green text-xl font-semibold">
-                    Lista de Usuarios
-                </span>
-               
-            </div>
+                <div>
+                    <span className="text-brand-custom-green text-xl font-semibold">
+                        Lista de Usuarios
+                    </span>
+                </div>
             </div>
             <div className="rounded-xl bg-white p-6">
                 <div className="relative max-h-[900px] overflow-y-auto shadow-md sm:rounded-lg">

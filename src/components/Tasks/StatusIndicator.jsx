@@ -8,10 +8,10 @@ import {
     FaUndoAlt,
 } from "react-icons/fa"
 
-const StatusIndicator = ({ status=0, isLoading, onChange }) => {
+const StatusIndicator = ({ status = 0, isLoading, onChange }) => {
     let icon
     let statusClasses
-    
+
     if (isLoading) {
         icon = <FaSpinner className="animate-spin text-white" />
         statusClasses = "bg-gray-500"

@@ -65,7 +65,6 @@ const TaskItem = ({
     }, [deleteTask, task.id])
 
     const openStatusModal = useCallback(() => {
-        
         setNewStatus(task.status)
         setShowStatusModal(true)
     }, [task.status])

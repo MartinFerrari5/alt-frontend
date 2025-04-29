@@ -3,7 +3,8 @@ import PropTypes from "prop-types"
 import { tv } from "tailwind-variants"
 
 const button = tv({
-    base: [ // Convertido a array para mejor legibilidad
+    base: [
+        // Convertido a array para mejor legibilidad
         "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background",
         "transition-all duration-150 ease-in-out", // Añadido para transiciones suaves
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
