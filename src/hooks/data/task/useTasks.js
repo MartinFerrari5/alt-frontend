@@ -37,9 +37,10 @@ export const useGetTask = (taskId) => {
     })
 }
 
-export const useTasks = ({ all = false } = {}) => {
+export const useTasks = ({ all = false, page = 1 } = {}) => {
     const queryClient = useQueryClient()
-    const { tasks, addTask, deleteTask, updateTask, setTasks } = useTaskStore()
+    const { tasks, setTasks, setPages, addTask, deleteTask, updateTask } =
+        useTaskStore()
 
     // Factory con queryClient inyectado
     const createMutation = mutationFactory(queryClient)
@@ -49,12 +50,22 @@ export const useTasks = ({ all = false } = {}) => {
     }
 
     // Query principal
+    const queryKey = all
+        ? taskQueryKeys.getAllAll(page)
+        : taskQueryKeys.getAll(page)
+
+    const queryFn = () => (all ? getAllTasksAll(page) : getAllTasks(page))
+
     const getTasks = useQuery({
-        queryKey: all ? taskQueryKeys.getAllAll() : taskQueryKeys.getAll(),
-        queryFn: () => (all ? getAllTasksAll() : getAllTasks()),
-        onSuccess: setTasks,
+        queryKey,
+        queryFn,
+        onSuccess: ({ tasks: dataTasks, pages: dataPages }) => {
+            setTasks(dataTasks)
+            setPages(dataPages)
+        },
         onError: (error) =>
             handleApiError(error, "Error al obtener las tareas"),
+        keepPreviousData: true,
     })
 
     // Mutaciones optimizadas
@@ -72,10 +83,24 @@ export const useTasks = ({ all = false } = {}) => {
                     optimistic: true,
                 }
                 addTask(optimisticTask)
-                queryClient.setQueryData(taskQueryKeys.getAll(), (old) => [
-                    ...old,
-                    optimisticTask,
-                ])
+                queryClient.setQueryData(taskQueryKeys.getAll(), (old) => {
+                    if (!old) {
+                        return {
+                            tasks: [optimisticTask],
+                            pages: { current: 1, total: 1 },
+                        }
+                    }
+                    if (Array.isArray(old.tasks)) {
+                        return {
+                            ...old,
+                            tasks: [...old.tasks, optimisticTask],
+                        }
+                    }
+                    return {
+                        tasks: [optimisticTask],
+                        pages: { current: 1, total: 1 },
+                    }
+                })
                 return {
                     previousTasks: queryClient.getQueryData(
                         taskQueryKeys.getAll()
@@ -134,13 +159,18 @@ export const useTasks = ({ all = false } = {}) => {
     )
 
     // Filtrado de tareas
-    const useFilterTasks = (filters) =>
+    const useFilterTasks = (filters, page = 1) =>
         useQuery({
-            queryKey: ["filterTasks", filters],
-            queryFn: () => filterTasksApi(filters),
+            queryKey: ["filterTasks", filters, page],
+            queryFn: () => filterTasksApi(filters, page),
             enabled: Object.values(filters || {}).some(Boolean),
+            onSuccess: ({ tasks: filtered, pages: filteredPages }) => {
+                setTasks(filtered)
+                setPages(filteredPages)
+            },
             onError: (error) =>
                 handleApiError(error, "Error al filtrar tareas"),
+            keepPreviousData: true,
         })
 
     return {

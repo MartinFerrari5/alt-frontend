@@ -1,5 +1,5 @@
 // src/components/tasks/Tasks.jsx
-import { useMemo, useState, useCallback } from "react"
+import { useMemo, useState, useCallback, useEffect } from "react"
 import { useSearchParams, useLocation } from "react-router-dom"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import TaskFilter from "./TaskFilter"
@@ -7,16 +7,18 @@ import useAuthStore from "../../store/modules/authStore"
 import Header from "../layout/Header"
 import DashboardCards from "../DashboardCards"
 import TaskTable from "./TaskTable"
+import Pagination from "../ui/pagination/Pagination"
 
 const Tasks = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.user.role)
 
-    // Se muestra la selección de tareas solo en la ruta "/"
-    const isInicio = currentPath === "/rraa"
+    // --- Estado de página
+    const initialPage = Number(searchParams.get("page") || 1)
+    const [page, setPage] = useState(initialPage)
 
-    // Filtros obtenidos de la URL
+    // --- Filtros obtenidos de la URL (no incluyen page)
     const filters = useMemo(
         () => ({
             fullname: searchParams.get("fullname") || "",
@@ -30,28 +32,34 @@ const Tasks = () => {
         [searchParams, role]
     )
 
-    const { getTasks, useFilterTasks } = useTasks({ all: true })
-    const filterQuery = useFilterTasks(filters)
-    const hasActiveFilters = useMemo(
-        () => Object.values(filters).some((value) => value !== ""),
-        [filters]
-    )
+    // --- Sincroniza el estado `page` con la URL
+    useEffect(() => {
+        const params = { ...Object.fromEntries(searchParams) }
+        params.page = page
+        setSearchParams(params, { replace: true })
+    }, [page, searchParams, setSearchParams])
 
-    const displayedTasks = hasActiveFilters ? filterQuery.data : getTasks.data
-    const isLoading = hasActiveFilters
-        ? filterQuery.isLoading
-        : getTasks.isLoading
-    const isError = hasActiveFilters ? filterQuery.isError : getTasks.isError
+    // --- Consultas
+    const { getTasks, useFilterTasks } = useTasks({ all: true, page })
+    const filterQuery = useFilterTasks(filters, page)
+    const hasFilters = Object.values(filters).some((v) => v !== "")
 
-    // Filtramos las tareas válidas (con id)
-    const validTasks = useMemo(
-        () => (displayedTasks || []).filter((task) => task?.id),
-        [displayedTasks]
-    )
+    const {
+        data: res,
+        isLoading,
+        isError,
+    } = hasFilters ? filterQuery : getTasks
 
-    // Función para actualizar los filtros en la URL (se agrega hourtype)
+    // --- Datos de la API
+    const tasks = res?.tasks || []
+    const { current = 1, total = 1 } = res?.pages || {}
+
+    // --- Filtrar sólo tareas válidas
+    const validTasks = useMemo(() => tasks.filter((t) => t?.id), [tasks])
+
+    // --- Funciones de filtrado
     const updateFilter = useCallback(
-        (filterData) => {
+        (data) => {
             const {
                 fullname,
                 company,
@@ -60,101 +68,86 @@ const Tasks = () => {
                 startDate,
                 endDate,
                 hourtype,
-            } = filterData
-            const dateRange =
+            } = data
+            const date =
                 startDate && endDate
                     ? `${startDate} ${endDate}`
                     : startDate || ""
-            setSearchParams({
-                fullname: fullname || "",
-                company: company || "",
-                project: project || "",
-                hourtype: hourtype || "",
-                status: status || "",
-                date: dateRange,
-            })
+            setSearchParams(
+                {
+                    fullname,
+                    company,
+                    project,
+                    status,
+                    hourtype,
+                    date,
+                    page: 1,
+                },
+                { replace: true }
+            )
+            setPage(1)
         },
         [setSearchParams]
     )
 
-    // Función que adapta el objeto recibido desde TaskFilter
     const handleFilter = useCallback(
-        (filterData) => {
+        (f) => {
             let startDate = ""
             let endDate = ""
-            if (filterData.date) {
-                const dates = filterData.date.split(" ")
-                if (dates.length === 2) {
-                    startDate = dates[0]
-                    endDate = dates[1]
-                } else {
-                    startDate = filterData.date
-                }
+            if (f.date) {
+                const parts = f.date.split(" ")
+                if (parts.length === 2) [startDate, endDate] = parts
+                else startDate = f.date
             }
-            const status =
-                filterData.status !== ""
-                    ? Number(filterData.status).toString()
-                    : ""
-            updateFilter({
-                fullname: filterData.fullname,
-                company: filterData.company,
-                project: filterData.project || "",
-                hourtype: filterData.hourtype,
-                status,
-                startDate,
-                endDate,
-            })
+            const status = f.status !== "" ? String(Number(f.status)) : ""
+            updateFilter({ ...f, startDate, endDate, status })
         },
         [updateFilter]
     )
 
-    // Estados para la selección de tareas
+    // --- Selección de rutas
+    const isInicio = currentPath === "/rraa"
+
+    // --- Selección de tareas
     const [selectedTasks, setSelectedTasks] = useState([])
     const [allSelected, setAllSelected] = useState(false)
 
-    // Manejo de selección global
     const handleSelectAll = useCallback(() => {
         if (allSelected) {
             setSelectedTasks([])
             setAllSelected(false)
         } else {
-            const allTaskIds = validTasks.map((task) => task.id)
-            setSelectedTasks(allTaskIds)
+            setSelectedTasks(validTasks.map((t) => t.id))
             setAllSelected(true)
         }
     }, [allSelected, validTasks])
 
-    // Selección individual
     const handleSelectTask = useCallback((taskId) => {
-        setSelectedTasks((prevSelected) =>
-            prevSelected.includes(taskId)
-                ? prevSelected.filter((id) => id !== taskId)
-                : [...prevSelected, taskId]
+        setSelectedTasks((prev) =>
+            prev.includes(taskId)
+                ? prev.filter((id) => id !== taskId)
+                : [...prev, taskId]
         )
     }, [])
 
-    // Items de tareas seleccionadas
-    const selectedTaskItems = validTasks.filter((task) =>
-        selectedTasks.includes(task.id)
+    // --- Items seleccionados
+    const selectedTaskItems = validTasks.filter((t) =>
+        selectedTasks.includes(t.id)
     )
 
-    // Renderizado de contenidos según estado de carga, error o datos vacíos
+    // --- Renderizado condicional de la tabla
     const renderContent = () => {
         if (isLoading)
-            return (
-                <p className="text-brand-text-gray text-sm">
-                    Cargando tareas...
-                </p>
-            )
+            return <p className="text-sm text-gray-500">Cargando tareas…</p>
         if (isError)
             return (
                 <p className="text-sm text-red-500">
                     Error al cargar las tareas.
                 </p>
             )
-        if (!validTasks || validTasks.length === 0)
+        if (validTasks.length === 0)
             return (
-                <p className="text-brand-text-gray text-sm">
+                <p className="text-sm text-gray-500">
                     No hay tareas disponibles.
                 </p>
             )
@@ -178,19 +171,23 @@ const Tasks = () => {
                 title="Mis Tareas"
                 tasks={selectedTaskItems}
             />
+
             <DashboardCards
-                filters={filters}
+                filters={{ ...filters, page }}
                 currentPath={currentPath}
                 role={role}
             />
-            <div className="space-y-3 rounded-xl bg-white p-1">
-                <div className="min-w-full py-2">
-                    <TaskFilter
-                        onFilter={handleFilter}
-                        currentPath={currentPath}
-                    />
-                    {renderContent()}
-                </div>
+
+            <div className="space-y-3 rounded-xl bg-white p-4">
+                <TaskFilter onFilter={handleFilter} currentPath={currentPath} />
+
+                {renderContent()}
+
+                <Pagination
+                    currentPage={current}
+                    totalPages={total}
+                    onPageChange={setPage}
+                />
             </div>
         </div>
     )

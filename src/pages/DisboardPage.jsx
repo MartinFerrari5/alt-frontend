@@ -1,15 +1,14 @@
-// /src/pages/Disboard.jsx
-import { useMemo, useCallback } from "react"
+// src/pages/DisboardPage.jsx
+import { useMemo, useCallback, useState, useEffect } from "react"
 import { useLocation, useSearchParams } from "react-router-dom"
 import DashboardCards from "../components/DashboardCards"
-
 import TaskItem from "../components/Tasks/TaskItem"
 import TaskFilter from "../components/Tasks/TaskFilter"
 import { useTasks } from "../hooks/data/task/useTasks"
-
 import Header from "../components/layout/Header"
 import MainLayout from "../components/layout/MainLayout"
 import useAuthStore from "../store/modules/authStore"
+import Pagination from "../components/ui/pagination/Pagination"
 
 const TABLE_HEADERS = [
     "Nombre",
@@ -28,44 +27,53 @@ const TABLE_HEADERS = [
 const DisboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const { pathname: currentPath } = useLocation()
-
     const role = useAuthStore((state) => state.user.role)
 
-    // Extraer filtros desde la URL e incluir el nuevo filtro "hourtype"
-    const filters = useMemo(() => {
-        return {
+    // --- Estado de paginación
+    const pageParam = Number(searchParams.get("page") || 1)
+    const [page, setPage] = useState(pageParam)
+
+    // --- Filtros extraídos de la URL + página
+    const filters = useMemo(
+        () => ({
             fullname: searchParams.get("fullname") || "",
             company: searchParams.get("company") || "",
             hourtype: searchParams.get("hourtype") || "",
             project: searchParams.get("project") || "",
             date: searchParams.get("date") || "",
             status: searchParams.get("status") || "",
-        }
-    }, [searchParams])
-
-    // Obtener todas las tareas y las filtradas, dependiendo de si hay filtros activos
-    const { getTasks, useFilterTasks } = useTasks({ all: true })
-    const filterQuery = useFilterTasks(filters)
-    const hasActiveFilters = useMemo(
-        () => Object.values(filters).some((value) => value !== ""),
-        [filters]
+            page,
+        }),
+        [searchParams, page]
     )
 
-    const displayedTasks = hasActiveFilters ? filterQuery.data : getTasks.data
-    const isLoading = hasActiveFilters
-        ? filterQuery.isLoading
-        : getTasks.isLoading
-    const isError = hasActiveFilters ? filterQuery.isError : getTasks.isError
+    // Mantener la URL sincronizada con `page`
+    useEffect(() => {
+        const params = Object.fromEntries(searchParams)
+        params.page = page
+        setSearchParams(params, { replace: true })
+    }, [page, searchParams, setSearchParams])
 
-    // Filtramos las tareas válidas (con id)
-    const validTasks = useMemo(
-        () => (displayedTasks || []).filter((task) => task?.id),
-        [displayedTasks]
-    )
+    // --- Hooks de datos
+    const { getTasks, useFilterTasks } = useTasks({ all: true, page })
+    const filterQuery = useFilterTasks(filters, page)
+    const hasFilters = Object.values(filters).some((v) => v)
+    const {
+        data: res,
+        isLoading,
+        isError,
+    } = hasFilters ? filterQuery : getTasks
 
-    // Función para actualizar los filtros en la URL (se agrega hourtype)
+    // --- Datos y paginación
+    const tasks = res?.tasks || []
+    const { current = 1, total = 1 } = res?.pages || {}
+
+    // Filtrar sólo tareas válidas
+    const validTasks = useMemo(() => tasks.filter((t) => t?.id), [tasks])
+
+    // Actualiza filtros (resetea página)
     const updateFilter = useCallback(
-        (filterData) => {
+        (data) => {
             const {
                 fullname,
                 company,
@@ -74,141 +82,115 @@ const DisboardPage = () => {
                 startDate,
                 endDate,
                 hourtype,
-            } = filterData
-            const dateRange =
+            } = data
+            const date =
                 startDate && endDate
                     ? `${startDate} ${endDate}`
                     : startDate || ""
-            setSearchParams({
-                fullname: fullname || "",
-                company: company || "",
-                project: project || "",
-                hourtype: hourtype || "",
-                status: status || "",
-                date: dateRange,
-            })
+            setSearchParams(
+                { fullname, company, project, status, hourtype, date, page: 1 },
+                { replace: true }
+            )
+            setPage(1)
         },
         [setSearchParams]
     )
 
-    // Función que adapta el objeto recibido desde TaskFilter
     const handleFilter = useCallback(
-        (filterData) => {
+        (f) => {
             let startDate = ""
             let endDate = ""
-            if (filterData.date) {
-                const dates = filterData.date.split(" ")
-                if (dates.length === 2) {
-                    startDate = dates[0]
-                    endDate = dates[1]
-                } else {
-                    startDate = filterData.date
-                }
+            if (f.date) {
+                const parts = f.date.split(" ")
+                if (parts.length === 2) [startDate, endDate] = parts
+                else startDate = f.date
             }
-            const status =
-                filterData.status !== ""
-                    ? Number(filterData.status).toString()
-                    : ""
-            updateFilter({
-                fullname: filterData.fullname,
-                company: filterData.company,
-                project: filterData.project,
-                hourtype: filterData.hourtype,
-                status,
-                startDate,
-                endDate,
-            })
+            const status = f.status !== "" ? String(Number(f.status)) : ""
+            updateFilter({ ...f, startDate, endDate, status })
         },
         [updateFilter]
     )
 
-    // Definir los encabezados de la tabla según el rol
-    const tableHeaders = useMemo(
+    // Encabezados según rol
+    const headers = useMemo(
         () =>
             role === "admin"
                 ? TABLE_HEADERS
-                : TABLE_HEADERS.filter((header) => header !== "Nombre"),
+                : TABLE_HEADERS.filter((h) => h !== "Nombre"),
         [role]
     )
 
-    // Renderizar el cuerpo de la tabla
-    const renderTableBody = useCallback(() => {
-        if (isLoading) {
+    // Render del cuerpo de la tabla
+    const renderBody = () => {
+        if (isLoading)
             return (
                 <tr>
                     <td
-                        colSpan={tableHeaders.length}
-                        className="text-brand-text-gray px-6 py-5 text-center text-sm"
+                        colSpan={headers.length}
+                        className="px-6 py-5 text-center"
                     >
-                        Cargando tareas...
+                        Cargando...
                     </td>
                 </tr>
             )
-        }
-        if (isError) {
+        if (isError)
             return (
                 <tr>
                     <td
-                        colSpan={tableHeaders.length}
-                        className="px-6 py-5 text-center text-sm text-red-500"
+                        colSpan={headers.length}
+                        className="px-6 py-5 text-center text-red-500"
                     >
-                        Error al cargar las tareas.
+                        Error al cargar.
                     </td>
                 </tr>
             )
-        }
-        if (validTasks.length === 0) {
+        if (validTasks.length === 0)
             return (
                 <tr>
                     <td
-                        colSpan={tableHeaders.length}
-                        className="text-brand-text-gray px-6 py-5 text-center text-sm"
+                        colSpan={headers.length}
+                        className="px-6 py-5 text-center"
                     >
-                        No hay tareas disponibles.
+                        No hay tareas.
                     </td>
                 </tr>
             )
-        }
         return validTasks.map((task) => (
-            <TaskItem
-                key={task.id}
-                task={task || []}
-                currentPath={currentPath}
-            />
+            <TaskItem key={task.id} task={task} currentPath={currentPath} />
         ))
-    }, [isLoading, isError, validTasks, tableHeaders, currentPath])
+    }
 
     return (
         <MainLayout>
             <div className="space-y-6">
                 <Header subtitle="Panel" title="Historial" tasks={validTasks} />
                 <DashboardCards filters={filters} currentPath={currentPath} />
-                <div className="space-y-3 rounded-xl bg-white p-1">
-                    <div className="overflow-x-auto">
-                        <div className="min-w-full py-2">
-                            <TaskFilter
-                                onFilter={handleFilter}
-                                currentPath={currentPath}
-                            />
-                            <div className="max-h-[500px] overflow-y-auto rounded-lg border">
-                                <table className="w-full text-left text-sm text-gray-500">
-                                    <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
-                                        <tr>
-                                            {tableHeaders.map((header) => (
-                                                <th
-                                                    key={header}
-                                                    className="px-4 py-3"
-                                                >
-                                                    {header}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>{renderTableBody()}</tbody>
-                                </table>
-                            </div>
-                        </div>
+
+                <div className="space-y-4 rounded-xl bg-white p-4">
+                    <TaskFilter
+                        onFilter={handleFilter}
+                        currentPath={currentPath}
+                    />
+
+                    <div className="max-h-[500px] overflow-auto rounded-lg border">
+                        <table className="w-full text-sm text-gray-500">
+                            <thead className="sticky top-0 bg-gray-600 text-xs uppercase text-gray-400">
+                                <tr>
+                                    {headers.map((h) => (
+                                        <th key={h} className="px-4 py-3">
+                                            {h}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>{renderBody()}</tbody>
+                        </table>
                     </div>
+                    <Pagination
+                        currentPage={current}
+                        totalPages={total}
+                        onPageChange={setPage}
+                    />
                 </div>
             </div>
         </MainLayout>

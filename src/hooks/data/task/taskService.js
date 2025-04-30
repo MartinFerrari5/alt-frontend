@@ -11,18 +11,31 @@
 import { api } from "../../../lib/axios"
 import { formatTaskDate } from "../../../util/date"
 
-export const getAllTasks = async () => {
-    const { data } = await api.get("/tasks")
-    return data.data
+export const getAllTasks = async (page) => {
+    if (!page) {
+        page = 1
+    }
+    const { data } = await api.get(`/tasks?page=${page}`)
+    return {
+        tasks: data.data,
+        pages: data.pages,
+    }
 }
 
-export const getAllTasksAll = async () => {
-    const { data } = await api.get("/tasks/all")
-    return data.data
+export const getAllTasksAll = async (page) => {
+    if (!page) {
+        page = 1
+    }
+    const { data } = await api.get(`/tasks/all?page=${page}`)
+    return {
+        tasks: data.data,
+        pages: data.pages,
+    }
 }
 
 export const createTask = async (task) => {
     const { data } = await api.post("/tasks", task)
+    console.log("createTask", data)
     return data.data
 }
 
@@ -62,27 +75,28 @@ export const deleteTaskApi = async (taskId) => {
 
     return taskId
 }
-export const filterTasksApi = async (filters) => {
-    // Validar que al menos un filtro tenga un valor
-    const hasValidFilters = Object.values(filters).some((value) => value)
-    if (!hasValidFilters) {
+export const filterTasksApi = async (filters, page = 1) => {
+    const hasValid = Object.values(filters).some((v) => v)
+    if (!hasValid) {
         console.warn("Filtros vacíos, no se ejecutará la consulta.")
-        return [] // Devuelve un array vacío si no hay filtros válidos
+        return { tasks: [], pages: { current: 1, total: 1 } }
     }
 
-    const queryParams = new URLSearchParams()
-    if (filters.company) queryParams.append("company", filters.company)
-    if (filters.project) queryParams.append("project", filters.project)
-    if (filters.fullname) queryParams.append("fullname", filters.fullname)
-    if (filters.hourtype) queryParams.append("hourtype", filters.hourtype)
-    if (filters.date) queryParams.append("date", filters.date)
-    if (filters.status !== undefined)
-        queryParams.append("status", filters.status)
+    const qp = new URLSearchParams()
+    if (filters.company) qp.append("company", filters.company)
+    if (filters.project) qp.append("project", filters.project)
+    if (filters.fullname) qp.append("fullname", filters.fullname)
+    if (filters.hourtype) qp.append("hourtype", filters.hourtype)
+    if (filters.date) qp.append("date", filters.date)
+    if (filters.status !== "") qp.append("status", filters.status)
 
     const { data } = await api.get(
-        `/tasks/filtertasks?${queryParams.toString()}`
+        `/tasks/filtertasks?${qp.toString()}&page=${page}`
     )
-    return data.data || [] // Asegúrate de devolver un array
+    return {
+        tasks: data.data || [],
+        pages: data.pages || { current: 1, total: 1 },
+    }
 }
 
 export const getTaskByIdApi = async (taskId) => {
