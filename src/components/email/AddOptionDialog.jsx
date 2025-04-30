@@ -93,7 +93,13 @@ const AddOptionDialog = ({ isOpen, handleClose }) => {
                     onChange={(e) => setOptionValue(e.target.value)}
                 />
                 <div className="mt-4 flex justify-end gap-3">
-                    <Button color="secondary" onClick={handleClose}>
+                    <Button
+                        type="button"
+                        color="secondary"
+                        variant="outline"
+                        onClick={handleClose}
+                        className="text-red-600 hover:bg-red-100"
+                    >
                         Cancelar
                     </Button>
                     <Button onClick={handleSaveClick}>Guardar</Button>

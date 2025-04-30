@@ -228,8 +228,11 @@ const TaskItem = ({
                             <div className="flex justify-end gap-2">
                                 <Button
                                     type="button"
+                                    color="secondary"
+                                    variant="outline"
                                     onClick={closeStatusModal}
                                     disabled={updateTaskIsLoading}
+                                    className="text-red-600 hover:bg-red-100"
                                 >
                                     Cancelar
                                 </Button>
