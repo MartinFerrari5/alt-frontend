@@ -1,5 +1,6 @@
 // src/components/ui/pagination/Pagination.jsx
 import PropTypes from "prop-types"
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
 
 /**
  * Pagination component with first, prev, numbered pages, next, last, and ellipsis.
@@ -12,8 +13,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
     const handlePrev = () => cp > 1 && onPageChange(cp - 1)
     const handleNext = () => cp < tp && onPageChange(cp + 1)
-    const handleFirst = () => cp !== 1 && onPageChange(1)
-    const handleLast = () => cp !== tp && onPageChange(tp)
 
     // build page range with ellipsis
     const pages = []
@@ -35,19 +34,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     return (
         <div className="flex items-center justify-center space-x-2 p-4">
             <button
-                onClick={handleFirst}
-                disabled={cp === 1}
-                className="rounded px-2 py-1 disabled:opacity-50"
-            >
-                Primera
-            </button>
-
-            <button
                 onClick={handlePrev}
                 disabled={cp <= 1}
-                className="rounded px-2 py-1 disabled:opacity-50"
+                className="flex items-center justify-center rounded px-2 py-1 disabled:opacity-50"
+                aria-label="Anterior"
             >
-                Anterior
+                <FiChevronLeft size={20} />
             </button>
 
             {pages.map((p) =>
@@ -69,17 +61,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             <button
                 onClick={handleNext}
                 disabled={cp >= tp}
-                className="rounded px-2 py-1 disabled:opacity-50"
+                className="flex items-center justify-center rounded px-2 py-1 disabled:opacity-50"
+                aria-label="Siguiente"
             >
-                Siguiente
-            </button>
-
-            <button
-                onClick={handleLast}
-                disabled={cp === tp}
-                className="rounded px-2 py-1 disabled:opacity-50"
-            >
-                Última
+                <FiChevronRight size={20} />
             </button>
         </div>
     )

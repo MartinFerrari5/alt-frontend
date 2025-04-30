@@ -144,7 +144,6 @@ const AddTaskForm = ({ onClose }) => {
             status: "0", // Para creación, se envía status "0"
             task_date: formattedDate,
         }
-        console.log("taskPayload", taskPayload)
 
         addTaskMutation.mutate(taskPayload, {
             onSuccess: () => {

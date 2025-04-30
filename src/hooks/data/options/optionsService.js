@@ -24,6 +24,7 @@ export const getOptions = async (table) => {
  * @returns {Promise<Array>} Array con los proyectos.
  */
 export const getCompanyProjects = async (company_id) => {
+    console.log("company_id: ", company_id)
     if (!company_id) {
         throw new Error(
             "El ID de la relación es obligatorio para obtener los proyectos."

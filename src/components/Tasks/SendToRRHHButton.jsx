@@ -9,7 +9,6 @@ import { LoadingSpinner } from "../../util/LoadingSpinner"
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     // Cambiar isLoading por isPending
     const { mutate: sendToRRHH, isPending } = useSendStatusToRRHH()
-    console.log("isPending:", isPending)
 
     // Función para eliminar parámetros vacíos del objeto queryParams
     const cleanQueryParams = (params) =>
