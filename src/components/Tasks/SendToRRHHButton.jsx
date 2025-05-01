@@ -1,5 +1,5 @@
 // /src/components/Tasks/SendToRRHHButton.jsx
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import PropTypes from "prop-types"
 import Button from "../Button"
 import { useSendStatusToRRHH } from "../../hooks/data/status/use-status-hooks"
@@ -8,6 +8,8 @@ import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isPending } = useSendStatusToRRHH()
+    const [showModal, setShowModal] = useState(false)
+    const [adminSelect, setAdminSelect] = useState("2") // por defecto "finalizado"
 
     // Limpia solo los params que tienen valor no vacío
     const cleanQueryParams = (params) =>
@@ -18,70 +20,110 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
             return acc
         }, {})
 
-    const handleClick = useCallback(() => {
+    const doSend = useCallback(
+        (selectValue) => {
+            // 1. Limpiar filtros
+            const cleanedParams = cleanQueryParams({
+                company: queryParams.company,
+                project: queryParams.project,
+                date: queryParams.date,
+            })
+
+            // 2. Agregar select dinámico
+            cleanedParams.select = selectValue
+
+            // 3. Enviar payload
+            sendToRRHH(
+                { queryParams: cleanedParams, payload: { tasks } },
+                {
+                    onSuccess: () => {
+                        toast.success(
+                            role === "admin"
+                                ? "Tareas finalizadas exitosamente!"
+                                : "Tareas enviadas a RRHH exitosamente!"
+                        )
+                    },
+                    onError: (error) => {
+                        toast.error(
+                            role === "admin"
+                                ? `Error al finalizar tareas: ${error.message}`
+                                : `Error al enviar tareas a RRHH: ${error.message}`
+                        )
+                    },
+                }
+            )
+        },
+        [tasks, queryParams, role, sendToRRHH]
+    )
+
+    const handleClick = () => {
         if (!tasks || tasks.length === 0) {
             toast.error("No hay tareas para enviar.")
             return
         }
 
-        // Para usuarios, asegurarnos de que haya filtros definidos
-        // if (
-        //   role === "user" &&
-        //   (!queryParams.company || !queryParams.project || !queryParams.date)
-        // ) {
-        //   toast.error(
-        //     "Debes elegir compañía, proyecto y fecha para poder enviar a RRHH."
-        //   )
-        //   return
-        // }
+        if (role === "admin") {
+            // Mostrar modal para elegir progreso o finalizado
+            setShowModal(true)
+        } else {
+            // Usuario normal: select=1
+            doSend(1)
+        }
+    }
 
-        // 1. Limpiar los query params (queda solo company, project, date con valor)
-        const cleanedParams = cleanQueryParams({
-            company: queryParams.company,
-            project: queryParams.project,
-            date: queryParams.date,
-        })
+    const handleConfirm = () => {
+        doSend(Number(adminSelect))
+        setShowModal(false)
+    }
 
-        // 2. Agregar select según rol
-        cleanedParams.select = role === "admin" ? 2 : 1
-
-        // 3. Payload con tareas completas
-        const payloadTasks = tasks
-
-        sendToRRHH(
-            {
-                queryParams: cleanedParams,
-                payload: { tasks: payloadTasks },
-            },
-            {
-                onSuccess: () => {
-                    const successMessage =
-                        role === "admin"
-                            ? "Tareas finalizadas exitosamente!"
-                            : "Tareas enviadas a RRHH exitosamente!"
-                    toast.success(successMessage)
-                },
-                onError: (error) => {
-                    const errorMessage =
-                        role === "admin"
-                            ? `Error al finalizar tareas: ${error.message}`
-                            : `Error al enviar tareas a RRHH: ${error.message}`
-                    toast.error(errorMessage)
-                },
-            }
-        )
-    }, [tasks, queryParams, sendToRRHH, role])
+    const handleCancel = () => {
+        setShowModal(false)
+    }
 
     return (
-        <Button onClick={handleClick} disabled={isPending}>
-            {isPending ? (
-                <LoadingSpinner />
-            ) : role === "admin" ? (
-                "Finalizar tareas"
-            ) : (
-                "Enviar a RRHH"
+        <>
+            <Button onClick={handleClick} disabled={isPending}>
+                {isPending ? (
+                    <LoadingSpinner />
+                ) : role === "admin" ? (
+                    "Finalizar tareas"
+                ) : (
+                    "Enviar a RRHH"
+                )}
+            </Button>
+
+            {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="w-80 rounded-lg bg-white p-6 shadow-lg">
+                        <h2 className="mb-4 text-lg font-semibold">
+                            Selecciona estado final
+                        </h2>
+                        <select
+                            className="mb-4 w-full rounded border p-2"
+                            value={adminSelect}
+                            onChange={(e) => setAdminSelect(e.target.value)}
+                        >
+                            <option value="0">Progreso</option>
+                            <option value="2">Finalizado</option>
+                        </select>
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                className="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"
+                                onClick={handleCancel}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                                onClick={handleConfirm}
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
-        </Button>
+        </>
     )
 }
 
