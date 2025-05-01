@@ -1,4 +1,3 @@
-// src/hooks/data/task/useTasks.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { taskMutationKeys } from "../../../keys/mutations"
 import { taskQueryKeys } from "../../../keys/queries"
@@ -22,14 +21,9 @@ const mutationFactory = (queryClient) => (config) => ({
 })
 
 export const useGetTask = (taskId) => {
-    // const { tasks } = useTaskStore()
     return useQuery({
         queryKey: taskQueryKeys.getOne(taskId),
-        queryFn: async () => {
-            // const existingTask = tasks.find((t) => t.id.toString() === taskId.toString())
-            // return existingTask || getTaskByIdApi(taskId)
-            return getTaskByIdApi(taskId)
-        },
+        queryFn: () => getTaskByIdApi(taskId),
         onError: (error) => handleApiError(error, "Error al obtener la tarea"),
         enabled: !!taskId,
         retry: false,
@@ -42,18 +36,12 @@ export const useTasks = ({ all = false, page = 1 } = {}) => {
     const { tasks, setTasks, setPages, addTask, deleteTask, updateTask } =
         useTaskStore()
 
-    // Factory con queryClient inyectado
     const createMutation = mutationFactory(queryClient)
+    const commonMutationConfig = { invalidateQueries: taskQueryKeys.getAll() }
 
-    const commonMutationConfig = {
-        invalidateQueries: taskQueryKeys.getAll(),
-    }
-
-    // Query principal
     const queryKey = all
         ? taskQueryKeys.getAllAll(page)
         : taskQueryKeys.getAll(page)
-
     const queryFn = () => (all ? getAllTasksAll(page) : getAllTasks(page))
 
     const getTasks = useQuery({
@@ -68,7 +56,6 @@ export const useTasks = ({ all = false, page = 1 } = {}) => {
         keepPreviousData: true,
     })
 
-    // Mutaciones optimizadas
     const addTaskMutation = useMutation(
         createMutation({
             mutationKey: taskMutationKeys.add(),
@@ -77,43 +64,33 @@ export const useTasks = ({ all = false, page = 1 } = {}) => {
             ...commonMutationConfig,
             onMutate: async (newTask) => {
                 await queryClient.cancelQueries(taskQueryKeys.getAll())
+                const previousData = queryClient.getQueryData(
+                    taskQueryKeys.getAll()
+                )
                 const optimisticTask = {
                     ...newTask,
                     id: Date.now(),
                     optimistic: true,
                 }
                 addTask(optimisticTask)
-                queryClient.setQueryData(taskQueryKeys.getAll(), (old) => {
-                    if (!old) {
-                        return {
-                            tasks: [optimisticTask],
-                            pages: { current: 1, total: 1 },
-                        }
-                    }
-                    if (Array.isArray(old.tasks)) {
-                        return {
-                            ...old,
-                            tasks: [...old.tasks, optimisticTask],
-                        }
-                    }
-                    return {
-                        tasks: [optimisticTask],
-                        pages: { current: 1, total: 1 },
-                    }
-                })
-                return {
-                    previousTasks: queryClient.getQueryData(
-                        taskQueryKeys.getAll()
-                    ),
-                    optimisticTask,
-                }
-            },
 
+                const prevTasks = Array.isArray(previousData?.tasks)
+                    ? previousData.tasks
+                    : []
+                queryClient.setQueryData(taskQueryKeys.getAll(), {
+                    ...(previousData ?? { pages: { current: 1, total: 1 } }),
+                    tasks: [...prevTasks, optimisticTask],
+                })
+
+                return { previousData, optimisticTask }
+            },
             onError: (error, _, context) => {
-                queryClient.setQueryData(
-                    taskQueryKeys.getAll(),
-                    context.previousTasks
-                )
+                if (context?.previousData) {
+                    queryClient.setQueryData(
+                        taskQueryKeys.getAll(),
+                        context.previousData
+                    )
+                }
                 deleteTask(context.optimisticTask.id)
                 handleApiError(error, "Error al crear la tarea")
             },
@@ -128,21 +105,32 @@ export const useTasks = ({ all = false, page = 1 } = {}) => {
             ...commonMutationConfig,
             onMutate: async ({ taskId, task }) => {
                 await queryClient.cancelQueries(taskQueryKeys.getAll())
-                const previousTasks = queryClient.getQueryData(
+
+                const previousData = queryClient.getQueryData(
                     taskQueryKeys.getAll()
                 )
-                const updatedTasks = previousTasks.map((t) =>
-                    t.id === taskId ? { ...t, ...task } : t
+                const prevTasks = Array.isArray(previousData?.tasks)
+                    ? previousData.tasks
+                    : []
+                const updatedTasks = prevTasks.map((t) =>
+                    String(t.id) === String(taskId) ? { ...t, ...task } : t
                 )
-                queryClient.setQueryData(taskQueryKeys.getAll(), updatedTasks)
-                updateTask(taskId, task) // Usando updateTask del store
-                return { previousTasks }
+
+                queryClient.setQueryData(taskQueryKeys.getAll(), {
+                    ...(previousData ?? { pages: { current: 1, total: 1 } }),
+                    tasks: updatedTasks,
+                })
+
+                updateTask(taskId, task)
+                return { previousData }
             },
             onError: (error, _, context) => {
-                queryClient.setQueryData(
-                    taskQueryKeys.getAll(),
-                    context.previousTasks
-                )
+                if (context?.previousData) {
+                    queryClient.setQueryData(
+                        taskQueryKeys.getAll(),
+                        context.previousData
+                    )
+                }
                 handleApiError(error, "Error al actualizar la tarea")
             },
         })
@@ -158,7 +146,6 @@ export const useTasks = ({ all = false, page = 1 } = {}) => {
         })
     )
 
-    // Filtrado de tareas
     const useFilterTasks = (filters, page = 1) =>
         useQuery({
             queryKey: ["filterTasks", filters, page],

@@ -35,7 +35,7 @@ const TaskDetailsPage = () => {
         formState: { errors, isSubmitting },
         handleSubmit,
         reset,
-        setValue, // para actualizar campos programáticamente
+        setValue,
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
