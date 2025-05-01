@@ -7,13 +7,12 @@ import { toast } from "react-toastify"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
-    // Cambiar isLoading por isPending
     const { mutate: sendToRRHH, isPending } = useSendStatusToRRHH()
 
-    // Función para eliminar parámetros vacíos del objeto queryParams
+    // Limpia solo los params que tienen valor no vacío
     const cleanQueryParams = (params) =>
         Object.entries(params).reduce((acc, [key, value]) => {
-            if (value && value.trim() !== "") {
+            if (value != null && value !== "") {
                 acc[key] = value
             }
             return acc
@@ -25,16 +24,30 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
             return
         }
 
-        // Limpiar los query params antes de enviarlos
-        const cleanedParams = cleanQueryParams(queryParams)
+        // Para usuarios, asegurarnos de que haya filtros definidos
+        // if (
+        //   role === "user" &&
+        //   (!queryParams.company || !queryParams.project || !queryParams.date)
+        // ) {
+        //   toast.error(
+        //     "Debes elegir compañía, proyecto y fecha para poder enviar a RRHH."
+        //   )
+        //   return
+        // }
 
-        // Crear el payload con solo los IDs de las tareas
-        // const payloadTasks = tasks.map((task) => ({ id: task.id }))
+        // 1. Limpiar los query params (queda solo company, project, date con valor)
+        const cleanedParams = cleanQueryParams({
+            company: queryParams.company,
+            project: queryParams.project,
+            date: queryParams.date,
+        })
 
-        // Crear el payload con todas las tareas completas
+        // 2. Agregar select según rol
+        cleanedParams.select = role === "admin" ? 2 : 1
+
+        // 3. Payload con tareas completas
         const payloadTasks = tasks
 
-        // Diferenciar acción según rol:
         sendToRRHH(
             {
                 queryParams: cleanedParams,
@@ -60,7 +73,6 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     }, [tasks, queryParams, sendToRRHH, role])
 
     return (
-        // Usar isPending en lugar de isLoading
         <Button onClick={handleClick} disabled={isPending}>
             {isPending ? (
                 <LoadingSpinner />
@@ -75,7 +87,11 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
 
 SendToRRHHButton.propTypes = {
     tasks: PropTypes.array.isRequired,
-    queryParams: PropTypes.object.isRequired,
+    queryParams: PropTypes.shape({
+        company: PropTypes.string,
+        project: PropTypes.string,
+        date: PropTypes.string,
+    }).isRequired,
     role: PropTypes.string.isRequired,
 }
 
