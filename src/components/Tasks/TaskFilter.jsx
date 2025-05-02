@@ -123,7 +123,7 @@ const TaskFilter = ({ onFilter, currentPath }) => {
 
     // Opciones de estado
     const statusOptions = [
-        { id: "0", option: "En Progreso" },
+        { id: "0", option: "Progreso" },
         { id: "1", option: "Enviado a RRHH" },
         { id: "2", option: "Finalizado" },
     ]

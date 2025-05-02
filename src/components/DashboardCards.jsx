@@ -62,7 +62,7 @@ const DashboardCards = ({ filters, currentPath, role }) => {
     const formatStatusLabel = (statusValue) => {
         switch (statusValue) {
             case 0:
-                return "En progreso"
+                return "Progreso"
             case 1:
                 return "Enviado a RRHH"
             case 2:

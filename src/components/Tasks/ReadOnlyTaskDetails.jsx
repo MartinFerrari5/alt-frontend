@@ -2,7 +2,7 @@ export const ReadOnlyTaskDetails = ({ task }) => {
     if (!task) return <p>No hay datos disponibles para esta tarea.</p>
 
     const statusMap = {
-        0: "En Progreso",
+        0: "Progreso",
         1: "Completada",
         2: "Finalizada",
     }

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
-import { LoaderIcon } from "../../assets/icons"
 import { useTasks } from "../../hooks/data/task/useTasks"
 import { useOptionsStore } from "../../store/modules/optionsStore"
 import TaskFormFields from "./TaskFormFields"
@@ -11,6 +10,7 @@ import Button from "../Button"
 import { schema } from "../../util/validationSchema"
 import { formatTaskDate, formatTime } from "../../util/date"
 import { useCompanyProjects } from "../../hooks/Tasks/TaskFormFields"
+import { LoadingSpinner } from "../../util/LoadingSpinner"
 
 /**
  * Formulario para agregar una tarea.
@@ -184,9 +184,7 @@ const AddTaskForm = ({ onClose }) => {
                     Cancelar
                 </Button>
                 <Button type="submit" disabled={isSubmitting || isAddingTask}>
-                    {(isSubmitting || isAddingTask) && (
-                        <LoaderIcon className="mr-2 animate-spin" />
-                    )}
+                    {(isSubmitting || isAddingTask) && <LoadingSpinner />}
                     Guardar y Continuar
                 </Button>
             </div>

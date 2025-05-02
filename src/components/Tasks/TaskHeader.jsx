@@ -9,9 +9,9 @@ import Button from "../Button"
 import DeleteConfirmationModal from "./DeleteConfirmationModal"
 
 const STATE_LABELS = {
-    0: "Pendiente",
-    1: "En revisión",
-    2: "Aprobada",
+    0: "Progreso",
+    1: "Revisión",
+    2: "Finalizado",
 }
 
 const STATE_COLORS = {
