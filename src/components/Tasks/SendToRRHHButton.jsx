@@ -10,7 +10,7 @@ import StatusSelectModal from "../ui/StatusSelectModal"
 const SendToRRHHButton = ({ tasks, queryParams, role }) => {
     const { mutate: sendToRRHH, isPending } = useSendStatusToRRHH()
     const [showModal, setShowModal] = useState(false)
-    const [adminSelect, setAdminSelect] = useState("2") // por defecto "finalizado"
+    const [adminSelect, setAdminSelect] = useState("2")
 
     const cleanQueryParams = (params) =>
         Object.entries(params).reduce((acc, [key, value]) => {
@@ -30,22 +30,41 @@ const SendToRRHHButton = ({ tasks, queryParams, role }) => {
 
             cleanedParams.select = selectValue
 
+            const isFinalizado = String(selectValue) === "2"
+            const isProgreso = String(selectValue) === "0"
+
             sendToRRHH(
                 { queryParams: cleanedParams, payload: { tasks } },
                 {
                     onSuccess: () => {
-                        toast.success(
-                            role === "admin"
-                                ? "Tareas finalizadas exitosamente!"
-                                : "Tareas enviadas a RRHH exitosamente!"
-                        )
+                        if (role === "admin") {
+                            toast.success(
+                                isFinalizado
+                                    ? "¡Tareas finalizadas exitosamente!"
+                                    : isProgreso
+                                      ? "¡Tareas retornadas a progreso exitosamente!"
+                                      : "¡Operación realizada exitosamente!"
+                            )
+                        } else {
+                            toast.success(
+                                "Tareas enviadas a RRHH exitosamente!"
+                            )
+                        }
                     },
                     onError: (error) => {
-                        toast.error(
-                            role === "admin"
-                                ? `Error al finalizar tareas: ${error.message}`
-                                : `Error al enviar tareas a RRHH: ${error.message}`
-                        )
+                        if (role === "admin") {
+                            toast.error(
+                                isFinalizado
+                                    ? `Error al finalizar tareas: ${error.message}`
+                                    : isProgreso
+                                      ? `Error al retornar tareas a progreso: ${error.message}`
+                                      : `Error al actualizar tareas: ${error.message}`
+                            )
+                        } else {
+                            toast.error(
+                                `Error al enviar tareas a RRHH: ${error.message}`
+                            )
+                        }
                     },
                 }
             )
