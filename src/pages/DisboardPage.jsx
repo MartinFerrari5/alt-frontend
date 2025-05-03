@@ -29,11 +29,9 @@ const DisboardPage = () => {
     const { pathname: currentPath } = useLocation()
     const role = useAuthStore((state) => state.user.role)
 
-    // --- Estado de paginación
     const pageParam = Number(searchParams.get("page") || 1)
     const [page, setPage] = useState(pageParam)
 
-    // --- Filtros extraídos de la URL + página
     const filters = useMemo(
         () => ({
             fullname: searchParams.get("fullname") || "",

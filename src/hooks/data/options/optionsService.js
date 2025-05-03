@@ -9,18 +9,19 @@ import { api } from "../../../lib/axios"
 export const getOptions = async (table) => {
     try {
         const { data } = await api.get("/options", { params: { table } })
+        console.log("getOptions data:", table, data)
         return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
-            `Error obteniendo opciones para la tabla ${table}: ${backendMsg}`
+            `Error obteniendo opciones para la tabla "${table}": ${backendMsg}`
         )
     }
 }
 
 /**
  * Obtiene los proyectos relacionados a una compañía utilizando su relationship_id.
- * @param {string} relationship_id - ID de la relación de la compañía.
+ * @param {string} company_id - ID de la relación de la compañía.
  * @returns {Promise<Array>} Array con los proyectos.
  */
 export const getCompanyProjects = async (company_id) => {
@@ -30,15 +31,14 @@ export const getCompanyProjects = async (company_id) => {
         )
     }
     try {
-        const table = "projects_table"
         const { data } = await api.get("/options", {
-            params: { table, company_id },
+            params: { table: "projects_table", company_id },
         })
         return data.data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
-            `Error obteniendo proyectos para la compañía con company_id ${company_id}: ${backendMsg}`
+            `Error obteniendo proyectos para la compañía "${company_id}": ${backendMsg}`
         )
     }
 }
@@ -46,7 +46,7 @@ export const getCompanyProjects = async (company_id) => {
 /**
  * Crea una nueva opción en una tabla.
  * @param {string} table - Nombre de la tabla.
- * @param {Object} option - Objeto con la propiedad "option".
+ * @param {{option: string}} option - Objeto con la propiedad "option".
  * @returns {Promise<Object>} La opción creada.
  */
 export const addOption = async (table, option) => {
@@ -55,9 +55,7 @@ export const addOption = async (table, option) => {
         return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
-        throw new Error(
-            `Error creando opción en ${table}. Verifica que los datos sean correctos: ${backendMsg}`
-        )
+        throw new Error(`Error creando opción en "${table}": ${backendMsg}`)
     }
 }
 
@@ -65,7 +63,7 @@ export const addOption = async (table, option) => {
  * Actualiza una opción existente.
  * @param {string} table - Nombre de la tabla.
  * @param {string|number} id - ID de la opción.
- * @param {Object} updatedData - Objeto con los datos actualizados.
+ * @param {{option: string}} updatedData - Objeto con los datos actualizados.
  * @returns {Promise<Object>} La opción actualizada.
  */
 export const updateOption = async (table, id, updatedData) => {
@@ -78,7 +76,7 @@ export const updateOption = async (table, id, updatedData) => {
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message
         throw new Error(
-            `Error actualizando opción ${id} en ${table}: ${backendMsg}`
+            `Error actualizando opción ${id} en "${table}": ${backendMsg}`
         )
     }
 }
@@ -88,7 +86,6 @@ export const updateOption = async (table, id, updatedData) => {
  * @param {string} table - Nombre de la tabla.
  * @param {string|number} id - ID de la opción.
  * @returns {Promise<Object>} Resultado de la eliminación.
- * @throws {Error} Si ocurre un error durante la eliminación.
  */
 export const deleteOption = async (table, id) => {
     try {
@@ -98,19 +95,8 @@ export const deleteOption = async (table, id) => {
         return data
     } catch (error) {
         console.error("Error en deleteOption:", error.response || error.message)
+        // Extraemos siempre el mensaje del backend:
         const backendMsg = error.response?.data?.message || error.message
-        let userMessage = `Error eliminando opción ${id} en ${table}: ${backendMsg}`
-
-        // Puedes agregar lógica adicional según el status para refinar el mensaje.
-        if (error.response) {
-            if (error.response.status === 404) {
-                userMessage = "El elemento que intentas eliminar no existe."
-            } else if (error.response.status === 500) {
-                userMessage =
-                    "Ocurrió un error en el servidor. Intenta nuevamente."
-            }
-        }
-
-        throw new Error(userMessage)
+        throw new Error(backendMsg)
     }
 }

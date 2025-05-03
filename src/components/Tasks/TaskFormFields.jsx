@@ -26,7 +26,7 @@ const TaskFormFields = ({
         day: "numeric",
     }) */
     return (
-        <div className="relative z-0 w-full mb-5 group">
+        <div className="group relative z-0 mb-5 w-full">
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {/* Dropdown Empresa */}
                 <Dropdown
@@ -101,7 +101,7 @@ const TaskFormFields = ({
             </div>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {/* DatePicker y Horas de Almuerzo*/}
-    
+
                 <DatePicker value={taskDate} onChange={setTaskDate} />
                 <Input
                     id="lunch_hours"

@@ -1,6 +1,5 @@
 // /src/hooks/data/options/relationsService.js
 import { api } from "../../../lib/axios"
-import { handleApiError } from "../../../lib/errorHandler"
 
 /**
  * Obtiene las opciones relacionadas.
@@ -19,11 +18,8 @@ export const getRelatedOptions = async ({
         const { data } = await api.get("/options/relatedOptions", { params })
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo ${related_table} relacionadas para el usuario ${user_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -37,11 +33,8 @@ export const getNotRelatedCompanies = async (user_id) => {
         })
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo compañías no relacionadas para el usuario ${user_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -60,34 +53,28 @@ export const getNotRelatedProjects = async (company_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo proyectos no relacionados para la compañía ${company_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
 /**
- * Obtiene los proyectos no relacionados para un usuario y compañía.
+ * Obtiene los proyectos NO relacionados para un usuario.
  */
-export const getNotRelatedProjectsForUser = async (user_id, company_id) => {
-    if (!user_id || !company_id) {
+export const getNotRelatedProjectsForUser = async (user_id) => {
+    if (!user_id) {
         throw new Error(
-            "El ID del usuario y el ID de la compañía son obligatorios para obtener los proyectos no relacionados."
+            "El ID del usuario es obligatorio para obtener los proyectos no relacionados."
         )
     }
     try {
-        const { data } = await api.get("/projectUser", {
-            params: { user_id, company_id },
-        })
+        const { data } = await api.get(
+            `/options/notRelatedOptions?user_id=${user_id}&table=project`
+        )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo proyectos no relacionados para el usuario ${user_id} y la compañía ${company_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -99,11 +86,8 @@ export const addCompanyUserRelation = async (relationData) => {
         const { data } = await api.post("/companyUser", relationData)
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error creando relación compañía-usuario"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -122,11 +106,8 @@ export const deleteCompanyUserRelation = async (relationship_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error eliminando relación con la compañía"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -142,11 +123,8 @@ export const addProjectUserRelation = async (relationData) => {
         })
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error creando relación proyecto-usuario"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -165,11 +143,8 @@ export const deleteProjectUserRelation = async (relationship_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error eliminando relación con el proyecto"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -188,11 +163,8 @@ export const getCompanyProjects = async (company_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo proyectos relacionados con la compañía ${company_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -204,11 +176,8 @@ export const addCompanyProjectRelation = async (relationData) => {
         const { data } = await api.post("/companyProject", relationData)
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error creando relación compañía-proyecto"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -227,19 +196,10 @@ export const deleteCompanyProjectRelation = async (relationship_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            "Error eliminando relación compañía-proyecto"
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
-
-/*
- * =====================================================
- * Funciones Placeholder para la relación Usuario-Proyecto
- * =====================================================
- */
 
 /**
  * Obtiene los usuarios relacionados con un proyecto.
@@ -254,11 +214,8 @@ export const getProjectUsers = async (project_id) => {
         const { data } = await api.get(`/projectUser?project_id=${project_id}`)
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo usuarios relacionados con el proyecto ${project_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }
 
@@ -277,10 +234,7 @@ export const getNotRelatedProjectUsers = async (project_id) => {
         )
         return data
     } catch (error) {
-        const fullMessage = handleApiError(
-            error,
-            `Error obteniendo usuarios no relacionados para el proyecto ${project_id}`
-        )
-        throw new Error(fullMessage)
+        const backendMsg = error.response?.data?.message || error.message
+        throw new Error(backendMsg)
     }
 }

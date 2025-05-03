@@ -32,6 +32,8 @@ const ManagementTables = () => {
         fetchOptions("types_table")
     }, [fetchOptions])
 
+    console.log("projects_table: ", projects_table)
+
     return (
         <div className="w-full space-y-6">
             <Header subtitle="Gestión de Datos" title="Administración" />

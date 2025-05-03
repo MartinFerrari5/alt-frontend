@@ -45,6 +45,8 @@ const TaskForm = ({
                         ...watch(),
                         company: task.company_id,
                         project: task.project_id,
+                        task_type: task.task_type,
+                        hour_type: task.hour_type,
                     })
                 })
                 .catch((err) =>
@@ -113,21 +115,21 @@ const TaskForm = ({
                         items={hourTypes}
                         loadingText="Cargando tipos de hora..."
                         errorText="Error cargando tipos de hora"
-                        valueKey="option"
+                        valueKey="type"
+                    />
+                    <Dropdown
+                        id="task_type"
+                        label="Tipo de Tarea"
+                        register={register}
+                        error={errors.task_type}
+                        isLoading={isLoadingTypes}
+                        isError={false}
+                        items={typesTable}
+                        loadingText="Cargando tipos de tarea..."
+                        errorText="Error cargando tipos de tarea"
+                        valueKey="type"
                     />
                 </div>
-                <Dropdown
-                    id="task_type"
-                    label="Tipo de Tarea"
-                    register={register}
-                    error={errors.task_type}
-                    isLoading={isLoadingTypes}
-                    isError={false}
-                    items={typesTable}
-                    loadingText="Cargando tipos de tarea..."
-                    errorText="Error cargando tipos de tarea"
-                    valueKey="type"
-                />
                 <Input
                     id="task_description"
                     label="Descripción"

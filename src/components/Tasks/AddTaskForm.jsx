@@ -97,11 +97,10 @@ const AddTaskForm = ({ onClose }) => {
         // Resetea el formulario manteniendo los valores actuales,
         // excepto los campos de tiempo que se establecen a vacío/default.
         reset({
-            ...currentValues, // Mantiene todos los valores existentes
-            entry_time: "", // Resetea hora de entrada
-            exit_time: "", // Resetea hora de salida
-            lunch_hours: "1", // Resetea horas de almuerzo (o a tu valor por defecto preferido)
-            // No reseteamos task_description aquí, se mantiene el valor actual
+            ...currentValues,
+            entry_time: "",
+            exit_time: "",
+            lunch_hours: "1",
         })
 
         // Resetea la fecha al día actual sin hora
@@ -115,8 +114,8 @@ const AddTaskForm = ({ onClose }) => {
      * Resetea los campos de fecha/hora y luego cierra.
      */
     const handleCancelClick = () => {
-        resetDateTimeFields() // Resetea solo fecha y horas
-        onClose() // Llama a la función original para cerrar
+        resetDateTimeFields()
+        onClose()
     }
 
     /**
@@ -151,12 +150,6 @@ const AddTaskForm = ({ onClose }) => {
                     "Tarea guardada. Puedes seguir agregando más tareas."
                 )
                 resetDateTimeFields()
-            },
-            onError: (error) => {
-                toast.error(
-                    error.response?.data?.message ||
-                        "No se pudo agregar la tarea"
-                )
             },
         })
     }
