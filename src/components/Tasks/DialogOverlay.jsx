@@ -2,6 +2,7 @@
 import { createPortal } from "react-dom"
 import { CSSTransition } from "react-transition-group"
 import PropTypes from "prop-types"
+import FocusLock from "react-focus-lock"
 
 const DialogOverlay = ({ isOpen, nodeRef, children }) => {
     return createPortal(
@@ -12,12 +13,14 @@ const DialogOverlay = ({ isOpen, nodeRef, children }) => {
             classNames="dialog-transition"
             unmountOnExit
         >
-            <div
-                ref={nodeRef}
-                className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur"
-            >
-                {children}
-            </div>
+            <FocusLock returnFocus>
+                <div
+                    ref={nodeRef}
+                    className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur"
+                >
+                    {children}
+                </div>
+            </FocusLock>
         </CSSTransition>,
         document.body
     )

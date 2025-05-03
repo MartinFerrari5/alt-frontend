@@ -24,6 +24,7 @@ import NewPasswordPage from "./pages/user/NewPassword.jsx"
 import TasksPage from "./pages/TasksPage.jsx"
 import CompanyDetail from "./pages/admin/CompanyDetail.jsx"
 import CompanyPage from "./pages/admin/CompanyPage.jsx"
+import FocusLock from "react-focus-lock"
 
 const queryClient = new QueryClient()
 
@@ -133,18 +134,20 @@ const router = createBrowserRouter([
 const App = () => (
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-            <RouterProvider router={router} />
+            <FocusLock returnFocus>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                <RouterProvider router={router} />
+            </FocusLock>
         </QueryClientProvider>
     </React.StrictMode>
 )
