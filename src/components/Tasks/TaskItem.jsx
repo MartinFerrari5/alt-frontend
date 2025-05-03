@@ -123,12 +123,14 @@ const TaskItem = ({
                 className="cursor-pointer border-b border-gray-200 bg-white hover:bg-gray-50"
             >
                 {showCheckbox && (
-                    <td className="px-4 py-5">
+                    <td
+                        className="px-4 py-5"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={(e) => {
-                                e.stopPropagation()
+                            onChange={() => {
                                 onSelectTask(task.id)
                             }}
                             className="h-6 w-6 cursor-pointer appearance-none rounded-full border-2 border-gray-300 transition duration-200 checked:border-green-500 checked:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -180,14 +182,14 @@ const TaskItem = ({
                         <div onClick={handleStatusIndicatorClick}>
                             <StatusIndicator
                                 status={task.status}
-                                isLoading={updateTaskIsLoading}
+                                isLoading={!!updateTaskIsLoading}
                                 onChange={() => {}}
                             />
                         </div>
                     ) : (
                         <StatusIndicator
                             status={task.status}
-                            isLoading={updateTaskIsLoading}
+                            isLoading={!!updateTaskIsLoading}
                             onChange={() => {}}
                         />
                     )}
@@ -199,6 +201,8 @@ const TaskItem = ({
                     onConfirm={confirmDelete}
                     onCancel={() => setShowConfirm(false)}
                     message="¿Estás seguro de que deseas eliminar esta tarea?"
+                    confirmText="Eliminar"
+                    cancelText="Cancelar"
                 />
             )}
 
@@ -265,7 +269,7 @@ TaskItem.propTypes = {
         entry_time: PropTypes.string.isRequired,
         exit_time: PropTypes.string.isRequired,
         hour_type: PropTypes.string.isRequired,
-        lunch_hours: PropTypes.string,
+        lunch_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // <-- aquí
         worked_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
             .isRequired,
         status: PropTypes.number.isRequired,

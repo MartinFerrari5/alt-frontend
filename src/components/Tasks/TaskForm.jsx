@@ -130,12 +130,21 @@ const TaskForm = ({
                         valueKey="type"
                     />
                 </div>
-                <Input
-                    id="task_description"
-                    label="Descripción"
-                    {...register("task_description")}
-                    errorMessage={errors.task_description?.message}
-                />
+                <div>
+                    <textarea
+                        id="task_description"
+                        {...register("task_description")}
+                        rows={3}
+                        className="focus:ring-primary-600 focus:border-primary-600 block w-full resize-y rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+                        placeholder="Descripción"
+                        style={{ minHeight: "3rem" }}
+                    />
+                    {errors.task_description && (
+                        <p className="mt-1 text-sm text-red-500">
+                            {errors.task_description.message}
+                        </p>
+                    )}
+                </div>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <DatePicker
                         value={taskDate}

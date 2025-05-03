@@ -42,6 +42,28 @@ const EditRelationModal = ({
                     {/* Panel de elementos ya asociados */}
                     <article className="md:w-1/2">
                         <h3 className="mb-4 text-xl font-bold text-gray-800">
+                            Agregar {title}
+                        </h3>
+                        <Dropdown
+                            id="availableItems"
+                            label="Seleccionar"
+                            register={customRegister}
+                            error={null}
+                            isLoading={false}
+                            isError={false}
+                            items={availableItems.map((item) => ({
+                                id: item.id || item.project_id,
+                                option: item[displayProp] || item.options,
+                            }))}
+                            loadingText="Cargando..."
+                            errorText="Error al cargar"
+                            useIdAsValue={true}
+                        />
+                    </article>
+
+                    {/* Panel de elementos disponibles para agregar */}
+                    <article className="md:w-1/2">
+                        <h3 className="mb-4 text-xl font-bold text-gray-800">
                             Asociados
                         </h3>
                         <ul className="max-h-80 overflow-y-auto rounded-lg border border-gray-200 p-4">
@@ -62,28 +84,6 @@ const EditRelationModal = ({
                                 </li>
                             )}
                         </ul>
-                    </article>
-
-                    {/* Panel de elementos disponibles para agregar */}
-                    <article className="md:w-1/2">
-                        <h3 className="mb-4 text-xl font-bold text-gray-800">
-                            Agregar {title}
-                        </h3>
-                        <Dropdown
-                            id="availableItems"
-                            label="Seleccionar"
-                            register={customRegister}
-                            error={null}
-                            isLoading={false}
-                            isError={false}
-                            items={availableItems.map((item) => ({
-                                id: item.id || item.project_id,
-                                option: item[displayProp] || item.options,
-                            }))}
-                            loadingText="Cargando..."
-                            errorText="Error al cargar"
-                            useIdAsValue={true}
-                        />
                     </article>
                 </section>
 

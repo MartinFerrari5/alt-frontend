@@ -76,12 +76,19 @@ const TaskFormFields = ({
                 />
             </div>
             {/* Input Descripción */}
-            <Input
+            <textarea
                 id="task_description"
-                label="Descripción"
                 {...register("task_description")}
-                errorMessage={errors.task_description?.message}
+                rows={3}
+                className="focus:ring-primary-600 focus:border-primary-600 block w-full resize-y rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+                placeholder="Descripción"
+                style={{ minHeight: "3rem" }}
             />
+            {errors.task_description && (
+                <p className="mt-1 text-sm text-red-500">
+                    {errors.task_description.message}
+                </p>
+            )}
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {/* Entrada de Hora y Salida de Hora*/}
                 <Input

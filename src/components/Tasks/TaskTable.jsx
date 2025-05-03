@@ -15,7 +15,7 @@ const TaskTable = ({
             <div className="min-w-full">
                 <div className="max-h-[400px] overflow-y-auto rounded-lg border">
                     <table className="w-full text-left text-sm text-gray-500">
-                        <thead className="sticky top-0 z-10 bg-gray-600 text-xs uppercase text-gray-400">
+                        <thead className="sticky top-0 z-20 bg-gray-600 text-xs uppercase text-gray-400">
                             <tr>
                                 {isInicio && (
                                     <th className="px-4 py-3">

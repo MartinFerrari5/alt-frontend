@@ -90,14 +90,14 @@ const TaskHeader = ({ task, onBack, onEdit, onDeleteConfirmed, isEditing }) => {
                 </div>
 
                 <div className="mb-6 flex flex-col justify-between md:flex-row">
-                    <div>
+                    {/* <div>
                         <h1 className="mb-1 text-2xl font-bold">
                             {task?.task_description || "Tarea sin descripción"}
                         </h1>
-                        <p className="text-md font-medium text-gray-700">
-                            {formattedDate}
-                        </p>
-                    </div>
+                    </div> */}
+                    <p className="text-md font-medium text-gray-700">
+                        {formattedDate}
+                    </p>
 
                     <div className="mt-3 flex items-center gap-2 md:mt-0">
                         <Badge

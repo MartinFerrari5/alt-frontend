@@ -145,6 +145,70 @@ const CompanyDetail = () => {
 
                 {/* Contenedor responsivo para las dos tablas */}
                 <div className="flex flex-col gap-6 md:flex-row">
+                    {/* Tabla de Proyectos Disponibles */}
+                    <div className="w-full md:w-1/2">
+                        <h2 className="mb-2 text-lg font-bold text-foreground">
+                            Agregar Proyectos
+                        </h2>
+                        {/* Filtro exclusivo para Proyectos Disponibles */}
+                        <input
+                            type="text"
+                            placeholder="Buscar proyecto..."
+                            value={filterAvailable}
+                            onChange={(e) => setFilterAvailable(e.target.value)}
+                            className="input-edit mb-4"
+                        />
+                        {filteredAvailableProjects.length > 0 ? (
+                            <div className="space-y-4 rounded-xl bg-white p-1 shadow">
+                                {/* Contenedor con altura definida y scroll vertical */}
+                                <div className="max-h-64 overflow-y-auto">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="sticky top-0 z-10 bg-popover">
+                                            <tr>
+                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
+                                                    Proyecto
+                                                </th>
+                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
+                                                    Acciones
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200">
+                                            {filteredAvailableProjects.map(
+                                                (project) => (
+                                                    <tr
+                                                        key={project.id}
+                                                        className="cursor-pointer bg-white transition-colors hover:bg-gray-50"
+                                                    >
+                                                        <td className="px-4 py-5 text-sm text-foreground">
+                                                            {project.option}
+                                                        </td>
+                                                        <td className="px-4 py-5">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleAddProject(
+                                                                        project.id
+                                                                    )
+                                                                }
+                                                                className="btn btn-primary text-sm"
+                                                            >
+                                                                Agregar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-gray-400">
+                                No hay proyectos disponibles para agregar.
+                            </p>
+                        )}
+                    </div>
+
                     {/* Tabla de Proyectos Relacionados */}
                     <div className="w-full md:w-1/2">
                         <h2 className="mb-2 text-lg font-bold text-foreground">
@@ -208,70 +272,6 @@ const CompanyDetail = () => {
                         ) : (
                             <p className="text-gray-400">
                                 No hay proyectos relacionados.
-                            </p>
-                        )}
-                    </div>
-
-                    {/* Tabla de Proyectos Disponibles */}
-                    <div className="w-full md:w-1/2">
-                        <h2 className="mb-2 text-lg font-bold text-foreground">
-                            Agregar Proyectos
-                        </h2>
-                        {/* Filtro exclusivo para Proyectos Disponibles */}
-                        <input
-                            type="text"
-                            placeholder="Buscar proyecto..."
-                            value={filterAvailable}
-                            onChange={(e) => setFilterAvailable(e.target.value)}
-                            className="input-edit mb-4"
-                        />
-                        {filteredAvailableProjects.length > 0 ? (
-                            <div className="space-y-4 rounded-xl bg-white p-1 shadow">
-                                {/* Contenedor con altura definida y scroll vertical */}
-                                <div className="max-h-64 overflow-y-auto">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="sticky top-0 z-10 bg-popover">
-                                            <tr>
-                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
-                                                    Proyecto
-                                                </th>
-                                                <th className="px-4 py-5 text-left text-sm font-semibold text-foreground">
-                                                    Acciones
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-gray-200">
-                                            {filteredAvailableProjects.map(
-                                                (project) => (
-                                                    <tr
-                                                        key={project.id}
-                                                        className="cursor-pointer bg-white transition-colors hover:bg-gray-50"
-                                                    >
-                                                        <td className="px-4 py-5 text-sm text-foreground">
-                                                            {project.option}
-                                                        </td>
-                                                        <td className="px-4 py-5">
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleAddProject(
-                                                                        project.id
-                                                                    )
-                                                                }
-                                                                className="btn btn-primary text-sm"
-                                                            >
-                                                                Agregar
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        ) : (
-                            <p className="text-gray-400">
-                                No hay proyectos disponibles para agregar.
                             </p>
                         )}
                     </div>
