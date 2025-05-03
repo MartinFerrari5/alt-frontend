@@ -180,7 +180,7 @@ const TaskDetailsPage = () => {
                             companies={companies_table}
                             projects={projects_table}
                             hourTypes={hour_type_table}
-                            typesTable={types_table} // se pasa la prop
+                            typesTable={types_table}
                             reset={reset}
                             setValue={setValue}
                         />

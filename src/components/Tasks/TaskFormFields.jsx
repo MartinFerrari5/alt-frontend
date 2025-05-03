@@ -26,62 +26,54 @@ const TaskFormFields = ({
         day: "numeric",
     }) */
     return (
-        <div className="mx-auto grid max-w-4xl gap-6">
+        <div className="relative z-0 w-full mb-5 group">
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div className="col-span-2">
-                    {/* Dropdown Empresa */}
-                    <Dropdown
-                        id="company"
-                        label="Empresa"
-                        register={register}
-                        error={errors.company}
-                        isLoading={
-                            !companies_table || companies_table.length === 0
-                        }
-                        isError={false}
-                        items={companies_table || []}
-                        valueKey={role === "user" ? "company_id" : "id"}
-                    />
-                    {/* Dropdown Proyecto */}
-                    <Dropdown
-                        id="project"
-                        label="Proyecto"
-                        register={register}
-                        error={errors.project}
-                        isLoading={filteredProjects.length === 0}
-                        isError={false}
-                        items={filteredProjects || []}
-                        valueKey={role === "user" ? "project_id" : "id"}
-                    />
-                </div>
+                {/* Dropdown Empresa */}
+                <Dropdown
+                    id="company"
+                    label="Empresa"
+                    register={register}
+                    error={errors.company}
+                    isLoading={!companies_table || companies_table.length === 0}
+                    isError={false}
+                    items={companies_table || []}
+                    valueKey={role === "user" ? "company_id" : "id"}
+                />
+                {/* Dropdown Proyecto */}
+                <Dropdown
+                    id="project"
+                    label="Proyecto"
+                    register={register}
+                    error={errors.project}
+                    isLoading={filteredProjects.length === 0}
+                    isError={false}
+                    items={filteredProjects || []}
+                    valueKey={role === "user" ? "project_id" : "id"}
+                />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-                <div className="col-span-2">
-                    {/* Dropdown Tipo de Hora */}
-                    <Dropdown
-                        id="hour_type"
-                        label="Tipo de Hs"
-                        register={register}
-                        error={errors.hour_type}
-                        isLoading={
-                            !hour_type_table || hour_type_table.length === 0
-                        }
-                        isError={false}
-                        items={hour_type_table || []}
-                        valueKey="hour_type"
-                    />
-                    {/* Dropdown Tipo de Tarea */}
-                    <Dropdown
-                        id="task_type"
-                        label="Tipo de Tarea"
-                        register={register}
-                        error={errors.task_type?.message}
-                        isLoading={!types_table || types_table.length === 0}
-                        isError={false}
-                        items={types_table || []}
-                        valueKey="type"
-                    />
-                </div>
+                {/* Dropdown Tipo de Hora */}
+                <Dropdown
+                    id="hour_type"
+                    label="Tipo de Hs"
+                    register={register}
+                    error={errors.hour_type}
+                    isLoading={!hour_type_table || hour_type_table.length === 0}
+                    isError={false}
+                    items={hour_type_table || []}
+                    valueKey="hour_type"
+                />
+                {/* Dropdown Tipo de Tarea */}
+                <Dropdown
+                    id="task_type"
+                    label="Tipo de Tarea"
+                    register={register}
+                    error={errors.task_type?.message}
+                    isLoading={!types_table || types_table.length === 0}
+                    isError={false}
+                    items={types_table || []}
+                    valueKey="type"
+                />
             </div>
             {/* Input Descripción */}
             <Input
@@ -109,15 +101,8 @@ const TaskFormFields = ({
             </div>
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 {/* DatePicker y Horas de Almuerzo*/}
-                <div>
-                    {" "}
-                    {/* Envuelve DatePicker y el span en un div */}
-                    <DatePicker value={taskDate} onChange={setTaskDate} />
-                    {/* Span para mostrar la fecha actual */}
-                    {/* <span className="mt-1 block text-sm text-gray-500">
-                        {formattedToday}
-                    </span> */}
-                </div>
+    
+                <DatePicker value={taskDate} onChange={setTaskDate} />
                 <Input
                     id="lunch_hours"
                     label="Horas de Almuerzo"

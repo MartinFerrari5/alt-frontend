@@ -25,7 +25,7 @@ const DatePicker = ({ value, onChange }) => {
     }
 
     return (
-        <div className="col-span-2">
+        <div className="group relative z-0 mb-5 w-full">
             <label
                 htmlFor="task-date"
                 className="mb-1 block text-sm font-medium text-gray-700"

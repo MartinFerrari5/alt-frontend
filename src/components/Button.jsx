@@ -10,8 +10,8 @@ const button = tv({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         // Animaciones de Hover y Active
-        "hover:scale-105", // Se agranda al pasar el cursor
-        "active:scale-95", // Se achica al presionar
+        "hover:scale-105",
+        "active:scale-95",
     ],
     variants: {
         variant: {

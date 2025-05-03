@@ -23,7 +23,7 @@ const TaskForm = ({
     companies,
     projects,
     hourTypes,
-    typesTable, // recibimos la lista de tipos de tarea
+    typesTable,
     reset,
     setValue,
 }) => {
@@ -31,7 +31,7 @@ const TaskForm = ({
     const [filteredProjects, setFilteredProjects] = useState([])
     const isLoadingProjects = filteredProjects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
-    const isLoadingTypes = typesTable.length === 0 // usamos typesTable
+    const isLoadingTypes = typesTable.length === 0
 
     const selectedCompany = watch("company")
 
@@ -123,7 +123,7 @@ const TaskForm = ({
                     error={errors.task_type}
                     isLoading={isLoadingTypes}
                     isError={false}
-                    items={typesTable} // usamos la prop corregida
+                    items={typesTable}
                     loadingText="Cargando tipos de tarea..."
                     errorText="Error cargando tipos de tarea"
                     valueKey="type"
