@@ -1,3 +1,4 @@
+// src/pages/TaskDetailsPage.jsx
 import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -7,11 +8,11 @@ import { toast } from "react-toastify"
 import TaskHeader from "../components/Tasks/TaskHeader"
 import TaskForm from "../components/Tasks/TaskForm"
 import { ReadOnlyTaskDetails } from "../components/Tasks/ReadOnlyTaskDetails"
+import MainLayout from "../components/layout/MainLayout"
 
 import { useGetTask, useTasks } from "../hooks/data/task/useTasks"
-import { schema } from "../util/validationSchema"
-import MainLayout from "../components/layout/MainLayout"
 import { useOptionsStore } from "../store/modules/optionsStore"
+import { schema } from "../util/validationSchema"
 
 const TaskDetailsPage = () => {
     const { taskId } = useParams()
@@ -64,29 +65,26 @@ const TaskDetailsPage = () => {
         return `${year}-${month}-${day} 00:00:00`
     }
 
-    // Obtener la tarea (acepta tanto objeto como array)
     const { data: currentTask, isLoading, isError } = useGetTask(taskId)
     const { updateTaskMutation, deleteTaskMutation } = useTasks()
 
     const taskDetails = currentTask || null
 
+    // Cuando cargue la tarea, prellenar form y fecha
     useEffect(() => {
         if (taskDetails) {
-            const taskDateValue = taskDetails.task_date
+            const dateVal = taskDetails.task_date
                 ? new Date(taskDetails.task_date)
                 : null
-            setTaskDate(taskDateValue)
+            setTaskDate(dateVal)
 
-            // Buscamos en companies_table la compañía cuyo company_id coincide con la tarea
-            // y extraemos su relationship_id para asignarlo en el formulario.
-            const selectedCompanyObj = companies_table.find(
-                (comp) => comp.company_id === taskDetails.company_id
-            )
-            const companyValue = selectedCompanyObj
-                ? selectedCompanyObj.relationship_id
-                : ""
+            // Preselecciona company y project
+            setValue("company", taskDetails.company_id)
+            setValue("project", taskDetails.project_id)
+
+            // Rellenar resto de valores
             reset({
-                company: companyValue,
+                company: taskDetails.company_id,
                 project: taskDetails.project_id || "",
                 task_type: taskDetails.task_type || "",
                 task_description: taskDetails.task_description || "",
@@ -101,7 +99,7 @@ const TaskDetailsPage = () => {
                 status: taskDetails.status?.toString() || "0",
             })
         }
-    }, [taskDetails, reset, companies_table])
+    }, [taskDetails, reset, setValue])
 
     const handleSaveClick = (data) => {
         if (data.entry_time >= data.exit_time) {
@@ -111,31 +109,24 @@ const TaskDetailsPage = () => {
             return
         }
 
-        // Convertir el relationship_id (valor del campo "company") en el company_id real
-        const selectedCompanyObj = companies_table.find(
-            (comp) => comp.relationship_id === data.company
+        const selectedCompany = companies_table.find(
+            (c) => c.relationship_id === data.company
         )
-        const company_id = selectedCompanyObj
-            ? selectedCompanyObj.company_id
+        const company_id = selectedCompany
+            ? selectedCompany.company_id
             : data.company
 
-        const updateData = {
+        const payload = {
             ...data,
-            // Se reemplaza la propiedad "company" por company_id real para el payload
             company_id: data.company ? company_id : null,
             project_id: data.project,
-            task_type: data.task_type?.trim(),
-            task_description: data.task_description?.trim(),
-            entry_time: data.entry_time,
-            exit_time: data.exit_time,
             lunch_hours: Number(data.lunch_hours),
-            hour_type: data.hour_type,
             status: Number(data.status),
             task_date: taskDate ? formatDateForBackend(taskDate) : null,
         }
 
         updateTaskMutation.mutate(
-            { taskId, task: updateData },
+            { taskId, task: payload },
             {
                 onSuccess: () => {
                     toast.success("¡Tarea actualizada con éxito!")
@@ -159,9 +150,8 @@ const TaskDetailsPage = () => {
     }
 
     if (isLoading) return <p>Cargando...</p>
-    if (isError)
-        return <p>Error al cargar la tarea. Inténtalo de nuevo más tarde.</p>
-    if (!taskDetails) return <p>No se encontraron detalles de la tarea.</p>
+    if (isError) return <p>Error al cargar la tarea.</p>
+    if (!taskDetails) return <p>No se encontraron detalles.</p>
 
     return (
         <MainLayout>
@@ -187,8 +177,8 @@ const TaskDetailsPage = () => {
                             companies={companies_table}
                             projects={projects_table}
                             hourTypes={hour_type_table}
-                            setValue={setValue}
                             reset={reset}
+                            setValue={setValue}
                         />
                     ) : (
                         <ReadOnlyTaskDetails task={taskDetails} />

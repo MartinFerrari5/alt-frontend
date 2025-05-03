@@ -1,3 +1,4 @@
+// src/components/Tasks/TaskForm.jsx
 import { useEffect, useState } from "react"
 import Input from "../Input"
 import DatePicker from "./DatePicker"
@@ -7,6 +8,9 @@ import { toast } from "react-toastify"
 import { getCompanyProjects } from "../../hooks/data/options/optionsService"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 
+/**
+ * Formulario de tarea que inicializa la empresa y proyecto al recargar.
+ */
 const TaskForm = ({
     register,
     watch,
@@ -20,33 +24,51 @@ const TaskForm = ({
     projects,
     hourTypes,
     reset,
+    setValue,
 }) => {
     const isLoadingCompanies = companies.length === 0
-    const [filteredProjects, setFilteredProjects] = useState(projects)
+    const [filteredProjects, setFilteredProjects] = useState([])
     const isLoadingProjects = filteredProjects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
 
-    // Observar el valor seleccionado en el Dropdown de "Empresa"
     const selectedCompany = watch("company")
 
-    // Al cambiar la compañía, se consultan los proyectos relacionados
+    // Inicializar con tarea existente
     useEffect(() => {
-        if (selectedCompany) {
+        if (task) {
+            setValue("company", task.company_id)
+            getCompanyProjects(task.company_id)
+                .then((resp) => {
+                    setFilteredProjects(resp)
+                    reset({
+                        ...watch(),
+                        company: task.company_id,
+                        project: task.project_id,
+                    })
+                })
+                .catch((err) =>
+                    toast.error(
+                        "Error cargando proyectos iniciales: " + err.message
+                    )
+                )
+        } else {
+            setFilteredProjects(projects)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [task])
+
+    // Cambiar empresa en edición
+    useEffect(() => {
+        if (selectedCompany && (!task || selectedCompany !== task.company_id)) {
             getCompanyProjects(selectedCompany)
                 .then((resp) => {
                     setFilteredProjects(resp)
-                    // Reiniciar el campo "project" asignando el primer proyecto (si existe)
                     reset({
                         ...watch(),
                         project: resp.length > 0 ? resp[0].project_id : "",
                     })
                 })
-                .catch((error) => {
-                    toast.error(error.message)
-                })
-        } else {
-            setFilteredProjects([])
-            reset({ ...watch(), project: "" })
+                .catch((err) => toast.error(err.message))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCompany])
@@ -55,7 +77,6 @@ const TaskForm = ({
     return (
         <form onSubmit={handleSubmit}>
             <div className="bg-brand-white space-y-6 rounded-xl p-6">
-                {/* Dropdowns para Empresa, Proyecto y Tipo de Hora */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <Dropdown
                         id="company"
@@ -94,24 +115,18 @@ const TaskForm = ({
                         valueKey="option"
                     />
                 </div>
-
-                {/* Campo Tipo de Tarea */}
                 <Input
                     id="task_type"
                     label="Tipo de Tarea"
                     {...register("task_type")}
                     errorMessage={errors.task_type?.message}
                 />
-
-                {/* Campo Descripción */}
                 <Input
                     id="task_description"
                     label="Descripción"
                     {...register("task_description")}
                     errorMessage={errors.task_description?.message}
                 />
-
-                {/* Grid para DatePicker y horarios */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <DatePicker
                         value={taskDate}
@@ -152,7 +167,7 @@ const TaskForm = ({
                         disabled={isSubmitting}
                         type="submit"
                     >
-                        {isSubmitting ? <LoadingSpinner /> : "Guardar"}{" "}
+                        {isSubmitting ? <LoadingSpinner /> : "Guardar"}
                     </Button>
                 </div>
             </div>

@@ -9,7 +9,7 @@ const StatusSelectModal = ({
     onSelectChange,
     onCancel,
     onConfirm,
-    isLoading, // <--- NUEVA PROP
+    isLoading = false,
 }) => {
     if (!isOpen) return null
 
@@ -58,11 +58,7 @@ StatusSelectModal.propTypes = {
     onSelectChange: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool, // <--- NUEVA PROP
-}
-
-StatusSelectModal.defaultProps = {
-    isLoading: false,
+    isLoading: PropTypes.bool,
 }
 
 export default StatusSelectModal
