@@ -18,13 +18,19 @@ const TaskDetailsPage = () => {
     const { taskId } = useParams()
     const navigate = useNavigate()
 
-    const { companies_table, hour_type_table, projects_table, fetchOptions } =
-        useOptionsStore()
+    const {
+        companies_table,
+        hour_type_table,
+        projects_table,
+        types_table,
+        fetchOptions,
+    } = useOptionsStore()
 
     useEffect(() => {
         fetchOptions("companies_table")
         fetchOptions("hour_type_table")
         fetchOptions("projects_table")
+        fetchOptions("types_table")
     }, [fetchOptions])
 
     const [taskDate, setTaskDate] = useState(null)
@@ -70,7 +76,6 @@ const TaskDetailsPage = () => {
 
     const taskDetails = currentTask || null
 
-    // Cuando cargue la tarea, prellenar form y fecha
     useEffect(() => {
         if (taskDetails) {
             const dateVal = taskDetails.task_date
@@ -78,11 +83,9 @@ const TaskDetailsPage = () => {
                 : null
             setTaskDate(dateVal)
 
-            // Preselecciona company y project
             setValue("company", taskDetails.company_id)
             setValue("project", taskDetails.project_id)
 
-            // Rellenar resto de valores
             reset({
                 company: taskDetails.company_id,
                 project: taskDetails.project_id || "",
@@ -177,6 +180,7 @@ const TaskDetailsPage = () => {
                             companies={companies_table}
                             projects={projects_table}
                             hourTypes={hour_type_table}
+                            typesTable={types_table} // se pasa la prop
                             reset={reset}
                             setValue={setValue}
                         />

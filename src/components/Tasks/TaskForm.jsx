@@ -23,6 +23,7 @@ const TaskForm = ({
     companies,
     projects,
     hourTypes,
+    typesTable, // recibimos la lista de tipos de tarea
     reset,
     setValue,
 }) => {
@@ -30,10 +31,10 @@ const TaskForm = ({
     const [filteredProjects, setFilteredProjects] = useState([])
     const isLoadingProjects = filteredProjects.length === 0
     const isLoadingHourTypes = hourTypes.length === 0
+    const isLoadingTypes = typesTable.length === 0 // usamos typesTable
 
     const selectedCompany = watch("company")
 
-    // Inicializar con tarea existente
     useEffect(() => {
         if (task) {
             setValue("company", task.company_id)
@@ -57,7 +58,6 @@ const TaskForm = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [task])
 
-    // Cambiar empresa en edición
     useEffect(() => {
         if (selectedCompany && (!task || selectedCompany !== task.company_id)) {
             getCompanyProjects(selectedCompany)
@@ -74,6 +74,7 @@ const TaskForm = ({
     }, [selectedCompany])
 
     if (!task) return null
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="bg-brand-white space-y-6 rounded-xl p-6">
@@ -115,11 +116,17 @@ const TaskForm = ({
                         valueKey="option"
                     />
                 </div>
-                <Input
+                <Dropdown
                     id="task_type"
                     label="Tipo de Tarea"
-                    {...register("task_type")}
-                    errorMessage={errors.task_type?.message}
+                    register={register}
+                    error={errors.task_type}
+                    isLoading={isLoadingTypes}
+                    isError={false}
+                    items={typesTable} // usamos la prop corregida
+                    loadingText="Cargando tipos de tarea..."
+                    errorText="Error cargando tipos de tarea"
+                    valueKey="type"
                 />
                 <Input
                     id="task_description"

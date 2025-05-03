@@ -162,7 +162,10 @@ const AddTaskForm = ({ onClose }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(handleSaveClick)} className="w-full">
+        <form
+            onSubmit={handleSubmit(handleSaveClick)}
+            className="mx-auto max-w-md"
+        >
             <TaskFormFields
                 companies_table={companies_table}
                 hour_type_table={hour_type_table}
