@@ -62,8 +62,6 @@ export const getFilteredExportedTasks = async (filters) => {
  * @throws {Error} - Si ocurre un error al enviar las tareas.
  */
 export const postStatusRRHH = async (queryParams, payload) => {
-    console.log("queryParams", queryParams)
-    console.log("payload", payload)
     try {
         const { data } = await api.post("/status/rrhh", payload, {
             params: queryParams,

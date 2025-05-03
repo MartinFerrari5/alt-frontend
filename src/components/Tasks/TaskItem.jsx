@@ -127,7 +127,7 @@ const TaskItem = ({
                         <input
                             type="checkbox"
                             checked={isSelected}
-                            onClick={(e) => {
+                            onChange={(e) => {
                                 e.stopPropagation()
                                 onSelectTask(task.id)
                             }}

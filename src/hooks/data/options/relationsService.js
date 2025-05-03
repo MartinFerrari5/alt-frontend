@@ -245,7 +245,6 @@ export const deleteCompanyProjectRelation = async (relationship_id) => {
  * Obtiene los usuarios relacionados con un proyecto.
  */
 export const getProjectUsers = async (project_id) => {
-    console.log("project_id: ", project_id)
     if (!project_id) {
         throw new Error(
             "El ID del proyecto es obligatorio para obtener los usuarios relacionados."

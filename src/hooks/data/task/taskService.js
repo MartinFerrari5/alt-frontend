@@ -35,7 +35,6 @@ export const getAllTasksAll = async (page) => {
 
 export const createTask = async (task) => {
     const { data } = await api.post("/tasks", task)
-    console.log("createTask", data)
     return data.data
 }
 
