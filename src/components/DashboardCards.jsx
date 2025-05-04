@@ -93,19 +93,19 @@ const DashboardCards = ({ filters, currentPath, role }) => {
 
     // Si el rol no es admin, eliminamos la entrada "Finalizado" de los datos de status
     let statusDataFiltered = statusData
-    if (role !== "admin" && statusData && statusData.stats) {
-        const filteredStats = statusData.stats.filter(
-            (item) => item.label !== "Finalizado"
-        )
-        const totalFiltered = filteredStats.reduce(
-            (sum, item) => sum + Number(item.value),
-            0
-        )
-        statusDataFiltered = {
-            stats: filteredStats,
-            total: String(totalFiltered),
-        }
-    }
+    // if (role !== "admin" && statusData && statusData.stats) {
+    //     const filteredStats = statusData.stats.filter(
+    //         (item) => item.label !== "Finalizado"
+    //     )
+    //     const totalFiltered = filteredStats.reduce(
+    //         (sum, item) => sum + Number(item.value),
+    //         0
+    //     )
+    //     statusDataFiltered = {
+    //         stats: filteredStats,
+    //         total: String(totalFiltered),
+    //     }
+    // }
 
     return (
         <main>
