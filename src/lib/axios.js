@@ -4,7 +4,7 @@ import useAuthStore from "../store/modules/authStore"
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
-   // timeout: 5_000, // rechaza peticiones que tarden más de 5s
+    // timeout: 5_000, // rechaza peticiones que tarden más de 5s
 })
 
 // ——— Función de login centralizada ———
