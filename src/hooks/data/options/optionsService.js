@@ -9,7 +9,6 @@ import { api } from "../../../lib/axios"
 export const getOptions = async (table) => {
     try {
         const { data } = await api.get("/options", { params: { table } })
-        console.log("getOptions data:", table, data)
         return data
     } catch (error) {
         const backendMsg = error.response?.data?.message || error.message

@@ -1,10 +1,9 @@
-// src/pages/auth/SignIn.jsx
 import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios" // Importar axios
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import useAuthStore from "../../store/modules/authStore"
+import { loginApi } from "../../lib/axios"
 import { LoadingSpinner } from "../../util/LoadingSpinner"
 import { schemaSignIn } from "../../util/validationSchema"
 
@@ -23,17 +22,14 @@ const SignIn = () => {
 
     const onSubmit = async (data) => {
         try {
-            // Reemplazar fetch con axios.post
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/login`,
-                data
-            )
-            const { token, refreshToken } = response.data
-            login({ token, refreshToken })
+            // Usamos la función centralizada de login
+            const { token } = await loginApi(data)
+            login({ token })
             navigate("/rraa")
         } catch (error) {
             console.error("Error de inicio de sesión:", error)
-            let errorText = error.response?.data.message || "Error desconocido"
+            const errorText =
+                error.response?.data.message || "Error desconocido"
             setMessage({ type: "error", text: errorText })
         }
     }
@@ -106,14 +102,12 @@ const SignIn = () => {
                                 )}
                             </div>
                             <div>
-                                <a className="text-sm font-light">
-                                    <Link
-                                        to="/rraa/reset-password"
-                                        className="text-primary-600 text-sm font-medium hover:underline"
-                                    >
-                                        ¿Olvidaste la contraseña?
-                                    </Link>
-                                </a>
+                                <Link
+                                    to="/rraa/reset-password"
+                                    className="text-primary-600 text-sm font-medium hover:underline"
+                                >
+                                    ¿Olvidaste la contraseña?
+                                </Link>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-start">
@@ -151,11 +145,7 @@ const SignIn = () => {
                             </button>
                             {message && (
                                 <p
-                                    className={`mt-2 text-sm ${
-                                        message.type === "error"
-                                            ? "text-red-500"
-                                            : "text-green-500"
-                                    }`}
+                                    className={`mt-2 text-sm ${message.type === "error" ? "text-red-500" : "text-green-500"}`}
                                 >
                                     {message.text}
                                 </p>

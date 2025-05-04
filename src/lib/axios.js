@@ -4,62 +4,74 @@ import useAuthStore from "../store/modules/authStore"
 
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
+   // timeout: 5_000, // rechaza peticiones que tarden más de 5s
 })
 
-// Función para obtener nuevos tokens usando el refreshToken
+// ——— Función de login centralizada ———
+/**
+ * Hace POST a /login, guarda tokens en el store y configura el header.
+ * @param {{ email: string, password: string }} credentials
+ * @returns {Promise<{ token: string }>}
+ */
+export const loginApi = async (credentials) => {
+    const response = await api.post("/login", credentials)
+    const { token } = response.data
+
+    // Actualizo store con el token
+    useAuthStore.getState().login({ token })
+
+    // Configuro el Authorization header para todas las siguientes peticiones
+    api.defaults.headers.common["Authorization"] = token
+
+    return { token }
+}
+
+// ——— Refresh token ———
 const refreshAccessToken = async () => {
     const { authTokens, login } = useAuthStore.getState()
-
     if (!authTokens?.refreshToken) return null
 
     try {
-        const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/refresh`,
-            { refreshToken: authTokens.refreshToken }
-        )
+        const { data } = await api.post("/refresh", {
+            refreshToken: authTokens.refreshToken,
+        })
+        const { accessToken, refreshToken } = data
 
-        const newTokens = response.data
-        login(newTokens) // Update the store with the new tokens
-
-        // 🛠️ Asegurar que todas las nuevas peticiones usen el nuevo token
-        api.defaults.headers.common["Authorization"] =
-            `${newTokens.accessToken}`
-
-        return newTokens.accessToken
+        login({ accessToken, refreshToken })
+        api.defaults.headers.common["Authorization"] = accessToken
+        return accessToken
     } catch (error) {
-        console.error("🔴 Error al refrescar el token:", error)
+        console.error("🔴 Error al refrescar token:", error)
         return null
     }
 }
 
-// Interceptor para incluir el token en cada request
+// ——— Interceptor de petición: añade accessToken ———
 api.interceptors.request.use(
     (config) => {
         const { authTokens } = useAuthStore.getState()
         if (authTokens?.accessToken) {
-            config.headers.Authorization = `${authTokens.accessToken}`
+            config.headers.Authorization = authTokens.accessToken
         }
         return config
     },
     (error) => Promise.reject(error)
 )
 
-// Interceptor para manejar errores y refrescar el token
+// ——— Interceptor de respuesta: refresco automático ———
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config
-
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true
-            const newAccessToken = await refreshAccessToken()
-
-            if (newAccessToken) {
-                originalRequest.headers.Authorization = `${newAccessToken}`
-                return api(originalRequest) // Reintentar la petición original
+            const newToken = await refreshAccessToken()
+            if (newToken) {
+                originalRequest.headers.Authorization = newToken
+                return api(originalRequest)
             }
         }
-
         return Promise.reject(error)
     }
 )
+export default api
