@@ -20,6 +20,7 @@ const TABLE_HEADERS = [
     "TH",
     "HD",
     "HT",
+    "TDT",
     "Descripción",
     "Estado",
 ]

@@ -16,6 +16,7 @@ export const getAllTasks = async (page) => {
         page = 1
     }
     const { data } = await api.get(`/tasks?page=${page}`)
+    console.log("getAllTasks: ", data)
     return {
         tasks: data.data,
         pages: data.pages,

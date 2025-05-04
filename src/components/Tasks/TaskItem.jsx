@@ -142,7 +142,6 @@ const TaskItem = ({
                         {task.full_name || "Sin nombre"}
                     </td>
                 )}
-
                 <td className="px-4 py-5">{formatDate(task.task_date)}</td>
                 <td className="px-4 py-5">{task.entry_time}</td>
                 <td className="px-4 py-5">{task.exit_time}</td>
@@ -151,6 +150,8 @@ const TaskItem = ({
                 <td className="px-4 py-5">{task.hour_type}</td>
                 <td className="px-4 py-5">{task.lunch_hours || "-"}</td>
                 <td className="px-4 py-5">{task.worked_hours}</td>
+                <td className="px-4 py-5">{task.task_type || "-"}</td>{" "}
+                {/* Nuevo campo */}
                 <td className="group relative px-4 py-5">
                     <span>
                         {task.task_description.length > 10
@@ -161,7 +162,6 @@ const TaskItem = ({
                         {task.task_description}
                     </div>
                 </td>
-
                 <td className="flex gap-2 px-4 py-5 text-right">
                     {role === "user" && currentPath === "/rraa" && (
                         <Button
@@ -269,9 +269,10 @@ TaskItem.propTypes = {
         entry_time: PropTypes.string.isRequired,
         exit_time: PropTypes.string.isRequired,
         hour_type: PropTypes.string.isRequired,
-        lunch_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // <-- aquí
+        lunch_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         worked_hours: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
             .isRequired,
+        task_type: PropTypes.string,
         status: PropTypes.number.isRequired,
     }).isRequired,
     showCheckbox: PropTypes.bool,
